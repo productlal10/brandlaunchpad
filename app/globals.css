@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #FBFAF7;
+  color: #171615;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a {
+  color: #5B1F28;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: #7A2A34;
+}
+
+@keyframes brandscroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.brandscroll-anim {
+  display: flex;
+  width: max-content;
+  animation: brandscroll 42s linear infinite;
+}
+
+.brandscroll-anim:hover {
+  animation-play-state: paused;
+}
+
+/* Responsive Helper Utilities for Seamless Mobile Adaptation */
+@media (max-width: 1024px) {
+  .desktop-nav-links {
+    display: none !important;
+  }
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+  .stats-grid-responsive {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .engagement-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+  .process-grid-responsive {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .network-grid-responsive {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .team-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-headline-responsive {
+    font-size: 38px !important;
+    line-height: 1.1 !important;
+  }
+  .section-headline-responsive {
+    font-size: 32px !important;
+    line-height: 1.15 !important;
+  }
+  .stats-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+  .process-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+  .network-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+  .offering-row-responsive {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .market-intel-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+}
