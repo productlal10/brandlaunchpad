@@ -125,32 +125,52 @@ export default function Home1Page() {
         <div style={{ textAlign: 'center', fontSize: '10px', letterSpacing: '3px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 600, marginBottom: '20px' }}>Designed, produced &amp; shipped for</div>
         <div className="brandscroll-anim">
           <div style={{ display: 'flex', alignItems: 'center', gap: 0, fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontSize: '27px', color: 'rgba(245,241,234,0.72)', whiteSpace: 'nowrap' }}>
-            <span style={{ padding: '0 30px' }}>Pepe Jeans London</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Myntra</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Landmark Styli</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Amazon</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Nordstrom</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Wildfang</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Bloomingwear</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Iconic</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>True Religion</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>The Souled Store</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Wrogn</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Kidbea</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Pepe Jeans London</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
+              <img src="https://logos-world.net/wp-content/uploads/2022/12/Myntra-Logo.png" alt="Myntra" style={{ height: '24px', width: 'auto', objectFit: 'contain', opacity: 0.9 }} />
+            </span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Landmark Styli</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
+              <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/960px-Amazon_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="Amazon" style={{ height: '24px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
+            </span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Nordstrom</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
+              <img src="https://upload.wikimedia.org/wikipedia/en/6/6a/LogoforWildFang.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original" alt="Wildfang" style={{ height: '22px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
+            </span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Bloomingwear</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
+              <img src="https://bluehorse.in/assets/image/tss_logo.png" alt="The Souled Store" style={{ height: '28px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
+            </span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Iconic</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
+              <img src="https://franchiseneed.com/images/service/img_20220517162348459.png" alt="Wrogn" style={{ height: '26px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
+            </span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>True Religion</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Kidbea</span><span style={{ color: '#5B1F28' }}>•</span>
           </div>
           <div aria-hidden="true" style={{ display: 'flex', alignItems: 'center', gap: 0, fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontSize: '27px', color: 'rgba(245,241,234,0.72)', whiteSpace: 'nowrap' }}>
-            <span style={{ padding: '0 30px' }}>Pepe Jeans London</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Myntra</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Landmark Styli</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Amazon</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Nordstrom</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Wildfang</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Bloomingwear</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Iconic</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>True Religion</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>The Souled Store</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Wrogn</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 30px' }}>Kidbea</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Pepe Jeans London</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
+              <img src="https://logos-world.net/wp-content/uploads/2022/12/Myntra-Logo.png" alt="Myntra" style={{ height: '24px', width: 'auto', objectFit: 'contain', opacity: 0.9 }} />
+            </span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Landmark Styli</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
+              <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/960px-Amazon_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="Amazon" style={{ height: '24px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
+            </span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Nordstrom</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
+              <img src="https://upload.wikimedia.org/wikipedia/en/6/6a/LogoforWildFang.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original" alt="Wildfang" style={{ height: '22px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
+            </span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Bloomingwear</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
+              <img src="https://bluehorse.in/assets/image/tss_logo.png" alt="The Souled Store" style={{ height: '28px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
+            </span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Iconic</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
+              <img src="https://franchiseneed.com/images/service/img_20220517162348459.png" alt="Wrogn" style={{ height: '26px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
+            </span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>True Religion</span><span style={{ color: '#5B1F28' }}>•</span>
+            <span style={{ padding: '0 28px' }}>Kidbea</span><span style={{ color: '#5B1F28' }}>•</span>
           </div>
         </div>
       </div>
