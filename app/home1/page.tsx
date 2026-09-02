@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, Linkedin } from 'lucide-react';
+import { Menu, X, Linkedin, User, ShoppingBag, Globe, MessageSquare } from 'lucide-react';
 import { DiscoveryModal } from '@/components/DiscoveryModal';
 import { PartnerModal } from '@/components/PartnerModal';
 
@@ -94,7 +94,7 @@ export default function Home1Page() {
       </nav>
 
       {/* HERO SECTION — FULL WIDTH BACKGROUND */}
-      <header style={{
+      <header className="hero-container-mobile" style={{
         position: 'relative',
         width: '100%',
         minHeight: '90vh',
@@ -119,10 +119,10 @@ export default function Home1Page() {
         }} />
 
         {/* Left-side gradient overlay so text is legible on the light bg */}
-        <div style={{
+        <div className="hero-gradient-overlay" style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(to right, rgba(250,248,245,0.97) 0%, rgba(250,248,245,0.92) 30%, rgba(250,248,245,0.60) 55%, rgba(250,248,245,0) 75%)',
+          background: 'linear-gradient(to right, rgba(250,248,245,0.97) 0%, rgba(250,248,245,0.92) 35%, rgba(250,248,245,0.60) 60%, rgba(250,248,245,0) 80%)',
           zIndex: 1
         }} />
 
@@ -145,8 +145,8 @@ export default function Home1Page() {
         </div>
 
         {/* Hero Content */}
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: '1240px', margin: '0 auto', padding: '80px 40px 70px', width: '100%' }}>
-          <div style={{ maxWidth: '600px' }}>
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: '1240px', margin: '0 auto', padding: '70px 40px 60px', width: '100%' }}>
+          <div style={{ maxWidth: '640px' }}>
 
             {/* Eyebrow */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
@@ -162,7 +162,7 @@ export default function Home1Page() {
               style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontWeight: 400,
-                fontSize: '70px',
+                fontSize: '66px',
                 lineHeight: 1.05,
                 letterSpacing: '-0.5px',
                 marginBottom: '26px',
@@ -173,12 +173,12 @@ export default function Home1Page() {
             </h1>
 
             {/* Subtitle */}
-            <p style={{ fontSize: '17px', lineHeight: 1.65, color: '#57524B', maxWidth: '520px', marginBottom: '38px' }}>
+            <p style={{ fontSize: '16.5px', lineHeight: 1.65, color: '#57524B', maxWidth: '520px', marginBottom: '36px' }}>
               From <strong>market intelligence</strong> to <strong>brand launch</strong> and scale, we partner with founders to build iconic fashion brands that win in the real world.
             </p>
 
             {/* CTAs */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '28px', flexWrap: 'wrap', marginBottom: '60px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '28px', flexWrap: 'wrap', marginBottom: '44px' }}>
               <button
                 onClick={(e) => openBooking('Launch Sprint', e)}
                 style={{
@@ -220,26 +220,39 @@ export default function Home1Page() {
               </a>
             </div>
 
-            {/* Stats Row */}
-            <div className="hero-stats-responsive" style={{ display: 'flex', flexWrap: 'wrap', gap: '28px', paddingTop: '28px', borderTop: '1px solid #EAE4D9' }}>
-              <div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>10+</div>
-                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>Years of Experience</div>
-              </div>
-              <div style={{ width: '1px', background: '#EAE4D9' }} />
-              <div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>50+</div>
-                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>Brands Launched &amp; Scaled</div>
-              </div>
-              <div style={{ width: '1px', background: '#EAE4D9' }} />
-              <div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>25+</div>
-                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>Markets Worldwide</div>
-              </div>
-              <div style={{ width: '1px', background: '#EAE4D9' }} />
-              <div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>EnF</div>
-                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>End-to-End FashionOS</div>
+            {/* Floating Card Stats Container */}
+            <div className="stats-card-container" style={{
+              background: '#FAF8F5',
+              border: '1px solid #EAE4D9',
+              borderRadius: '16px',
+              padding: '24px 28px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+              marginTop: '20px'
+            }}>
+              <div className="stats-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', alignItems: 'flex-start' }}>
+                <div className="stats-item" style={{ textAlign: 'center' }}>
+                  <User size={22} style={{ color: '#57524B', strokeWidth: 1.4, margin: '0 auto 8px', display: 'block' }} />
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '38px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>10+</div>
+                  <div style={{ fontSize: '11px', color: '#6B655E', fontWeight: 500, lineHeight: 1.35 }}>Years of Experience</div>
+                </div>
+
+                <div className="stats-item stats-divider" style={{ textAlign: 'center', borderLeft: '1px solid #EAE4D9' }}>
+                  <ShoppingBag size={22} style={{ color: '#57524B', strokeWidth: 1.4, margin: '0 auto 8px', display: 'block' }} />
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '38px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>50+</div>
+                  <div style={{ fontSize: '11px', color: '#6B655E', fontWeight: 500, lineHeight: 1.35 }}>Brands Launched &amp; Scaled</div>
+                </div>
+
+                <div className="stats-item stats-divider" style={{ textAlign: 'center', borderLeft: '1px solid #EAE4D9' }}>
+                  <Globe size={22} style={{ color: '#57524B', strokeWidth: 1.4, margin: '0 auto 8px', display: 'block' }} />
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '38px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>25+</div>
+                  <div style={{ fontSize: '11px', color: '#6B655E', fontWeight: 500, lineHeight: 1.35 }}>Markets Worldwide</div>
+                </div>
+
+                <div className="stats-item stats-divider" style={{ textAlign: 'center', borderLeft: '1px solid #EAE4D9' }}>
+                  <div style={{ height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px', fontSize: '14px', fontWeight: 700, color: '#57524B', letterSpacing: '0.5px' }}>EnF</div>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '38px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>EnF</div>
+                  <div style={{ fontSize: '11px', color: '#6B655E', fontWeight: 500, lineHeight: 1.35 }}>End-to-End FashionOS</div>
+                </div>
               </div>
             </div>
 
@@ -248,7 +261,7 @@ export default function Home1Page() {
       </header>
 
       {/* TRUSTED BY AMBITIOUS BRANDS (LIGHT STRIP) */}
-      <section style={{ background: '#FAF8F5', borderBottom: '1px solid #EAE4D9', padding: '36px 0 44px' }}>
+      <section style={{ background: '#FAF8F5', borderBottom: '1px solid #EAE4D9', padding: '36px 0 40px' }}>
         <div style={{ textAlign: 'center', fontSize: '10.5px', letterSpacing: '3px', textTransform: 'uppercase', color: '#7A7369', fontWeight: 600, marginBottom: '28px' }}>
           TRUSTED BY AMBITIOUS BRANDS
         </div>
@@ -262,6 +275,15 @@ export default function Home1Page() {
             <span style={{ fontFamily: "sans-serif", fontWeight: 700, fontStyle: 'italic', fontSize: '19px', color: '#2B2723' }}>lifestyle</span>
             <span style={{ fontWeight: 800, letterSpacing: '3px', fontSize: '19px', color: '#2B2723' }}>AJIO</span>
             <span style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 700, fontSize: '20px', color: '#2B2723' }}>NYKAA <span style={{ fontSize: '11px', fontStyle: 'normal', letterSpacing: '1px' }}>FASHION</span></span>
+          </div>
+
+          {/* Dots Indicator for Mobile */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }} className="mobile-dots-indicator">
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#5B1F28' }}></span>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D8CDBF' }}></span>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D8CDBF' }}></span>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D8CDBF' }}></span>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D8CDBF' }}></span>
           </div>
         </div>
       </section>
@@ -617,6 +639,30 @@ export default function Home1Page() {
         onClose={() => setIsPartnerModalOpen(false)}
         serviceName={selectedPartnerService}
       />
+      {/* Floating Action Button */}
+      <button
+        onClick={(e) => openBooking('Floating Call', e)}
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          width: '52px',
+          height: '52px',
+          borderRadius: '50%',
+          background: '#3D1219',
+          color: '#FAF8F5',
+          border: 'none',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          zIndex: 999
+        }}
+        aria-label="Book a call"
+      >
+        <MessageSquare size={22} color="#FAF8F5" />
+      </button>
     </div>
   );
 }
