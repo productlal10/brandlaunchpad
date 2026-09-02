@@ -376,7 +376,7 @@ export default function Home1Page() {
                 bio: "Co-founder of Lal10 and TheFashionOS, and a TEDx speaker. Over the past decade he's turned raw ideas into operating companies, with deep expertise in exports and go-to-market. At Lal10 he's built a full-stack fashion ecosystem connecting global D2C and B2B brands with certified MSME factories. Forbes 30 Under 30 and Entrepreneur 35 Under 35.",
                 email: 'maneet@lal10.com',
                 linkedin: 'https://linkedin.com/in/maneetgohil',
-                image: '/images/team/maneet.jpg',
+                image: '/images/team/Maneet.png',
                 fallbackInitials: 'MG'
               },
               {
@@ -385,7 +385,7 @@ export default function Home1Page() {
                 bio: "Co-founder of Lal10, where he's built partnerships with Indian and global brands. A Forbes India 30 Under 30 honoree, he believes business is built on the relationships and financial systems most founders overlook — a philosophy that shapes how Lal10 operates behind the scenes.",
                 email: 'sanchit@lal10.com',
                 linkedin: 'https://linkedin.com/in/sanchitgovil',
-                image: '/images/team/sanchit.jpg',
+                image: '/images/team/Sanchit.png',
                 fallbackInitials: 'SG'
               },
               {
@@ -394,7 +394,7 @@ export default function Home1Page() {
                 bio: "Owns product and the technology layer — the tooling that keeps 50 factories, their capacity and their quality data in one connected system.",
                 email: 'albin@lal10.com',
                 linkedin: 'https://linkedin.com/in/albinjose',
-                image: '/images/team/albin.jpg',
+                image: '/images/team/Albin.png',
                 fallbackInitials: 'AJ'
               }
             ].map((member, idx) => (
