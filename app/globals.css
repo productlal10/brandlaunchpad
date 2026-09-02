@@ -102,9 +102,6 @@ a:hover {
   .market-intel-grid-responsive {
     grid-template-columns: 1fr !important;
   }
-
-/* Mobile hero: swap to portrait phone background image */
-@media (max-width: 640px) {
   .hero-fullwidth-bg {
     background-image: url('/phonebg.png') !important;
     background-position: center top !important;
@@ -113,4 +110,3 @@ a:hover {
     display: none !important;
   }
 }
-
