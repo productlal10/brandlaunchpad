@@ -93,58 +93,62 @@ export default function Home1Page() {
         )}
       </nav>
 
-      {/* HERO SECTION WITH FASHION MODEL BACKGROUND */}
-      <header style={{ position: 'relative', background: '#FAF8F5', color: '#171615', overflow: 'hidden', paddingTop: '75px', borderBottom: '1px solid #EAE4D9' }}>
-        
-        {/* Right Side Model Image Layer */}
-        <div 
-          className="hero-image-bg"
+      {/* HERO SECTION — FULL WIDTH BACKGROUND */}
+      <header style={{
+        position: 'relative',
+        width: '100%',
+        minHeight: '90vh',
+        overflow: 'hidden',
+        paddingTop: '75px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: '#171615',
+        borderBottom: '1px solid #EAE4D9'
+      }}>
+
+        {/* Full-bleed background image */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url('/images/hero-fullwidth.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
+          backgroundRepeat: 'no-repeat',
+          zIndex: 0
+        }} />
+
+        {/* Left-side gradient overlay so text is legible on the light bg */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to right, rgba(250,248,245,0.97) 0%, rgba(250,248,245,0.92) 30%, rgba(250,248,245,0.60) 55%, rgba(250,248,245,0) 75%)',
+          zIndex: 1
+        }} />
+
+        {/* Fashion tag — bottom right over image */}
+        <div
+          className="hero-tag-responsive"
           style={{
             position: 'absolute',
-            top: 0,
-            right: 0,
-            width: '56%',
-            height: '100%',
-            backgroundImage: `url('/images/hero-model.png')`,
-            backgroundPosition: 'right 20% top',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            zIndex: 0
+            bottom: '36px',
+            right: '48px',
+            fontSize: '11px',
+            letterSpacing: '2.5px',
+            textTransform: 'uppercase',
+            color: 'rgba(23,22,21,0.55)',
+            fontWeight: 600,
+            zIndex: 2
           }}
         >
-          {/* Left Gradient Fade Mask for Seamless Text Legibility */}
-          <div 
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'linear-gradient(to right, #FAF8F5 0%, rgba(250,248,245,0.92) 12%, rgba(250,248,245,0.4) 40%, rgba(250,248,245,0) 65%)'
-            }}
-          />
-          
-          {/* Bottom Right Fashion Tag */}
-          <div 
-            className="hero-tag-responsive"
-            style={{
-              position: 'absolute',
-              bottom: '36px',
-              right: '48px',
-              fontSize: '11px',
-              letterSpacing: '2.5px',
-              textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.9)',
-              textShadow: '0 2px 10px rgba(0,0,0,0.6)',
-              fontWeight: 600
-            }}
-          >
-            STRATEGY · BRAND · GROWTH
-          </div>
+          STRATEGY · BRAND · GROWTH
         </div>
 
-        {/* Left Hero Content */}
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '1240px', margin: '0 auto', padding: '70px 40px 60px' }}>
-          <div style={{ maxWidth: '640px' }}>
-            
-            {/* Eyebrow with line */}
+        {/* Hero Content */}
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: '1240px', margin: '0 auto', padding: '80px 40px 70px', width: '100%' }}>
+          <div style={{ maxWidth: '600px' }}>
+
+            {/* Eyebrow */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
               <span style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: '#171615', fontWeight: 600 }}>
                 FASHION BRAND ADVISORY &amp; OPERATING SYSTEM
@@ -152,43 +156,43 @@ export default function Home1Page() {
               <div style={{ width: '40px', height: '1px', background: '#D8CDBF' }}></div>
             </div>
 
-            {/* Main Headline */}
-            <h1 
-              className="hero-headline-responsive" 
-              style={{ 
-                fontFamily: "'Cormorant Garamond', serif", 
-                fontWeight: 400, 
-                fontSize: '70px', 
-                lineHeight: 1.05, 
-                letterSpacing: '-0.5px', 
-                marginBottom: '26px', 
-                color: '#171615' 
+            {/* Headline */}
+            <h1
+              className="hero-headline-responsive"
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontWeight: 400,
+                fontSize: '70px',
+                lineHeight: 1.05,
+                letterSpacing: '-0.5px',
+                marginBottom: '26px',
+                color: '#171615'
               }}
             >
               We build fashion brands that lead, <em style={{ fontStyle: 'italic', color: '#171615' }}>not follow.</em>
             </h1>
 
-            {/* Subtitle / Paragraph */}
+            {/* Subtitle */}
             <p style={{ fontSize: '17px', lineHeight: 1.65, color: '#57524B', maxWidth: '520px', marginBottom: '38px' }}>
               From <strong>market intelligence</strong> to <strong>brand launch</strong> and scale, we partner with founders to build iconic fashion brands that win in the real world.
             </p>
 
             {/* CTAs */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '28px', flexWrap: 'wrap', marginBottom: '60px' }}>
-              <button 
+              <button
                 onClick={(e) => openBooking('Launch Sprint', e)}
-                style={{ 
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  gap: '10px', 
-                  background: '#5B1F28', 
-                  color: '#FBFAF7', 
-                  padding: '16px 28px', 
-                  fontSize: '11.5px', 
-                  letterSpacing: '1.5px', 
-                  textTransform: 'uppercase', 
-                  fontWeight: 700, 
-                  border: 'none', 
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  background: '#5B1F28',
+                  color: '#FBFAF7',
+                  padding: '16px 28px',
+                  fontSize: '11.5px',
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                  border: 'none',
                   cursor: 'pointer',
                   boxShadow: '0 4px 14px rgba(91,31,40,0.25)'
                 }}
@@ -196,17 +200,17 @@ export default function Home1Page() {
                 BOOK A DISCOVERY CALL <span style={{ fontSize: '14px' }}>↗</span>
               </button>
 
-              <a 
-                href="#offerings" 
-                style={{ 
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  gap: '8px', 
-                  color: '#171615', 
-                  fontSize: '12px', 
-                  letterSpacing: '1.5px', 
-                  textTransform: 'uppercase', 
-                  fontWeight: 700, 
+              <a
+                href="#offerings"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  color: '#171615',
+                  fontSize: '12px',
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
                   textDecoration: 'none',
                   borderBottom: '1px solid #171615',
                   paddingBottom: '4px'
@@ -216,7 +220,7 @@ export default function Home1Page() {
               </a>
             </div>
 
-            {/* In-hero Stats Row */}
+            {/* Stats Row */}
             <div className="hero-stats-responsive" style={{ display: 'flex', flexWrap: 'wrap', gap: '28px', paddingTop: '28px', borderTop: '1px solid #EAE4D9' }}>
               <div>
                 <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>10+</div>
