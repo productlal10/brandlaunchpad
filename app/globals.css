@@ -102,19 +102,15 @@ a:hover {
   .market-intel-grid-responsive {
     grid-template-columns: 1fr !important;
   }
-  .hero-image-bg {
-    width: 100% !important;
-    opacity: 0.22 !important;
+
+/* Mobile hero: swap to portrait phone background image */
+@media (max-width: 640px) {
+  .hero-fullwidth-bg {
+    background-image: url('/phonebg.png') !important;
+    background-position: center top !important;
   }
   .hero-tag-responsive {
     display: none !important;
-  }
-}
-
-@media (max-width: 1024px) {
-  .hero-image-bg {
-    width: 50% !important;
-    opacity: 0.45 !important;
   }
 }
 

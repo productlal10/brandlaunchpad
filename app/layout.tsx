@@ -32,6 +32,11 @@ export const metadata: Metadata = {
     'MSME factory network',
   ],
   authors: [{ name: 'Lal10 FashionOS' }],
+  icons: {
+    icon: 'https://www.lal10.com/logo.png',
+    apple: 'https://www.lal10.com/logo.png',
+    shortcut: 'https://www.lal10.com/logo.png',
+  },
   openGraph: {
     title: 'LAL10 FashionOS · Your fashion brand, built on supply-chain intelligence.',
     description:

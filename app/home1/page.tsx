@@ -35,7 +35,7 @@ export default function Home1Page() {
             <img 
               src="https://www.lal10.com/logo.png" 
               alt="Lal10 Logo" 
-              style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+              style={{ height: '50px', width: 'auto', objectFit: 'contain' }}
             />
             <div style={{ borderLeft: '1px solid #E4DED3', paddingLeft: '14px' }}>
               <div style={{ fontSize: '10.5px', letterSpacing: '2.5px', color: '#8A837A', fontWeight: 600 }}>FASHIONOS</div>
@@ -108,7 +108,7 @@ export default function Home1Page() {
       }}>
 
         {/* Full-bleed background image */}
-        <div style={{
+        <div className="hero-fullwidth-bg" style={{
           position: 'absolute',
           inset: 0,
           backgroundImage: `url('/images/hero-fullwidth.png')`,
