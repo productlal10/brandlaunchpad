@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Linkedin, Mail } from 'lucide-react';
 import { DiscoveryModal } from '@/components/DiscoveryModal';
 import { PartnerModal } from '@/components/PartnerModal';
 
@@ -346,42 +346,174 @@ export default function Home1Page() {
       </section>
 
       {/* TEAM */}
-      <section id="team" style={{ background: '#171615', color: '#F5F1EA' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '110px 40px' }}>
-          <div style={{ fontSize: '11px', letterSpacing: '2.5px', textTransform: 'uppercase', color: '#C9A16B', fontWeight: 600, marginBottom: '18px' }}>Who&apos;s Behind It</div>
-          <h2 className="section-headline-responsive" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: '52px', lineHeight: 1.08, letterSpacing: '-0.5px', maxWidth: '760px', marginBottom: '22px', color: '#F5F1EA' }}>
-            Operators who&apos;ve built the machine.
-          </h2>
-          <p style={{ fontSize: '18px', lineHeight: 1.6, color: 'rgba(245,241,234,0.7)', maxWidth: '700px', marginBottom: '60px' }}>
-            A founding team spanning marketplace strategy, production discipline, and the technology that ties 50 factories into one system.
-          </p>
+      <section id="team" style={{ background: '#FAF7F2', color: '#171615', padding: '110px 0', borderTop: '1px solid #EAE4D9' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
           
-          <div className="team-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '28px' }}>
-            <div style={{ border: '1px solid rgba(245,241,234,0.14)', padding: '38px 32px' }}>
-              <div style={{ width: '60px', height: '60px', border: '1px solid #C9A16B', color: '#C9A16B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', marginBottom: '22px' }}>MG</div>
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', fontWeight: 500, color: '#F5F1EA', marginBottom: '4px' }}>Maneet Gohil</h3>
-              <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#C9A16B', fontWeight: 600, marginBottom: '18px' }}>Co-founder, Lal10 &amp; TheFashionOS</div>
-              <p style={{ fontSize: '14.5px', lineHeight: 1.7, color: 'rgba(245,241,234,0.75)' }}>
-                Co-founder of Lal10 and TheFashionOS, and a TEDx speaker. Over the past decade he&apos;s turned raw ideas into operating companies, with deep expertise in exports and go-to-market. At Lal10 he&apos;s built a full-stack fashion ecosystem connecting global D2C and B2B brands with certified MSME factories. Forbes 30 Under 30 and Entrepreneur 35 Under 35.
-              </p>
-            </div>
-            <div style={{ border: '1px solid rgba(245,241,234,0.14)', padding: '38px 32px' }}>
-              <div style={{ width: '60px', height: '60px', border: '1px solid #C9A16B', color: '#C9A16B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', marginBottom: '22px' }}>SG</div>
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', fontWeight: 500, color: '#F5F1EA', marginBottom: '4px' }}>Sanchit Govil</h3>
-              <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#C9A16B', fontWeight: 600, marginBottom: '18px' }}>Co-founder, Lal10</div>
-              <p style={{ fontSize: '14.5px', lineHeight: 1.7, color: 'rgba(245,241,234,0.75)' }}>
-                Co-founder of Lal10, where he&apos;s built partnerships with Indian and global brands. A Forbes India 30 Under 30 honoree, he believes business is built on the relationships and financial systems most founders overlook — a philosophy that shapes how Lal10 operates behind the scenes.
-              </p>
-            </div>
-            <div style={{ border: '1px solid rgba(245,241,234,0.14)', padding: '38px 32px' }}>
-              <div style={{ width: '60px', height: '60px', border: '1px solid #C9A16B', color: '#C9A16B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', marginBottom: '22px' }}>AJ</div>
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', fontWeight: 500, color: '#F5F1EA', marginBottom: '4px' }}>Albin Jose</h3>
-              <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#C9A16B', fontWeight: 600, marginBottom: '18px' }}>Co-founder &amp; CPO / AI</div>
-              <p style={{ fontSize: '14.5px', lineHeight: 1.7, color: 'rgba(245,241,234,0.75)' }}>
-                Owns product and the technology layer — the tooling that keeps 50 factories, their capacity and their quality data in one connected system.
-              </p>
-            </div>
+          {/* Section Eyebrow with trailing line */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+            <span style={{ fontSize: '11px', letterSpacing: '2.5px', textTransform: 'uppercase', color: '#5B1F28', fontWeight: 700 }}>
+              WHO&apos;S BEHIND IT
+            </span>
+            <div style={{ width: '45px', height: '1px', background: '#D8C4B0' }}></div>
           </div>
+
+          {/* Section Header: Title + Subtitle */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '32px', marginBottom: '60px' }}>
+            <h2 className="section-headline-responsive" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: '56px', lineHeight: 1.05, letterSpacing: '-0.5px', maxWidth: '580px', color: '#171615', margin: 0 }}>
+              Operators who&apos;ve built the <em style={{ fontStyle: 'italic', color: '#5B1F28' }}>machine.</em>
+            </h2>
+            <p style={{ fontSize: '16px', lineHeight: 1.65, color: '#57524B', maxWidth: '480px', margin: 0 }}>
+              A founding team spanning marketplace strategy, production discipline, and the technology that ties 50 factories into one system.
+            </p>
+          </div>
+          
+          {/* Team Cards Grid */}
+          <div className="team-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px' }}>
+            {[
+              {
+                name: 'Maneet Gohil',
+                role: 'CO-FOUNDER, LAL10 & THEFASHIONOS',
+                bio: "Co-founder of Lal10 and TheFashionOS, and a TEDx speaker. Over the past decade he's turned raw ideas into operating companies, with deep expertise in exports and go-to-market. At Lal10 he's built a full-stack fashion ecosystem connecting global D2C and B2B brands with certified MSME factories. Forbes 30 Under 30 and Entrepreneur 35 Under 35.",
+                email: 'maneet@lal10.com',
+                linkedin: 'https://linkedin.com/in/maneetgohil',
+                image: '/images/team/maneet.jpg',
+                fallbackInitials: 'MG'
+              },
+              {
+                name: 'Sanchit Govil',
+                role: 'CO-FOUNDER, LAL10',
+                bio: "Co-founder of Lal10, where he's built partnerships with Indian and global brands. A Forbes India 30 Under 30 honoree, he believes business is built on the relationships and financial systems most founders overlook — a philosophy that shapes how Lal10 operates behind the scenes.",
+                email: 'sanchit@lal10.com',
+                linkedin: 'https://linkedin.com/in/sanchitgovil',
+                image: '/images/team/sanchit.jpg',
+                fallbackInitials: 'SG'
+              },
+              {
+                name: 'Albin Jose',
+                role: 'CO-FOUNDER & CPO / AI',
+                bio: "Owns product and the technology layer — the tooling that keeps 50 factories, their capacity and their quality data in one connected system.",
+                email: 'albin@lal10.com',
+                linkedin: 'https://linkedin.com/in/albinjose',
+                image: '/images/team/albin.jpg',
+                fallbackInitials: 'AJ'
+              }
+            ].map((member, idx) => (
+              <div 
+                key={idx}
+                style={{ 
+                  background: '#FFFFFF', 
+                  borderRadius: '14px', 
+                  border: '1px solid #EAE4D9', 
+                  overflow: 'hidden', 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
+                }}
+              >
+                {/* Member Image / Fallback Container */}
+                <div style={{ position: 'relative', width: '100%', height: '290px', background: '#EAE4D9', overflow: 'hidden' }}>
+                  <img 
+                    src={member.image} 
+                    alt={member.name}
+                    onError={(e) => {
+                      // Fallback if image not yet provided
+                      (e.currentTarget.parentElement as HTMLElement).style.background = 'linear-gradient(135deg, #E6DEC8 0%, #D8CDBA 100%)';
+                      e.currentTarget.style.display = 'none';
+                    }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
+                  />
+                  {/* Visual Fallback Initials when photo file is not yet added */}
+                  <div 
+                    style={{ 
+                      position: 'absolute', 
+                      inset: 0, 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      pointerEvents: 'none',
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontSize: '48px',
+                      color: 'rgba(91,31,40,0.3)',
+                      fontWeight: 600,
+                      zIndex: 0
+                    }}
+                  >
+                    {member.fallbackInitials}
+                  </div>
+                </div>
+
+                {/* Card Content Body */}
+                <div style={{ padding: '28px 26px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', fontWeight: 500, color: '#171615', margin: '0 0 6px' }}>
+                    {member.name}
+                  </h3>
+                  <div style={{ fontSize: '10.5px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#5B1F28', fontWeight: 700, marginBottom: '16px' }}>
+                    {member.role}
+                  </div>
+                  <p style={{ fontSize: '13.5px', lineHeight: 1.65, color: '#57524B', margin: 0, flex: 1 }}>
+                    {member.bio}
+                  </p>
+                </div>
+
+                {/* Card Footer with Social Links and Email */}
+                <div style={{ borderTop: '1px solid #EAE4D9', padding: '16px 26px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  {/* LinkedIn Icon Box */}
+                  <a 
+                    href={member.linkedin} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    aria-label={`${member.name} LinkedIn`}
+                    style={{ 
+                      display: 'inline-flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      width: '30px', 
+                      height: '30px', 
+                      borderRadius: '5px', 
+                      border: '1px solid #D8D2C6', 
+                      color: '#57524B',
+                      background: '#FAFAF8',
+                      textDecoration: 'none'
+                    }}
+                  >
+                    <Linkedin size={15} />
+                  </a>
+
+                  {/* Mail Icon Box */}
+                  <a 
+                    href={`mailto:${member.email}`} 
+                    aria-label={`Email ${member.name}`}
+                    style={{ 
+                      display: 'inline-flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      width: '30px', 
+                      height: '30px', 
+                      borderRadius: '5px', 
+                      border: '1px solid #D8D2C6', 
+                      color: '#57524B',
+                      background: '#FAFAF8',
+                      textDecoration: 'none'
+                    }}
+                  >
+                    <Mail size={15} />
+                  </a>
+
+                  {/* Vertical Divider */}
+                  <div style={{ width: '1px', height: '18px', background: '#E4DED3', margin: '0 4px' }}></div>
+
+                  {/* Email text link */}
+                  <a 
+                    href={`mailto:${member.email}`} 
+                    style={{ fontSize: '12.5px', color: '#57524B', textDecoration: 'none', fontWeight: 500 }}
+                  >
+                    {member.email}
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 
