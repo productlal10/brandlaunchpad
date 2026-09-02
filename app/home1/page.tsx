@@ -26,10 +26,10 @@ export default function Home1Page() {
   };
 
   return (
-    <div style={{ maxWidth: '100%', overflowX: 'hidden', fontFamily: "'Manrope', sans-serif", color: '#171615', background: '#FBFAF7' }}>
+    <div style={{ maxWidth: '100%', overflowX: 'clip', fontFamily: "'Manrope', sans-serif", color: '#171615', background: '#FBFAF7', position: 'relative' }}>
       
-      {/* NAV */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(251,250,247,0.92)', backdropFilter: 'blur(14px)', borderBottom: '1px solid #E4DED3' }}>
+      {/* NAV (Fixed on scroll) */}
+      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, width: '100%', zIndex: 1000, background: 'rgba(251,250,247,0.95)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '1px solid #E4DED3', transition: 'all 0.3s ease' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
           <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '16px', textDecoration: 'none' }}>
             <img 
@@ -93,8 +93,8 @@ export default function Home1Page() {
         )}
       </nav>
 
-      {/* HERO */}
-      <header style={{ position: 'relative', background: '#171615', color: '#F5F1EA', overflow: 'hidden' }}>
+      {/* HERO (with top offset for fixed navbar) */}
+      <header style={{ position: 'relative', background: '#171615', color: '#F5F1EA', overflow: 'hidden', paddingTop: '75px' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,rgba(23,22,21,0.94) 0%,rgba(23,22,21,0.82) 42%,rgba(23,22,21,0.5) 100%)', pointerEvents: 'none' }}></div>
         <div style={{ position: 'relative', maxWidth: '1200px', margin: '0 auto', padding: '120px 40px 110px' }}>
           <div style={{ fontSize: '11px', letterSpacing: '2.5px', textTransform: 'uppercase', color: '#C9A16B', fontWeight: 600, marginBottom: '34px' }}>
