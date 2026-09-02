@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, Linkedin, Mail } from 'lucide-react';
+import { Menu, X, Linkedin } from 'lucide-react';
 import { DiscoveryModal } from '@/components/DiscoveryModal';
 import { PartnerModal } from '@/components/PartnerModal';
 
@@ -30,11 +30,18 @@ export default function Home1Page() {
       
       {/* NAV */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(251,250,247,0.92)', backdropFilter: 'blur(14px)', borderBottom: '1px solid #E4DED3' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
-          <div>
-            <div style={{ fontSize: '19px', fontWeight: 700, letterSpacing: '6px', color: '#171615' }}>LAL10</div>
-            <div style={{ fontSize: '10px', letterSpacing: '2.5px', color: '#8A837A', fontWeight: 500, marginTop: '3px' }}>FASHIONOS · FASHION BRAND OPERATING SYSTEM</div>
-          </div>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
+          <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '16px', textDecoration: 'none' }}>
+            <img 
+              src="https://www.lal10.com/logo.png" 
+              alt="Lal10 Logo" 
+              style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+            />
+            <div style={{ borderLeft: '1px solid #E4DED3', paddingLeft: '14px' }}>
+              <div style={{ fontSize: '10.5px', letterSpacing: '2.5px', color: '#8A837A', fontWeight: 600 }}>FASHIONOS</div>
+              <div style={{ fontSize: '8.5px', letterSpacing: '1px', color: '#A39C93', fontWeight: 500 }}>FASHION BRAND OPERATING SYSTEM</div>
+            </div>
+          </a>
 
           {/* Desktop Navigation Links */}
           <div className="desktop-nav-links" style={{ display: 'flex', gap: '36px', alignItems: 'center' }}>
@@ -374,24 +381,21 @@ export default function Home1Page() {
                 name: 'Maneet Gohil',
                 role: 'CO-FOUNDER, LAL10 & THEFASHIONOS',
                 bio: "Co-founder of Lal10 and TheFashionOS, and a TEDx speaker. Over the past decade he's turned raw ideas into operating companies, with deep expertise in exports and go-to-market. At Lal10 he's built a full-stack fashion ecosystem connecting global D2C and B2B brands with certified MSME factories. Forbes 30 Under 30 and Entrepreneur 35 Under 35.",
-                email: 'maneet@lal10.com',
-                linkedin: 'https://linkedin.com/in/maneetgohil',
+                linkedin: 'https://www.linkedin.com/in/maneetgohil/',
                 image: '/images/team/Maneet.png'
               },
               {
                 name: 'Sanchit Govil',
                 role: 'CO-FOUNDER, LAL10',
                 bio: "Co-founder of Lal10, where he's built partnerships with Indian and global brands. A Forbes India 30 Under 30 honoree, he believes business is built on the relationships and financial systems most founders overlook — a philosophy that shapes how Lal10 operates behind the scenes.",
-                email: 'sanchit@lal10.com',
-                linkedin: 'https://linkedin.com/in/sanchitgovil',
+                linkedin: 'https://www.linkedin.com/in/sanchitgovil/',
                 image: '/images/team/Sanchit.png'
               },
               {
                 name: 'Albin Jose',
                 role: 'CO-FOUNDER & CPO / AI',
                 bio: "Owns product and the technology layer — the tooling that keeps 50 factories, their capacity and their quality data in one connected system.",
-                email: 'albin@lal10.com',
-                linkedin: 'https://linkedin.com/in/albinjose',
+                linkedin: 'https://www.linkedin.com/in/albin-anto-jose-26670532/',
                 image: '/images/team/Albin.png'
               }
             ].map((member, idx) => (
@@ -429,9 +433,8 @@ export default function Home1Page() {
                   </p>
                 </div>
 
-                {/* Card Footer with Social Links and Email */}
-                <div style={{ borderTop: '1px solid #EAE4D9', padding: '16px 26px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  {/* LinkedIn Icon Box */}
+                {/* Card Footer with Centered LinkedIn Only */}
+                <div style={{ borderTop: '1px solid #EAE4D9', padding: '16px 26px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <a 
                     href={member.linkedin} 
                     target="_blank" 
@@ -441,47 +444,16 @@ export default function Home1Page() {
                       display: 'inline-flex', 
                       alignItems: 'center', 
                       justifyContent: 'center', 
-                      width: '30px', 
-                      height: '30px', 
-                      borderRadius: '5px', 
+                      width: '36px', 
+                      height: '36px', 
+                      borderRadius: '6px', 
                       border: '1px solid #D8D2C6', 
                       color: '#57524B',
                       background: '#FAFAF8',
                       textDecoration: 'none'
                     }}
                   >
-                    <Linkedin size={15} />
-                  </a>
-
-                  {/* Mail Icon Box */}
-                  <a 
-                    href={`mailto:${member.email}`} 
-                    aria-label={`Email ${member.name}`}
-                    style={{ 
-                      display: 'inline-flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center', 
-                      width: '30px', 
-                      height: '30px', 
-                      borderRadius: '5px', 
-                      border: '1px solid #D8D2C6', 
-                      color: '#57524B',
-                      background: '#FAFAF8',
-                      textDecoration: 'none'
-                    }}
-                  >
-                    <Mail size={15} />
-                  </a>
-
-                  {/* Vertical Divider */}
-                  <div style={{ width: '1px', height: '18px', background: '#E4DED3', margin: '0 4px' }}></div>
-
-                  {/* Email text link */}
-                  <a 
-                    href={`mailto:${member.email}`} 
-                    style={{ fontSize: '12.5px', color: '#57524B', textDecoration: 'none', fontWeight: 500 }}
-                  >
-                    {member.email}
+                    <Linkedin size={18} />
                   </a>
                 </div>
               </div>
