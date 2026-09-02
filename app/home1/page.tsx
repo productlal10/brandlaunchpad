@@ -376,8 +376,7 @@ export default function Home1Page() {
                 bio: "Co-founder of Lal10 and TheFashionOS, and a TEDx speaker. Over the past decade he's turned raw ideas into operating companies, with deep expertise in exports and go-to-market. At Lal10 he's built a full-stack fashion ecosystem connecting global D2C and B2B brands with certified MSME factories. Forbes 30 Under 30 and Entrepreneur 35 Under 35.",
                 email: 'maneet@lal10.com',
                 linkedin: 'https://linkedin.com/in/maneetgohil',
-                image: '/images/team/Maneet.png',
-                fallbackInitials: 'MG'
+                image: '/images/team/Maneet.png'
               },
               {
                 name: 'Sanchit Govil',
@@ -385,8 +384,7 @@ export default function Home1Page() {
                 bio: "Co-founder of Lal10, where he's built partnerships with Indian and global brands. A Forbes India 30 Under 30 honoree, he believes business is built on the relationships and financial systems most founders overlook — a philosophy that shapes how Lal10 operates behind the scenes.",
                 email: 'sanchit@lal10.com',
                 linkedin: 'https://linkedin.com/in/sanchitgovil',
-                image: '/images/team/Sanchit.png',
-                fallbackInitials: 'SG'
+                image: '/images/team/Sanchit.png'
               },
               {
                 name: 'Albin Jose',
@@ -394,8 +392,7 @@ export default function Home1Page() {
                 bio: "Owns product and the technology layer — the tooling that keeps 50 factories, their capacity and their quality data in one connected system.",
                 email: 'albin@lal10.com',
                 linkedin: 'https://linkedin.com/in/albinjose',
-                image: '/images/team/Albin.png',
-                fallbackInitials: 'AJ'
+                image: '/images/team/Albin.png'
               }
             ].map((member, idx) => (
               <div 
@@ -410,36 +407,13 @@ export default function Home1Page() {
                   boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
                 }}
               >
-                {/* Member Image / Fallback Container */}
-                <div style={{ position: 'relative', width: '100%', height: '290px', background: '#EAE4D9', overflow: 'hidden' }}>
+                {/* Member Image Container */}
+                <div style={{ position: 'relative', width: '100%', height: '320px', background: '#EAE4D9', overflow: 'hidden' }}>
                   <img 
                     src={member.image} 
                     alt={member.name}
-                    onError={(e) => {
-                      // Fallback if image not yet provided
-                      (e.currentTarget.parentElement as HTMLElement).style.background = 'linear-gradient(135deg, #E6DEC8 0%, #D8CDBA 100%)';
-                      e.currentTarget.style.display = 'none';
-                    }}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
                   />
-                  {/* Visual Fallback Initials when photo file is not yet added */}
-                  <div 
-                    style={{ 
-                      position: 'absolute', 
-                      inset: 0, 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center', 
-                      pointerEvents: 'none',
-                      fontFamily: "'Cormorant Garamond', serif",
-                      fontSize: '48px',
-                      color: 'rgba(91,31,40,0.3)',
-                      fontWeight: 600,
-                      zIndex: 0
-                    }}
-                  >
-                    {member.fallbackInitials}
-                  </div>
                 </div>
 
                 {/* Card Content Body */}
