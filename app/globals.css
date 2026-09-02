@@ -102,4 +102,19 @@ a:hover {
   .market-intel-grid-responsive {
     grid-template-columns: 1fr !important;
   }
+  .hero-image-bg {
+    width: 100% !important;
+    opacity: 0.22 !important;
+  }
+  .hero-tag-responsive {
+    display: none !important;
+  }
 }
+
+@media (max-width: 1024px) {
+  .hero-image-bg {
+    width: 50% !important;
+    opacity: 0.45 !important;
+  }
+}
+

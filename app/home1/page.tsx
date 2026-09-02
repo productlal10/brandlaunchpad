@@ -48,12 +48,12 @@ export default function Home1Page() {
             <a href="#offerings" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>What We Do</a>
             <a href="#process" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>Process</a>
             <a href="#engagement" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>Engagement</a>
-            <a href="#team" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>Team</a>
+            <a href="#team" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>About</a>
             <button 
               onClick={(e) => openBooking('General', e)}
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#171615', color: '#FBFAF7', padding: '12px 22px', fontSize: '11px', letterSpacing: '1.5px', fontWeight: 600, textTransform: 'uppercase', cursor: 'pointer', border: 'none' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#5B1F28', color: '#FBFAF7', padding: '12px 22px', fontSize: '11px', letterSpacing: '1.5px', fontWeight: 700, textTransform: 'uppercase', cursor: 'pointer', border: 'none' }}
             >
-              Book a Discovery Call <span style={{ fontSize: '14px' }}>→</span>
+              Book a Discovery Call <span style={{ fontSize: '14px' }}>↗</span>
             </button>
           </div>
 
@@ -61,7 +61,7 @@ export default function Home1Page() {
           <div className="mobile-menu-btn" style={{ display: 'none', alignItems: 'center', gap: '8px' }}>
             <button
               onClick={(e) => openBooking('General', e)}
-              style={{ background: '#171615', color: '#FBFAF7', padding: '8px 14px', fontSize: '10px', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 600, border: 'none', cursor: 'pointer' }}
+              style={{ background: '#5B1F28', color: '#FBFAF7', padding: '8px 14px', fontSize: '10px', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 600, border: 'none', cursor: 'pointer' }}
             >
               Book Call
             </button>
@@ -81,118 +81,183 @@ export default function Home1Page() {
             <a href="#offerings" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', letterSpacing: '1.5px', fontWeight: 600, color: '#171615', textTransform: 'uppercase', paddingBottom: '8px', borderBottom: '1px solid #E4DED3' }}>What We Do</a>
             <a href="#process" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', letterSpacing: '1.5px', fontWeight: 600, color: '#171615', textTransform: 'uppercase', paddingBottom: '8px', borderBottom: '1px solid #E4DED3' }}>Process</a>
             <a href="#engagement" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', letterSpacing: '1.5px', fontWeight: 600, color: '#171615', textTransform: 'uppercase', paddingBottom: '8px', borderBottom: '1px solid #E4DED3' }}>Engagement</a>
-            <a href="#team" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', letterSpacing: '1.5px', fontWeight: 600, color: '#171615', textTransform: 'uppercase', paddingBottom: '8px', borderBottom: '1px solid #E4DED3' }}>Team</a>
+            <a href="#team" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', letterSpacing: '1.5px', fontWeight: 600, color: '#171615', textTransform: 'uppercase', paddingBottom: '8px', borderBottom: '1px solid #E4DED3' }}>About</a>
             <Link href="/admin" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '12px', letterSpacing: '1.5px', color: '#8A837A', textTransform: 'uppercase' }}>Admin Dashboard →</Link>
             <button 
               onClick={(e) => openBooking('General', e)}
-              style={{ background: '#171615', color: '#FBFAF7', padding: '14px 20px', fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: 600, border: 'none', cursor: 'pointer', marginTop: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}
+              style={{ background: '#5B1F28', color: '#FBFAF7', padding: '14px 20px', fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: 600, border: 'none', cursor: 'pointer', marginTop: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}
             >
-              Book a Discovery Call <span>→</span>
+              Book a Discovery Call <span>↗</span>
             </button>
           </div>
         )}
       </nav>
 
-      {/* HERO (with top offset for fixed navbar) */}
-      <header style={{ position: 'relative', background: '#171615', color: '#F5F1EA', overflow: 'hidden', paddingTop: '75px' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,rgba(23,22,21,0.94) 0%,rgba(23,22,21,0.82) 42%,rgba(23,22,21,0.5) 100%)', pointerEvents: 'none' }}></div>
-        <div style={{ position: 'relative', maxWidth: '1200px', margin: '0 auto', padding: '120px 40px 110px' }}>
-          <div style={{ fontSize: '11px', letterSpacing: '2.5px', textTransform: 'uppercase', color: '#C9A16B', fontWeight: 600, marginBottom: '34px' }}>
-            Part of Lal10 · The playbook behind launching &amp; scaling brands
+      {/* HERO SECTION WITH FASHION MODEL BACKGROUND */}
+      <header style={{ position: 'relative', background: '#FAF8F5', color: '#171615', overflow: 'hidden', paddingTop: '75px', borderBottom: '1px solid #EAE4D9' }}>
+        
+        {/* Right Side Model Image Layer */}
+        <div 
+          className="hero-image-bg"
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: '56%',
+            height: '100%',
+            backgroundImage: `url('/images/hero-model.png')`,
+            backgroundPosition: 'right 20% top',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            zIndex: 0
+          }}
+        >
+          {/* Left Gradient Fade Mask for Seamless Text Legibility */}
+          <div 
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(to right, #FAF8F5 0%, rgba(250,248,245,0.92) 12%, rgba(250,248,245,0.4) 40%, rgba(250,248,245,0) 65%)'
+            }}
+          />
+          
+          {/* Bottom Right Fashion Tag */}
+          <div 
+            className="hero-tag-responsive"
+            style={{
+              position: 'absolute',
+              bottom: '36px',
+              right: '48px',
+              fontSize: '11px',
+              letterSpacing: '2.5px',
+              textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.9)',
+              textShadow: '0 2px 10px rgba(0,0,0,0.6)',
+              fontWeight: 600
+            }}
+          >
+            STRATEGY · BRAND · GROWTH
           </div>
-          <h1 className="hero-headline-responsive" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: '76px', lineHeight: 1.02, letterSpacing: '-0.5px', maxWidth: '900px', marginBottom: '32px', color: '#F5F1EA' }}>
-            Your fashion brand, built on <em style={{ fontStyle: 'italic', color: '#C9A16B' }}>supply-chain intelligence.</em>
-          </h1>
-          <p style={{ fontSize: '19px', lineHeight: 1.65, color: 'rgba(245,241,234,0.78)', maxWidth: '660px', marginBottom: '44px' }}>
-            An operating system for founders entering fashion — from market intelligence, product strategy and assortment planning to sourcing advisory and marketplace readiness.
-          </p>
-          <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
-            <button 
-              onClick={(e) => openBooking('Launch Sprint', e)}
-              style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#F5F1EA', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: 600, borderBottom: '1px solid rgba(245,241,234,0.4)', paddingBottom: '8px', background: 'transparent', borderTop: 'none', borderLeft: 'none', borderRight: 'none', cursor: 'pointer' }}
+        </div>
+
+        {/* Left Hero Content */}
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '1240px', margin: '0 auto', padding: '70px 40px 60px' }}>
+          <div style={{ maxWidth: '640px' }}>
+            
+            {/* Eyebrow with line */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
+              <span style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: '#171615', fontWeight: 600 }}>
+                FASHION BRAND ADVISORY &amp; OPERATING SYSTEM
+              </span>
+              <div style={{ width: '40px', height: '1px', background: '#D8CDBF' }}></div>
+            </div>
+
+            {/* Main Headline */}
+            <h1 
+              className="hero-headline-responsive" 
+              style={{ 
+                fontFamily: "'Cormorant Garamond', serif", 
+                fontWeight: 400, 
+                fontSize: '70px', 
+                lineHeight: 1.05, 
+                letterSpacing: '-0.5px', 
+                marginBottom: '26px', 
+                color: '#171615' 
+              }}
             >
-              Start a Conversation <span style={{ fontSize: '16px' }}>→</span>
-            </button>
-            <a href="#offerings" style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'rgba(245,241,234,0.7)', fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: 600, borderBottom: '1px solid rgba(245,241,234,0.2)', paddingBottom: '8px' }}>
-              See How It Works <span style={{ fontSize: '16px' }}>→</span>
-            </a>
+              We build fashion brands that lead, <em style={{ fontStyle: 'italic', color: '#171615' }}>not follow.</em>
+            </h1>
+
+            {/* Subtitle / Paragraph */}
+            <p style={{ fontSize: '17px', lineHeight: 1.65, color: '#57524B', maxWidth: '520px', marginBottom: '38px' }}>
+              From <strong>market intelligence</strong> to <strong>brand launch</strong> and scale, we partner with founders to build iconic fashion brands that win in the real world.
+            </p>
+
+            {/* CTAs */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '28px', flexWrap: 'wrap', marginBottom: '60px' }}>
+              <button 
+                onClick={(e) => openBooking('Launch Sprint', e)}
+                style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '10px', 
+                  background: '#5B1F28', 
+                  color: '#FBFAF7', 
+                  padding: '16px 28px', 
+                  fontSize: '11.5px', 
+                  letterSpacing: '1.5px', 
+                  textTransform: 'uppercase', 
+                  fontWeight: 700, 
+                  border: 'none', 
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(91,31,40,0.25)'
+                }}
+              >
+                BOOK A DISCOVERY CALL <span style={{ fontSize: '14px' }}>↗</span>
+              </button>
+
+              <a 
+                href="#offerings" 
+                style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  color: '#171615', 
+                  fontSize: '12px', 
+                  letterSpacing: '1.5px', 
+                  textTransform: 'uppercase', 
+                  fontWeight: 700, 
+                  textDecoration: 'none',
+                  borderBottom: '1px solid #171615',
+                  paddingBottom: '4px'
+                }}
+              >
+                SEE HOW WE WORK <span>→</span>
+              </a>
+            </div>
+
+            {/* In-hero Stats Row */}
+            <div className="hero-stats-responsive" style={{ display: 'flex', flexWrap: 'wrap', gap: '28px', paddingTop: '28px', borderTop: '1px solid #EAE4D9' }}>
+              <div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>10+</div>
+                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>Years of Experience</div>
+              </div>
+              <div style={{ width: '1px', background: '#EAE4D9' }} />
+              <div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>50+</div>
+                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>Brands Launched &amp; Scaled</div>
+              </div>
+              <div style={{ width: '1px', background: '#EAE4D9' }} />
+              <div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>25+</div>
+                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>Markets Worldwide</div>
+              </div>
+              <div style={{ width: '1px', background: '#EAE4D9' }} />
+              <div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>EnF</div>
+                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>End-to-End FashionOS</div>
+              </div>
+            </div>
+
           </div>
         </div>
       </header>
 
-      {/* BRANDS MARQUEE */}
-      <div style={{ background: '#171615', borderTop: '1px solid rgba(245,241,234,0.1)', padding: '26px 0', overflow: 'hidden' }}>
-        <div style={{ textAlign: 'center', fontSize: '10px', letterSpacing: '3px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 600, marginBottom: '20px' }}>Designed, produced &amp; shipped for</div>
-        <div className="brandscroll-anim">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 0, fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontSize: '27px', color: 'rgba(245,241,234,0.72)', whiteSpace: 'nowrap' }}>
-            <span style={{ padding: '0 28px' }}>Pepe Jeans London</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
-              <img src="https://logos-world.net/wp-content/uploads/2022/12/Myntra-Logo.png" alt="Myntra" style={{ height: '24px', width: 'auto', objectFit: 'contain', opacity: 0.9 }} />
-            </span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>Landmark Styli</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
-              <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/960px-Amazon_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="Amazon" style={{ height: '24px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
-            </span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>Nordstrom</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
-              <img src="https://upload.wikimedia.org/wikipedia/en/6/6a/LogoforWildFang.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original" alt="Wildfang" style={{ height: '22px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
-            </span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>Bloomingwear</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
-              <img src="https://bluehorse.in/assets/image/tss_logo.png" alt="The Souled Store" style={{ height: '28px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
-            </span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>Iconic</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
-              <img src="https://franchiseneed.com/images/service/img_20220517162348459.png" alt="Wrogn" style={{ height: '26px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
-            </span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>True Religion</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>Kidbea</span><span style={{ color: '#5B1F28' }}>•</span>
-          </div>
-          <div aria-hidden="true" style={{ display: 'flex', alignItems: 'center', gap: 0, fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontSize: '27px', color: 'rgba(245,241,234,0.72)', whiteSpace: 'nowrap' }}>
-            <span style={{ padding: '0 28px' }}>Pepe Jeans London</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
-              <img src="https://logos-world.net/wp-content/uploads/2022/12/Myntra-Logo.png" alt="Myntra" style={{ height: '24px', width: 'auto', objectFit: 'contain', opacity: 0.9 }} />
-            </span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>Landmark Styli</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
-              <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/960px-Amazon_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="Amazon" style={{ height: '24px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
-            </span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>Nordstrom</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
-              <img src="https://upload.wikimedia.org/wikipedia/en/6/6a/LogoforWildFang.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original" alt="Wildfang" style={{ height: '22px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
-            </span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>Bloomingwear</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
-              <img src="https://bluehorse.in/assets/image/tss_logo.png" alt="The Souled Store" style={{ height: '28px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
-            </span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>Iconic</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px', display: 'inline-flex', alignItems: 'center' }}>
-              <img src="https://franchiseneed.com/images/service/img_20220517162348459.png" alt="Wrogn" style={{ height: '26px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
-            </span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>True Religion</span><span style={{ color: '#5B1F28' }}>•</span>
-            <span style={{ padding: '0 28px' }}>Kidbea</span><span style={{ color: '#5B1F28' }}>•</span>
-          </div>
+      {/* TRUSTED BY AMBITIOUS BRANDS (LIGHT STRIP) */}
+      <section style={{ background: '#FAF8F5', borderBottom: '1px solid #EAE4D9', padding: '36px 0 44px' }}>
+        <div style={{ textAlign: 'center', fontSize: '10.5px', letterSpacing: '3px', textTransform: 'uppercase', color: '#7A7369', fontWeight: 600, marginBottom: '28px' }}>
+          TRUSTED BY AMBITIOUS BRANDS
         </div>
-      </div>
-
-      {/* STATS */}
-      <section style={{ maxWidth: '1200px', margin: '0 auto', padding: '80px 40px', borderBottom: '1px solid #E4DED3' }}>
-        <div className="stats-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '32px' }}>
-          <div style={{ borderLeft: '1px solid #E4DED3', paddingLeft: '24px' }}>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '60px', fontWeight: 400, color: '#5B1F28', lineHeight: 1, marginBottom: '14px' }}>10+</div>
-            <div style={{ fontSize: '12px', letterSpacing: '1px', lineHeight: 1.5, color: '#57524B', textTransform: 'uppercase', fontWeight: 500 }}>Brands launched across womenswear, menswear &amp; kidswear</div>
-          </div>
-          <div style={{ borderLeft: '1px solid #E4DED3', paddingLeft: '24px' }}>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '60px', fontWeight: 400, color: '#5B1F28', lineHeight: 1, marginBottom: '14px' }}>50</div>
-            <div style={{ fontSize: '12px', letterSpacing: '1px', lineHeight: 1.5, color: '#57524B', textTransform: 'uppercase', fontWeight: 500 }}>Certified factories in one connected system</div>
-          </div>
-          <div style={{ borderLeft: '1px solid #E4DED3', paddingLeft: '24px' }}>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '60px', fontWeight: 400, color: '#5B1F28', lineHeight: 1, marginBottom: '14px' }}>35</div>
-            <div style={{ fontSize: '12px', letterSpacing: '1px', lineHeight: 1.5, color: '#57524B', textTransform: 'uppercase', fontWeight: 500 }}>Day design-to-delivery benchmark</div>
-          </div>
-          <div style={{ borderLeft: '1px solid #E4DED3', paddingLeft: '24px' }}>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '60px', fontWeight: 400, color: '#5B1F28', lineHeight: 1, marginBottom: '14px' }}>E2E</div>
-            <div style={{ fontSize: '12px', letterSpacing: '1px', lineHeight: 1.5, color: '#57524B', textTransform: 'uppercase', fontWeight: 500 }}>Design → Sample → Production → Listing</div>
+        <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 40px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '32px' }} className="trusted-brands-row">
+            <img src="https://logos-world.net/wp-content/uploads/2022/12/Myntra-Logo.png" alt="Myntra" style={{ height: '22px', objectFit: 'contain', filter: 'grayscale(100%)', opacity: 0.8 }} />
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '18px', fontWeight: 600, letterSpacing: '1px', color: '#2B2723' }}>LANDMARK GROUP</span>
+            <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/960px-Amazon_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="Amazon" style={{ height: '20px', objectFit: 'contain', filter: 'grayscale(100%)', opacity: 0.8 }} />
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '19px', letterSpacing: '2px', fontWeight: 500, color: '#2B2723' }}>NORDSTROM</span>
+            <span style={{ fontWeight: 700, letterSpacing: '1px', fontSize: '17px', color: '#2B2723' }}>TATA <span style={{ fontWeight: 400 }}>CLiQ</span></span>
+            <span style={{ fontFamily: "sans-serif", fontWeight: 700, fontStyle: 'italic', fontSize: '19px', color: '#2B2723' }}>lifestyle</span>
+            <span style={{ fontWeight: 800, letterSpacing: '3px', fontSize: '19px', color: '#2B2723' }}>AJIO</span>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 700, fontSize: '20px', color: '#2B2723' }}>NYKAA <span style={{ fontSize: '11px', fontStyle: 'normal', letterSpacing: '1px' }}>FASHION</span></span>
           </div>
         </div>
       </section>
