@@ -225,8 +225,8 @@ export default function AdminDashboardPage() {
 
   // New Item Form States
   const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Editor' as const, status: 'Active' as const });
-  const [newCall, setNewCall] = useState({ brand: '', contactName: '', contactEmail: '', stage: 'Pre-launch', callDate: 'Jun 05, 2025', callTime: '11:00 AM', callHost: 'Rohit Verma' });
-  const [newBrand, setNewBrand] = useState({ name: '', website: '', contactName: '', contactEmail: '', stage: '₹1–5 Cr revenue' });
+  const [newCall, setNewCall] = useState({ brand: '', contactName: '', contactEmail: '', stage: 'Pre-launch', callDate: '', callTime: '', callHost: 'Rohit Verma' });
+  const [newBrand, setNewBrand] = useState({ name: '', website: '', contactName: '', contactEmail: '', stage: 'Pre-launch' });
   const [newCaseStudy, setNewCaseStudy] = useState({ title: '', brandName: '', industry: 'D2C Fashion', status: 'Published' as const });
 
   // Fetch real leads from /api/discovery-call on mount
@@ -723,7 +723,8 @@ export default function AdminDashboardPage() {
                 <input
                   type="text"
                   required
-                  placeholder="buitlal10"
+                  autoComplete="username"
+                  placeholder="Enter username"
                   value={loginUsername}
                   onChange={(e) => setLoginUsername(e.target.value)}
                   style={{
@@ -748,7 +749,8 @@ export default function AdminDashboardPage() {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
-                    placeholder="••••••••••••••••"
+                    autoComplete="current-password"
+                    placeholder="Enter password"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     style={{
