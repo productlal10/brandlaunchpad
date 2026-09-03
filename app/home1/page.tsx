@@ -154,54 +154,28 @@ export default function Home1Page() {
           <div style={{ maxWidth: '640px' }}>
 
             {/* Eyebrow */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
-              <span className="hero-eyebrow-text" style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: '#171615', fontWeight: 600 }}>
-                FASHION BRAND ADVISORY &amp; OPERATING SYSTEM
+            <div className="hero-eyebrow-container">
+              <span className="hero-eyebrow-text">
+                FASHION BRAND ADVISORY &amp;<br className="mobile-only-break" /> OPERATING SYSTEM
               </span>
-              <div className="hero-eyebrow-line" style={{ width: '40px', height: '1px', background: '#D8CDBF' }}></div>
+              <div className="hero-eyebrow-line"></div>
             </div>
 
             {/* Headline */}
-            <h1
-              className="hero-headline-responsive"
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontWeight: 400,
-                fontSize: '66px',
-                lineHeight: 1.05,
-                letterSpacing: '-0.5px',
-                marginBottom: '26px',
-                color: '#171615'
-              }}
-            >
-              We build fashion brands that lead, <em style={{ fontStyle: 'italic', color: '#171615' }}>not follow.</em>
+            <h1 className="hero-headline-responsive">
+              We build<br className="mobile-only-break" /> fashion brands<br className="mobile-only-break" /> that lead,<br className="mobile-only-break" /> <em style={{ fontStyle: 'italic', color: '#171615' }}>not follow.</em>
             </h1>
 
             {/* Subtitle */}
-            <p className="hero-body-responsive" style={{ fontSize: '16.5px', lineHeight: 1.65, color: '#57524B', maxWidth: '520px', marginBottom: '36px' }}>
+            <p className="hero-body-responsive">
               From <strong>market intelligence</strong> to <strong>brand launch</strong> and scale, we partner with founders to build iconic fashion brands that win in the real world.
             </p>
 
             {/* CTAs */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '28px', flexWrap: 'wrap', marginBottom: '44px' }}>
+            <div className="hero-cta-group">
               <button
                 className="hero-cta-btn-mobile"
                 onClick={(e) => openBooking('Launch Sprint', e)}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  background: '#5B1F28',
-                  color: '#FBFAF7',
-                  padding: '16px 28px',
-                  fontSize: '11.5px',
-                  letterSpacing: '1.5px',
-                  textTransform: 'uppercase',
-                  fontWeight: 700,
-                  border: 'none',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 14px rgba(91,31,40,0.25)'
-                }}
               >
                 BOOK A DISCOVERY CALL <span style={{ fontSize: '14px' }}>↗</span>
               </button>
@@ -209,19 +183,6 @@ export default function Home1Page() {
               <a
                 href="#offerings"
                 className="hero-sec-link-mobile"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  color: '#171615',
-                  fontSize: '12px',
-                  letterSpacing: '1.5px',
-                  textTransform: 'uppercase',
-                  fontWeight: 700,
-                  textDecoration: 'none',
-                  borderBottom: '1px solid #171615',
-                  paddingBottom: '4px'
-                }}
               >
                 SEE HOW WE WORK <span>→</span>
               </a>
