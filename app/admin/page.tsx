@@ -539,6 +539,19 @@ export default function AdminDashboardPage() {
         <span>Case Studies</span>
       </button>
 
+      <Link
+        href="/email-preview"
+        style={{
+          display: 'flex', alignItems: 'center', gap: '12px', width: '100%', padding: '11px 14px',
+          borderRadius: '8px', fontSize: '13px', fontWeight: 600,
+          color: '#8A5336', background: '#FDF4EB', border: '1px solid #EED8CA',
+          textDecoration: 'none', transition: 'all 0.15s ease', marginTop: '6px'
+        }}
+      >
+        <Mail size={17} color="#8A5336" />
+        <span>Email Templates Preview ↗</span>
+      </Link>
+
       <button
         onClick={() => { setActiveTab('insights'); setSearchQuery(''); setMobileSidebarOpen(false); }}
         style={{
