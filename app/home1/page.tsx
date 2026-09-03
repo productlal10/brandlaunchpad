@@ -30,14 +30,19 @@ export default function Home1Page() {
       
       {/* NAV (Fixed on scroll) */}
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, width: '100%', zIndex: 1000, background: 'rgba(251,250,247,0.95)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '1px solid #E4DED3', transition: 'all 0.3s ease' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
-          <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '16px', textDecoration: 'none' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '14px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
+          <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '14px', textDecoration: 'none' }}>
             <img 
               src="https://www.lal10.com/logo.png" 
               alt="Lal10 Logo" 
-              style={{ height: '50px', width: 'auto', objectFit: 'contain' }}
+              className="desktop-logo-img"
+              style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
             />
-            <div style={{ borderLeft: '1px solid #E4DED3', paddingLeft: '14px' }}>
+            <div className="mobile-text-logo" style={{ display: 'none', flexDirection: 'column' }}>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '26px', fontWeight: 600, letterSpacing: '2px', color: '#171615', lineHeight: 1 }}>LAL10</div>
+              <div style={{ fontSize: '9px', letterSpacing: '2px', color: '#8A837A', fontWeight: 600, marginTop: '2px' }}>FASHIONOS</div>
+            </div>
+            <div className="desktop-logo-subtext" style={{ borderLeft: '1px solid #E4DED3', paddingLeft: '14px' }}>
               <div style={{ fontSize: '10.5px', letterSpacing: '2.5px', color: '#8A837A', fontWeight: 600 }}>FASHIONOS</div>
               <div style={{ fontSize: '8.5px', letterSpacing: '1px', color: '#A39C93', fontWeight: 500 }}>FASHION BRAND OPERATING SYSTEM</div>
             </div>
@@ -57,17 +62,17 @@ export default function Home1Page() {
             </button>
           </div>
 
-          {/* Mobile Menu Toggle Button */}
-          <div className="mobile-menu-btn" style={{ display: 'none', alignItems: 'center', gap: '8px' }}>
+          {/* Mobile Menu Toggle Button & Header CTA */}
+          <div className="mobile-menu-btn" style={{ display: 'none', alignItems: 'center', gap: '10px' }}>
             <button
               onClick={(e) => openBooking('General', e)}
-              style={{ background: '#5B1F28', color: '#FBFAF7', padding: '8px 14px', fontSize: '10px', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 600, border: 'none', cursor: 'pointer' }}
+              style={{ background: '#5B1F28', color: '#FBFAF7', padding: '9px 14px', fontSize: '10.5px', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 700, border: 'none', cursor: 'pointer' }}
             >
-              Book Call
+              BOOK A CALL
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              style={{ background: 'transparent', border: 'none', padding: '8px', color: '#171615', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              style={{ background: 'transparent', border: 'none', padding: '6px', color: '#171615', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -150,10 +155,10 @@ export default function Home1Page() {
 
             {/* Eyebrow */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
-              <span style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: '#171615', fontWeight: 600 }}>
+              <span className="hero-eyebrow-text" style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: '#171615', fontWeight: 600 }}>
                 FASHION BRAND ADVISORY &amp; OPERATING SYSTEM
               </span>
-              <div style={{ width: '40px', height: '1px', background: '#D8CDBF' }}></div>
+              <div className="hero-eyebrow-line" style={{ width: '40px', height: '1px', background: '#D8CDBF' }}></div>
             </div>
 
             {/* Headline */}
@@ -173,13 +178,14 @@ export default function Home1Page() {
             </h1>
 
             {/* Subtitle */}
-            <p style={{ fontSize: '16.5px', lineHeight: 1.65, color: '#57524B', maxWidth: '520px', marginBottom: '36px' }}>
+            <p className="hero-body-responsive" style={{ fontSize: '16.5px', lineHeight: 1.65, color: '#57524B', maxWidth: '520px', marginBottom: '36px' }}>
               From <strong>market intelligence</strong> to <strong>brand launch</strong> and scale, we partner with founders to build iconic fashion brands that win in the real world.
             </p>
 
             {/* CTAs */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '28px', flexWrap: 'wrap', marginBottom: '44px' }}>
               <button
+                className="hero-cta-btn-mobile"
                 onClick={(e) => openBooking('Launch Sprint', e)}
                 style={{
                   display: 'inline-flex',
@@ -202,6 +208,7 @@ export default function Home1Page() {
 
               <a
                 href="#offerings"
+                className="hero-sec-link-mobile"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -221,35 +228,28 @@ export default function Home1Page() {
             </div>
 
             {/* Floating Card Stats Container */}
-            <div className="stats-card-container" style={{
-              background: '#FAF8F5',
-              border: '1px solid #EAE4D9',
-              borderRadius: '16px',
-              padding: '24px 28px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
-              marginTop: '20px'
-            }}>
-              <div className="stats-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', alignItems: 'flex-start' }}>
-                <div className="stats-item" style={{ textAlign: 'center' }}>
-                  <User size={22} style={{ color: '#57524B', strokeWidth: 1.4, margin: '0 auto 8px', display: 'block' }} />
+            <div className="stats-card-container">
+              <div className="stats-grid-responsive">
+                <div className="stats-item stats-item-0">
+                  <User size={24} style={{ color: '#57524B', strokeWidth: 1.4, margin: '0 auto 8px', display: 'block' }} />
                   <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '38px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>10+</div>
                   <div style={{ fontSize: '11px', color: '#6B655E', fontWeight: 500, lineHeight: 1.35 }}>Years of Experience</div>
                 </div>
 
-                <div className="stats-item stats-divider" style={{ textAlign: 'center', borderLeft: '1px solid #EAE4D9' }}>
-                  <ShoppingBag size={22} style={{ color: '#57524B', strokeWidth: 1.4, margin: '0 auto 8px', display: 'block' }} />
+                <div className="stats-item stats-item-1">
+                  <ShoppingBag size={24} style={{ color: '#57524B', strokeWidth: 1.4, margin: '0 auto 8px', display: 'block' }} />
                   <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '38px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>50+</div>
                   <div style={{ fontSize: '11px', color: '#6B655E', fontWeight: 500, lineHeight: 1.35 }}>Brands Launched &amp; Scaled</div>
                 </div>
 
-                <div className="stats-item stats-divider" style={{ textAlign: 'center', borderLeft: '1px solid #EAE4D9' }}>
-                  <Globe size={22} style={{ color: '#57524B', strokeWidth: 1.4, margin: '0 auto 8px', display: 'block' }} />
+                <div className="stats-item stats-item-2">
+                  <Globe size={24} style={{ color: '#57524B', strokeWidth: 1.4, margin: '0 auto 8px', display: 'block' }} />
                   <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '38px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>25+</div>
                   <div style={{ fontSize: '11px', color: '#6B655E', fontWeight: 500, lineHeight: 1.35 }}>Markets Worldwide</div>
                 </div>
 
-                <div className="stats-item stats-divider" style={{ textAlign: 'center', borderLeft: '1px solid #EAE4D9' }}>
-                  <div style={{ height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px', fontSize: '14px', fontWeight: 700, color: '#57524B', letterSpacing: '0.5px' }}>EnF</div>
+                <div className="stats-item stats-item-3">
+                  <div style={{ height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px', fontSize: '15px', fontWeight: 700, color: '#57524B', letterSpacing: '0.5px' }}>EnF</div>
                   <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '38px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>EnF</div>
                   <div style={{ fontSize: '11px', color: '#6B655E', fontWeight: 500, lineHeight: 1.35 }}>End-to-End FashionOS</div>
                 </div>
@@ -641,6 +641,7 @@ export default function Home1Page() {
       />
       {/* Floating Action Button */}
       <button
+        className="floating-chat-btn-mobile"
         onClick={(e) => openBooking('Floating Call', e)}
         style={{
           position: 'fixed',

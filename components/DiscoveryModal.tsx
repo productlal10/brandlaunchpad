@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { X, CheckCircle2, AlertCircle, Loader2, Calendar, Clock, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react';
-import { ApparelCategory, BrandStage, BudgetTier } from '@/lib/types';
+import React, { useState, useEffect } from 'react';
+import { X, CheckCircle2, AlertCircle, Loader2, Lock, ArrowUpRight, Sparkles } from 'lucide-react';
 
 interface DiscoveryModalProps {
   isOpen: boolean;
@@ -10,77 +9,81 @@ interface DiscoveryModalProps {
   defaultTrack?: string;
 }
 
+const stageOptions = [
+  'Concept & Early Moodboard',
+  'Sampling & Development',
+  'Production Ready',
+  'Scaling an Existing Label',
+  'Looking for Market Intelligence',
+];
+
 export const DiscoveryModal: React.FC<DiscoveryModalProps> = ({
   isOpen,
   onClose,
   defaultTrack = 'Launch Sprint',
 }) => {
-  const [step, setStep] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
-
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [focusedField, setFocusedField] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: '',
-    email: '',
-    phone: '',
     brandName: '',
-    category: 'Womenswear' as ApparelCategory,
-    stage: 'Concept & Moodboard' as BrandStage,
-    budget: '₹15L – ₹35L ($18k – $42k)' as BudgetTier,
-    preferredDate: '',
-    preferredTimeSlot: 'Morning (10:00 AM - 1:00 PM IST)',
+    stage: '',
+    email: '',
     notes: '',
     trackInterest: defaultTrack,
   });
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  const categories: ApparelCategory[] = [
-    'Womenswear',
-    'Menswear',
-    'Kidswear',
-    'Footwear & Accessories',
-    'Multi-category',
-  ];
-
-  const stages: BrandStage[] = [
-    'Concept & Moodboard',
-    'Sampling & Development',
-    'Production Ready',
-    'Scaling Existing Label',
-  ];
-
-  const budgets: BudgetTier[] = [
-    '₹5L – ₹15L ($6k – $18k)',
-    '₹15L – ₹35L ($18k – $42k)',
-    '₹35L – ₹75L ($42k – $90k)',
-    '₹75L+ ($90k+)',
-  ];
-
-  const timeSlots = [
-    'Morning (10:00 AM – 1:00 PM IST)',
-    'Afternoon (2:00 PM – 5:00 PM IST)',
-    'Evening (6:00 PM – 9:00 PM IST)',
-  ];
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errorMessage) setErrorMessage('');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.fullName.trim() || !formData.email.trim() || !formData.brandName.trim()) {
+      setErrorMessage('Please fill in your name, brand, and email to continue.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
     setLoading(true);
     setErrorMessage('');
-
     try {
       const res = await fetch('/api/discovery-call', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: '',
+          brandName: formData.brandName,
+          category: 'General',
+          stage: formData.stage || 'Not specified',
+          budget: 'Not specified',
+          preferredDate: '',
+          preferredTimeSlot: 'To be confirmed',
+          notes: formData.notes,
+          trackInterest: formData.trackInterest,
+        }),
       });
-
       const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to submit discovery call request.');
-      }
-
+      if (!res.ok || !data.success) throw new Error(data.error || 'Failed to submit. Please try again.');
       setSuccess(true);
     } catch (err: any) {
       setErrorMessage(err.message || 'Something went wrong. Please try again.');
@@ -89,305 +92,283 @@ export const DiscoveryModal: React.FC<DiscoveryModalProps> = ({
     }
   };
 
-  const handleResetAndClose = () => {
+  const handleClose = () => {
     setSuccess(false);
-    setStep(1);
     setErrorMessage('');
+    setFormData({ fullName: '', brandName: '', stage: '', email: '', notes: '', trackInterest: defaultTrack });
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#171615]/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#FBFAF7] border border-[#E4DED3] max-w-[620px] w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
-        {/* Header */}
-        <div className="p-6 md:p-8 bg-[#171615] text-[#F5F1EA] flex justify-between items-start">
-          <div>
-            <div className="text-[10px] tracking-[2.5px] uppercase text-[#C9A16B] font-semibold mb-1">
-              Lal10 FashionOS Advisory
-            </div>
-            <h3 className="font-serif text-[24px] md:text-[28px] font-normal">
-              Book a 30-Min Discovery Call
-            </h3>
-            <p className="text-[12.5px] text-[#F5F1EA]/70 mt-1">
-              Discuss your collection roadmap, supply-chain fit, and feasibility with operators.
-            </p>
-          </div>
-          <button
-            onClick={handleResetAndClose}
-            className="p-1 text-[#F5F1EA]/70 hover:text-white transition-colors"
-            aria-label="Close modal"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
+  const inputStyle = (field: string): React.CSSProperties => ({
+    width: '100%',
+    padding: '12px 16px',
+    fontSize: '14px',
+    color: '#1A1A1A',
+    background: '#FFFFFF',
+    border: `1px solid ${focusedField === field ? '#6B1F2A' : '#E4DDD4'}`,
+    borderRadius: '6px',
+    outline: 'none',
+    boxShadow: focusedField === field ? '0 0 0 3px rgba(107,31,42,0.08)' : 'none',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
+    boxSizing: 'border-box',
+    fontFamily: 'inherit',
+  });
 
-        {/* Content Body */}
-        <div className="p-6 md:p-8">
+  const labelStyle: React.CSSProperties = {
+    display: 'block',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '1.6px',
+    fontWeight: 600,
+    color: '#4A3F35',
+    marginBottom: '8px',
+  };
+
+  return (
+    <>
+      <style>{`
+        @keyframes lal10ModalIn {
+          from { opacity: 0; transform: scale(0.93) translateY(14px); }
+          to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .lal10-modal-card {
+          animation: lal10ModalIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+      `}</style>
+
+      {/* Backdrop */}
+      <div
+        onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px',
+          background: 'rgba(12, 10, 9, 0.72)',
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)',
+        }}
+      >
+        {/* Modal Card */}
+        <div
+          className="lal10-modal-card"
+          style={{
+            position: 'relative',
+            background: '#FFFFFF',
+            width: '100%',
+            maxWidth: '520px',
+            maxHeight: '94vh',
+            overflowY: 'auto',
+            borderRadius: '16px',
+            boxShadow: '0 24px 80px rgba(0,0,0,0.28)',
+          }}
+        >
+          {/* Close Button */}
+          <button
+            onClick={handleClose}
+            aria-label="Close"
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              zIndex: 10,
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              background: '#F3EFE9',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#6B5D51',
+              transition: 'background 0.15s',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = '#E8E0D6')}
+            onMouseLeave={e => (e.currentTarget.style.background = '#F3EFE9')}
+          >
+            <X size={15} />
+          </button>
+
           {success ? (
-            <div className="text-center py-8">
-              <CheckCircle2 className="w-16 h-16 text-[#5B1F28] mx-auto mb-4" />
-              <h4 className="font-serif text-[28px] text-[#171615] mb-2">
-                Discovery Call Confirmed
-              </h4>
-              <p className="text-[15px] text-[#57524B] max-w-[440px] mx-auto mb-6 leading-relaxed">
-                Thank you, <span className="font-semibold text-[#171615]">{formData.fullName}</span>.
-                We have registered your details for <span className="font-semibold text-[#171615]">{formData.brandName}</span>.
-                Our founder advisory team will review your category requirements and send calendar invites to{' '}
-                <span className="font-semibold text-[#171615]">{formData.email}</span>.
+            /* ── Success State ── */
+            <div style={{ padding: '52px 40px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{
+                width: '64px', height: '64px', borderRadius: '50%',
+                background: 'linear-gradient(135deg, #6B1F2A 0%, #9B3A47 100%)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px',
+              }}>
+                <CheckCircle2 size={30} color="#fff" />
+              </div>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '26px', fontWeight: 400, color: '#1A1A1A', marginBottom: '12px', lineHeight: 1.3 }}>
+                You&rsquo;re on the list
+              </h3>
+              <p style={{ fontSize: '14px', color: '#6B5D51', lineHeight: 1.7, maxWidth: '340px', marginBottom: '6px' }}>
+                Thank you, <strong style={{ color: '#1A1A1A' }}>{formData.fullName}</strong>. We&rsquo;ve received your request for{' '}
+                <strong style={{ color: '#1A1A1A' }}>{formData.brandName}</strong>.
               </p>
+              <p style={{ fontSize: '13.5px', color: '#6B5D51', lineHeight: 1.7, maxWidth: '340px', marginBottom: '32px' }}>
+                Our advisory team will send a calendar invite to{' '}
+                <strong style={{ color: '#6B1F2A' }}>{formData.email}</strong> within 24 hours.
+              </p>
+              <div style={{ width: '100%', height: '1px', background: '#F0EBE4', marginBottom: '28px' }} />
               <button
-                onClick={handleResetAndClose}
-                className="bg-[#171615] text-[#FBFAF7] hover:bg-[#5B1F28] px-8 py-3 text-[11px] tracking-[1.5px] uppercase font-semibold"
+                onClick={handleClose}
+                style={{
+                  padding: '13px 36px', fontSize: '11.5px', letterSpacing: '1.8px',
+                  textTransform: 'uppercase', fontWeight: 600, color: '#fff',
+                  background: 'linear-gradient(135deg, #1A1A1A, #2E2E2E)',
+                  border: 'none', borderRadius: '8px', cursor: 'pointer',
+                  fontFamily: 'inherit',
+                }}
               >
-                Close Window
+                Close
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit}>
-              {/* Step indicator */}
-              <div className="flex items-center justify-between mb-8 border-b border-[#E4DED3] pb-4">
-                <div className="flex items-center gap-2">
-                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${
-                    step === 1 ? 'bg-[#5B1F28] text-white' : 'bg-[#E4DED3] text-[#57524B]'
-                  }`}>1</span>
-                  <span className="text-[12px] uppercase tracking-wider font-semibold text-[#171615]">Founder &amp; Brand</span>
+            <>
+              {/* Header */}
+              <div style={{ padding: '36px 32px 24px', borderBottom: '1px solid #F0EBE4' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                  <Sparkles size={13} color="#C4956A" />
+                  <span style={{ fontSize: '10.5px', letterSpacing: '2.5px', textTransform: 'uppercase', color: '#C4956A', fontWeight: 600 }}>
+                    Lal10 FashionOS Advisory
+                  </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${
-                    step === 2 ? 'bg-[#5B1F28] text-white' : 'bg-[#E4DED3] text-[#57524B]'
-                  }`}>2</span>
-                  <span className="text-[12px] uppercase tracking-wider font-semibold text-[#171615]">Category &amp; Scope</span>
-                </div>
+                <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '27px', fontWeight: 400, color: '#1A1A1A', margin: '0 0 6px', lineHeight: 1.2 }}>
+                  Book a discovery call
+                </h2>
+                <p style={{ fontSize: '14px', color: '#8C7B6E', margin: 0, lineHeight: 1.5 }}>
+                  Let&rsquo;s explore how we can help your brand grow.
+                </p>
               </div>
 
-              {errorMessage && (
-                <div className="mb-6 p-3.5 bg-[#5B1F28]/10 border border-[#5B1F28] text-[#5B1F28] text-[13px] flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{errorMessage}</span>
-                </div>
-              )}
+              {/* Form */}
+              <form onSubmit={handleSubmit} style={{ padding: '28px 32px 32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-              {/* STEP 1: Basic Founder Info */}
-              {step === 1 && (
-                <div className="space-y-4">
+                {errorMessage && (
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: '10px',
+                    padding: '14px 16px', background: '#FEF2F2',
+                    border: '1px solid #FECACA', borderRadius: '8px',
+                    fontSize: '13px', color: '#DC2626',
+                  }}>
+                    <AlertCircle size={15} style={{ flexShrink: 0 }} />
+                    <span>{errorMessage}</span>
+                  </div>
+                )}
+
+                {/* Name + Brand Row */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                   <div>
-                    <label className="block text-[11.5px] uppercase tracking-wider font-semibold text-[#171615] mb-1.5">
-                      Your Full Name *
-                    </label>
+                    <label style={labelStyle}>Name <span style={{ color: '#6B1F2A' }}>*</span></label>
                     <input
-                      type="text"
-                      required
-                      placeholder="e.g. Priya Sharma"
+                      type="text" required placeholder="Your name"
                       value={formData.fullName}
-                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-white border border-[#E4DED3] focus:border-[#5B1F28] outline-none text-[14px] text-[#171615]"
+                      onChange={e => handleChange('fullName', e.target.value)}
+                      onFocus={() => setFocusedField('fullName')}
+                      onBlur={() => setFocusedField(null)}
+                      style={inputStyle('fullName')}
                     />
                   </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-[11.5px] uppercase tracking-wider font-semibold text-[#171615] mb-1.5">
-                        Work / Founder Email *
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        placeholder="priya@brand.com"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-white border border-[#E4DED3] focus:border-[#5B1F28] outline-none text-[14px] text-[#171615]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11.5px] uppercase tracking-wider font-semibold text-[#171615] mb-1.5">
-                        Phone / WhatsApp
-                      </label>
-                      <input
-                        type="tel"
-                        placeholder="+91 98765 43210"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-white border border-[#E4DED3] focus:border-[#5B1F28] outline-none text-[14px] text-[#171615]"
-                      />
-                    </div>
-                  </div>
-
                   <div>
-                    <label className="block text-[11.5px] uppercase tracking-wider font-semibold text-[#171615] mb-1.5">
-                      Brand or Working Title *
-                    </label>
+                    <label style={labelStyle}>Brand <span style={{ color: '#6B1F2A' }}>*</span></label>
                     <input
-                      type="text"
-                      required
-                      placeholder="e.g. Maison Aurelia"
+                      type="text" required placeholder="Brand name"
                       value={formData.brandName}
-                      onChange={(e) => setFormData({ ...formData, brandName: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-white border border-[#E4DED3] focus:border-[#5B1F28] outline-none text-[14px] text-[#171615]"
+                      onChange={e => handleChange('brandName', e.target.value)}
+                      onFocus={() => setFocusedField('brandName')}
+                      onBlur={() => setFocusedField(null)}
+                      style={inputStyle('brandName')}
                     />
                   </div>
+                </div>
 
-                  <div>
-                    <label className="block text-[11.5px] uppercase tracking-wider font-semibold text-[#171615] mb-1.5">
-                      Advisory Track of Interest
-                    </label>
+                {/* Stage */}
+                <div>
+                  <label style={labelStyle}>Stage</label>
+                  <div style={{ position: 'relative' }}>
                     <select
-                      value={formData.trackInterest}
-                      onChange={(e) => setFormData({ ...formData, trackInterest: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-white border border-[#E4DED3] focus:border-[#5B1F28] outline-none text-[14px] text-[#171615]"
+                      value={formData.stage}
+                      onChange={e => handleChange('stage', e.target.value)}
+                      onFocus={() => setFocusedField('stage')}
+                      onBlur={() => setFocusedField(null)}
+                      style={{ ...inputStyle('stage'), appearance: 'none', paddingRight: '40px', cursor: 'pointer', color: formData.stage ? '#1A1A1A' : '#AAAAAA' }}
                     >
-                      <option value="Launch Sprint">Launch Sprint (6–10 Week GTM)</option>
-                      <option value="Growth Advisory">Growth Advisory (Scale &amp; Retainer)</option>
-                      <option value="Market Intelligence">Market Intelligence (SKU &amp; Trend Report)</option>
-                      <option value="General">General Discovery &amp; Sourcing Fit</option>
+                      <option value="" disabled>Select a stage</option>
+                      {stageOptions.map(s => <option key={s} value={s} style={{ color: '#1A1A1A' }}>{s}</option>)}
                     </select>
-                  </div>
-
-                  <div className="pt-4 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!formData.fullName || !formData.email || !formData.brandName) {
-                          setErrorMessage('Please fill in name, email, and brand name.');
-                          return;
-                        }
-                        setErrorMessage('');
-                        setStep(2);
-                      }}
-                      className="flex items-center gap-2 bg-[#171615] text-[#FBFAF7] hover:bg-[#5B1F28] px-6 py-3 text-[11px] tracking-[1.5px] uppercase font-semibold transition-all"
-                    >
-                      <span>Continue to Details</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
+                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 4L6 8L10 4" stroke="#8C7B6E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              )}
 
-              {/* STEP 2: Category, Budget & Time slot */}
-              {step === 2 && (
-                <div className="space-y-5">
-                  <div>
-                    <label className="block text-[11.5px] uppercase tracking-wider font-semibold text-[#171615] mb-2">
-                      Apparel Category
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {categories.map((cat) => (
-                        <button
-                          key={cat}
-                          type="button"
-                          onClick={() => setFormData({ ...formData, category: cat })}
-                          className={`p-2.5 text-[12px] text-left border transition-all ${
-                            formData.category === cat
-                              ? 'border-[#5B1F28] bg-[#5B1F28]/10 text-[#5B1F28] font-bold'
-                              : 'border-[#E4DED3] bg-white text-[#57524B] hover:border-[#171615]'
-                          }`}
-                        >
-                          {cat}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11.5px] uppercase tracking-wider font-semibold text-[#171615] mb-2">
-                      Current Launch Stage
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {stages.map((stg) => (
-                        <button
-                          key={stg}
-                          type="button"
-                          onClick={() => setFormData({ ...formData, stage: stg })}
-                          className={`p-2.5 text-[12px] text-left border transition-all ${
-                            formData.stage === stg
-                              ? 'border-[#5B1F28] bg-[#5B1F28]/10 text-[#5B1F28] font-bold'
-                              : 'border-[#E4DED3] bg-white text-[#57524B] hover:border-[#171615]'
-                          }`}
-                        >
-                          {stg}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-[11.5px] uppercase tracking-wider font-semibold text-[#171615] mb-1.5">
-                        Allocated Budget Range
-                      </label>
-                      <select
-                        value={formData.budget}
-                        onChange={(e) => setFormData({ ...formData, budget: e.target.value as BudgetTier })}
-                        className="w-full px-3 py-2.5 bg-white border border-[#E4DED3] focus:border-[#5B1F28] outline-none text-[13px] text-[#171615]"
-                      >
-                        {budgets.map((b) => (
-                          <option key={b} value={b}>{b}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-[11.5px] uppercase tracking-wider font-semibold text-[#171615] mb-1.5">
-                        Preferred Time Window
-                      </label>
-                      <select
-                        value={formData.preferredTimeSlot}
-                        onChange={(e) => setFormData({ ...formData, preferredTimeSlot: e.target.value })}
-                        className="w-full px-3 py-2.5 bg-white border border-[#E4DED3] focus:border-[#5B1F28] outline-none text-[13px] text-[#171615]"
-                      >
-                        {timeSlots.map((slot) => (
-                          <option key={slot} value={slot}>{slot}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11.5px] uppercase tracking-wider font-semibold text-[#171615] mb-1.5">
-                      Additional Vision / Specific Questions (Optional)
-                    </label>
-                    <textarea
-                      rows={2}
-                      placeholder="e.g. Seeking certified linen vendors in Jaipur and pricing benchmarking for D2C..."
-                      value={formData.notes}
-                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-white border border-[#E4DED3] focus:border-[#5B1F28] outline-none text-[13px] text-[#171615]"
-                    />
-                  </div>
-
-                  <div className="pt-4 flex justify-between items-center">
-                    <button
-                      type="button"
-                      onClick={() => setStep(1)}
-                      className="flex items-center gap-1.5 text-[12px] uppercase tracking-wider font-semibold text-[#57524B] hover:text-[#171615]"
-                    >
-                      <ArrowLeft className="w-4 h-4" />
-                      <span>Back</span>
-                    </button>
-
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="flex items-center gap-2 bg-[#5B1F28] text-white hover:bg-[#7A2A34] px-7 py-3 text-[11.5px] tracking-[1.5px] uppercase font-semibold transition-all disabled:opacity-60"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          <span>Scheduling...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>Confirm Discovery Call</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
-                    </button>
-                  </div>
+                {/* Email */}
+                <div>
+                  <label style={labelStyle}>Email <span style={{ color: '#6B1F2A' }}>*</span></label>
+                  <input
+                    type="email" required placeholder="you@brand.com"
+                    value={formData.email}
+                    onChange={e => handleChange('email', e.target.value)}
+                    onFocus={() => setFocusedField('email')}
+                    onBlur={() => setFocusedField(null)}
+                    style={inputStyle('email')}
+                  />
                 </div>
-              )}
-            </form>
+
+                {/* Challenge */}
+                <div>
+                  <label style={labelStyle}>Current sourcing challenge</label>
+                  <textarea
+                    rows={3} placeholder="In one line"
+                    value={formData.notes}
+                    onChange={e => handleChange('notes', e.target.value)}
+                    onFocus={() => setFocusedField('notes')}
+                    onBlur={() => setFocusedField(null)}
+                    style={{ ...inputStyle('notes'), resize: 'none', lineHeight: 1.6 }}
+                  />
+                </div>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    gap: '10px', padding: '16px', fontSize: '12px', letterSpacing: '2px',
+                    textTransform: 'uppercase', fontWeight: 600, color: '#FFFFFF',
+                    background: 'linear-gradient(135deg, #6B1F2A 0%, #8B2A38 50%, #6B1F2A 100%)',
+                    border: 'none', borderRadius: '8px', cursor: loading ? 'not-allowed' : 'pointer',
+                    boxShadow: '0 4px 20px rgba(107,31,42,0.35)',
+                    opacity: loading ? 0.7 : 1,
+                    transition: 'opacity 0.2s',
+                    fontFamily: 'inherit',
+                    marginTop: '4px',
+                  }}
+                >
+                  {loading ? (
+                    <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /><span>Submitting…</span></>
+                  ) : (
+                    <><span>Book my call</span><ArrowUpRight size={16} /></>
+                  )}
+                </button>
+
+                {/* Trust */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                  <Lock size={12} color="#B0A090" />
+                  <span style={{ fontSize: '12px', color: '#B0A090' }}>We respect your time. No spam, ever.</span>
+                </div>
+              </form>
+            </>
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
