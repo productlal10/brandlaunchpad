@@ -636,7 +636,6 @@ export default function Home1Page() {
                 <a href="#team" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>Team</a>
                 <a href="#process" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>How It Works</a>
                 <a href="#engagement" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px' }}>Engagement</a>
-                <Link href="/admin" style={{ display: 'block', color: '#C9A16B', fontSize: '14px', marginTop: '10px' }}>Admin Dashboard</Link>
               </div>
               <div>
                 <h5 style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(245,241,234,0.45)', fontWeight: 600, marginBottom: '16px' }}>Get in Touch</h5>

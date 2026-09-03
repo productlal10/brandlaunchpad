@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { 
   LayoutDashboard, Users, PhoneCall, Building2, BookOpen, 
   BarChart3, Settings, LogOut, ChevronDown, ChevronRight, 
-  Bell, Calendar, Search, Filter, Eye, MoreVertical, Plus, 
+  Bell, Calendar, Search, Filter, Eye, EyeOff, MoreVertical, Plus, 
   ArrowUpRight, TrendingUp, TrendingDown, Check, X, Edit3, 
   Trash2, Mail, ExternalLink, SlidersHorizontal, Sparkles, 
   FolderKanban, Share2, ArrowUp, ArrowDown, UserPlus, Phone, 
   Globe, CheckCircle2, Clock, AlertCircle, Shield, Menu,
-  Layers, Compass, Laptop, Tag, CheckCheck, RefreshCw, Download
+  Layers, Compass, Laptop, Tag, CheckCheck, RefreshCw, Download,
+  Lock, Key
 } from 'lucide-react';
 import { DiscoveryCallLead } from '@/lib/types';
 
@@ -137,6 +138,61 @@ const INITIAL_CASE_STUDIES: CaseStudyItem[] = [
 ];
 
 export default function AdminDashboardPage() {
+  // Production Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [authChecked, setAuthChecked] = useState<boolean>(false);
+  const [loginUsername, setLoginUsername] = useState<string>('');
+  const [loginPassword, setLoginPassword] = useState<string>('');
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+
+  // Check auth session from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('lal10_auth_user');
+      if (stored === 'buitlal10') {
+        setIsAuthenticated(true);
+      }
+    } catch (e) {
+      console.warn('localStorage access error', e);
+    } finally {
+      setAuthChecked(true);
+    }
+  }, []);
+
+  const handleLoginSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError(null);
+    setIsLoggingIn(true);
+
+    const user = loginUsername.trim().toLowerCase();
+    const pass = loginPassword.trim();
+
+    if ((user === 'buitlal10' || user === 'builtlal10' || user === 'admin@lal10.com') && pass === 'founder@lal10@2026') {
+      try {
+        localStorage.setItem('lal10_auth_user', 'buitlal10');
+      } catch (err) {}
+      setIsAuthenticated(true);
+      setIsLoggingIn(false);
+    } else {
+      setTimeout(() => {
+        setLoginError('Invalid username or password. Please verify credentials.');
+        setIsLoggingIn(false);
+      }, 300);
+    }
+  };
+
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('lal10_auth_user');
+    } catch (err) {}
+    setIsAuthenticated(false);
+    setLoginUsername('');
+    setLoginPassword('');
+    setLoginError(null);
+  };
+
   // Navigation State
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -596,6 +652,171 @@ export default function AdminDashboardPage() {
     </nav>
   );
 
+  if (!authChecked) {
+    return <div style={{ minHeight: '100vh', background: '#0F0E0D' }} />;
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'radial-gradient(ellipse at center, #1E1B18 0%, #0F0E0D 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+        fontFamily: "'Manrope', system-ui, sans-serif",
+        color: '#F5F1EA'
+      }}>
+        <div style={{
+          width: '100%',
+          maxWidth: '430px',
+          background: '#171615',
+          border: '1px solid #2B2723',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.6)'
+        }}>
+          {/* Top Gold Accent Line */}
+          <div style={{ height: '4px', background: 'linear-gradient(90deg, #A87944 0%, #D4AF37 50%, #8B5A2B 100%)' }} />
+
+          <div style={{ padding: '40px 34px 34px' }}>
+            
+            {/* Logo & Subtitle */}
+            <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '36px', fontWeight: 600, letterSpacing: '6px', color: '#FAF8F5', lineHeight: 1 }}>
+                LAL10
+              </div>
+              <div style={{ fontSize: '9px', letterSpacing: '3px', textTransform: 'uppercase', color: '#A87944', fontWeight: 700, marginTop: '8px' }}>
+                FASHION BRAND OPERATING SYSTEM
+              </div>
+              <div style={{ fontSize: '13px', color: '#8A8075', marginTop: '14px' }}>
+                Sign in with authorized administrator credentials
+              </div>
+            </div>
+
+            {/* Error Alert */}
+            {loginError && (
+              <div style={{
+                marginBottom: '20px',
+                padding: '12px 16px',
+                background: 'rgba(239, 68, 68, 0.12)',
+                border: '1px solid rgba(239, 68, 68, 0.35)',
+                borderRadius: '8px',
+                color: '#FCA5A5',
+                fontSize: '12.5px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                <AlertCircle size={16} />
+                <span>{loginError}</span>
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleLoginSubmit}>
+              <div style={{ marginBottom: '18px' }}>
+                <label style={{ display: 'block', fontSize: '10.5px', letterSpacing: '1px', textTransform: 'uppercase', color: '#A09689', fontWeight: 600, marginBottom: '7px' }}>
+                  Username
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="buitlal10"
+                  value={loginUsername}
+                  onChange={(e) => setLoginUsername(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '13px 16px',
+                    background: '#24211E',
+                    border: '1px solid #3D3832',
+                    borderRadius: '8px',
+                    color: '#FAF8F5',
+                    fontSize: '14px',
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '26px' }}>
+                <label style={{ display: 'block', fontSize: '10.5px', letterSpacing: '1px', textTransform: 'uppercase', color: '#A09689', fontWeight: 600, marginBottom: '7px' }}>
+                  Password
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    placeholder="••••••••••••••••"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '13px 44px 13px 16px',
+                      background: '#24211E',
+                      border: '1px solid #3D3832',
+                      borderRadius: '8px',
+                      color: '#FAF8F5',
+                      fontSize: '14px',
+                      outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#8A8075',
+                      cursor: 'pointer',
+                      padding: '4px'
+                    }}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoggingIn}
+                style={{
+                  width: '100%',
+                  padding: '14px',
+                  background: 'linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #A87944 100%)',
+                  color: '#171615',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 20px rgba(184,134,11,0.25)',
+                  transition: 'opacity 0.2s'
+                }}
+              >
+                {isLoggingIn ? 'AUTHENTICATING...' : 'SIGN IN TO OPERATING SYSTEM →'}
+              </button>
+            </form>
+
+            <div style={{ marginTop: '26px', paddingTop: '18px', borderTop: '1px solid #2B2723', textAlign: 'center', fontSize: '11px', color: '#6E675E', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+              <Shield size={13} color="#A87944" />
+              <span>Production Access · Encrypted Administrator Session</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#FBF9F6', fontFamily: "'Manrope', -apple-system, BlinkMacSystemFont, sans-serif", color: '#1E1E1E', flexDirection: 'column' }}>
       
@@ -695,8 +916,8 @@ export default function AdminDashboardPage() {
                   style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover' }}
                 />
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817' }}>Admin User</div>
-                  <div style={{ fontSize: '11px', color: '#8A7D71' }}>Super Admin</div>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817' }}>buitlal10</div>
+                  <div style={{ fontSize: '11px', color: '#8A7D71' }}>Founder &amp; Administrator</div>
                 </div>
               </div>
 
@@ -711,6 +932,13 @@ export default function AdminDashboardPage() {
                 <ExternalLink size={14} />
                 <span>View Live Site</span>
               </Link>
+              <button
+                onClick={handleLogout}
+                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', fontSize: '13px', color: '#B91C1C', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 600 }}
+              >
+                <LogOut size={16} />
+                <span>Sign Out</span>
+              </button>
             </div>
           </div>
         </div>
@@ -751,8 +979,8 @@ export default function AdminDashboardPage() {
                   style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }}
                 />
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817', lineHeight: 1.2 }}>Admin User</div>
-                  <div style={{ fontSize: '11px', color: '#8A7D71', marginTop: '2px' }}>Super Admin</div>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817', lineHeight: 1.2 }}>buitlal10</div>
+                  <div style={{ fontSize: '11px', color: '#8A7D71', marginTop: '2px' }}>Founder &amp; Administrator</div>
                 </div>
               </div>
               <ChevronDown size={14} color="#8A7D71" />
@@ -770,11 +998,11 @@ export default function AdminDashboardPage() {
               <span>View Live Site</span>
             </Link>
             <button
-              onClick={() => alert('Logged out successfully.')}
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', fontSize: '13px', color: '#6E675E', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 500 }}
+              onClick={handleLogout}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', fontSize: '13px', color: '#B91C1C', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 600 }}
             >
               <LogOut size={16} />
-              <span>Log out</span>
+              <span>Sign Out</span>
             </button>
           </div>
         </aside>
@@ -788,7 +1016,7 @@ export default function AdminDashboardPage() {
               {activeTab === 'dashboard' ? (
                 <>
                   <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#1A1817', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    Welcome back, Admin <span style={{ fontSize: '22px' }}>👋</span>
+                    Welcome back, buitlal10 <span style={{ fontSize: '22px' }}>👋</span>
                   </h1>
                   <p style={{ fontSize: '13.5px', color: '#7E766D', margin: '4px 0 0' }}>
                     Here&apos;s what&apos;s happening with LAL10 Fashions today.
