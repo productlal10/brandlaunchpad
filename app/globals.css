@@ -126,17 +126,17 @@ a:hover {
     min-height: auto !important;
   }
   .hero-headline-responsive {
-    font-size: 33px !important;
+    font-size: 34px !important;
     line-height: 1.12 !important;
     letter-spacing: -0.3px !important;
     margin-bottom: 16px !important;
-    max-width: 78% !important;
+    max-width: 72% !important;
   }
   .hero-body-responsive {
     font-size: 15px !important;
     line-height: 1.55 !important;
     margin-bottom: 28px !important;
-    max-width: 82% !important;
+    max-width: 74% !important;
   }
   .section-headline-responsive {
     font-size: 28px !important;
@@ -144,11 +144,12 @@ a:hover {
   }
   .hero-fullwidth-bg {
     background-image: url('/phonebg.png') !important;
-    background-position: right top !important;
+    background-position: center top !important;
     background-size: cover !important;
+    background-repeat: no-repeat !important;
   }
   .hero-gradient-overlay {
-    background: linear-gradient(to right, #FAF8F5 0%, #FAF8F5 54%, rgba(250,248,245,0.70) 74%, rgba(250,248,245,0) 100%) !important;
+    background: linear-gradient(to right, rgba(250, 248, 245, 0.75) 0%, rgba(250, 248, 245, 0.35) 44%, rgba(250, 248, 245, 0) 68%) !important;
   }
   .hero-tag-responsive {
     display: none !important;
@@ -167,11 +168,12 @@ a:hover {
     border: 1px solid #EAE4D9 !important;
     border-radius: 12px !important;
     padding: 0 !important;
-    margin-top: 32px !important;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03) !important;
+    margin-top: 36px !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04) !important;
     position: relative !important;
     z-index: 5 !important;
     overflow: hidden !important;
+    width: 100% !important;
   }
   .stats-grid-responsive {
     display: grid !important;
