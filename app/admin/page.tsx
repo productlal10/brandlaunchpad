@@ -162,14 +162,10 @@ export default function AdminDashboardPage() {
   const [hostFilter, setHostFilter] = useState('All Hosts');
   const [industryFilter, setIndustryFilter] = useState('All Industry');
   const [sortBy, setSortBy] = useState('Newest First');
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
 
   // Modals
   const [activeModal, setActiveModal] = useState<'view-enquiry' | 'add-user' | 'book-call' | 'add-brand' | 'add-casestudy' | null>(null);
   const [selectedEnquiry, setSelectedEnquiry] = useState<EnquiryItem | null>(null);
-  const [selectedCall, setSelectedCall] = useState<DiscoveryCallItem | null>(null);
-  const [selectedBrand, setSelectedBrand] = useState<BrandItem | null>(null);
 
   // New Item Form States
   const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Editor' as const, status: 'Active' as const });
@@ -197,7 +193,6 @@ export default function AdminDashboardPage() {
             notes: l.notes,
           }));
 
-          // Merge without duplicates
           setEnquiries(prev => {
             const existingIds = new Set(prev.map(p => p.id));
             const newOnes = mapped.filter(m => !existingIds.has(m.id));
@@ -394,33 +389,24 @@ export default function AdminDashboardPage() {
     if (stage.includes('5 Cr+')) return { background: '#F8EDE5', color: '#8A5336', border: '1px solid #EED8CA' };
     if (stage.includes('1–5 Cr') || stage.includes('1-5 Cr')) return { background: '#F9F1E6', color: '#94672B', border: '1px solid #EFE0CC' };
     if (stage.includes('First collection')) return { background: '#FDECE6', color: '#A04832', border: '1px solid #F5D3C7' };
-    return { background: '#EAF2FB', color: '#2B6CB0', border: '1px solid #D1E3F6' }; // Pre-launch
+    return { background: '#EAF2FB', color: '#2B6CB0', border: '1px solid #D1E3F6' };
   };
 
   const getStatusBadgeStyle = (status: string) => {
     switch (status) {
-      case 'New':
-        return { background: '#EAF2FB', color: '#2B6CB0' };
-      case 'Contacted':
-        return { background: '#FFF4E5', color: '#B76E00' };
-      case 'Qualified':
-        return { background: '#E6F4EA', color: '#137333' };
-      case 'In Discussion':
-        return { background: '#F3E8FD', color: '#7B1FA2' };
+      case 'New': return { background: '#EAF2FB', color: '#2B6CB0' };
+      case 'Contacted': return { background: '#FFF4E5', color: '#B76E00' };
+      case 'Qualified': return { background: '#E6F4EA', color: '#137333' };
+      case 'In Discussion': return { background: '#F3E8FD', color: '#7B1FA2' };
       case 'Discovery Call':
-      case 'Scheduled':
-        return { background: '#E8F0FE', color: '#1A73E8' };
+      case 'Scheduled': return { background: '#E8F0FE', color: '#1A73E8' };
       case 'Active':
       case 'Completed':
-      case 'Published':
-        return { background: '#E6F4EA', color: '#137333' };
+      case 'Published': return { background: '#E6F4EA', color: '#137333' };
       case 'Inactive':
-      case 'Cancelled':
-        return { background: '#FDE8E8', color: '#C5221F' };
-      case 'Draft':
-        return { background: '#F1F3F4', color: '#5F6368' };
-      default:
-        return { background: '#F1F3F4', color: '#5F6368' };
+      case 'Cancelled': return { background: '#FDE8E8', color: '#C5221F' };
+      case 'Draft': return { background: '#F1F3F4', color: '#5F6368' };
+      default: return { background: '#F1F3F4', color: '#5F6368' };
     }
   };
 
@@ -434,964 +420,626 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // Reusable Navigation List
+  const renderNavLinks = () => (
+    <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <button
+        onClick={() => { setActiveTab('dashboard'); setSearchQuery(''); setMobileSidebarOpen(false); }}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '12px', width: '100%', padding: '11px 14px',
+          borderRadius: '8px', fontSize: '13px', fontWeight: activeTab === 'dashboard' ? 700 : 500,
+          color: activeTab === 'dashboard' ? '#5B1F28' : '#57524B',
+          background: activeTab === 'dashboard' ? '#F7EDE6' : 'transparent',
+          border: 'none', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s ease'
+        }}
+      >
+        <LayoutDashboard size={17} color={activeTab === 'dashboard' ? '#5B1F28' : '#7D756C'} />
+        <span>Dashboard</span>
+      </button>
+
+      <button
+        onClick={() => { setActiveTab('enquiries'); setSearchQuery(''); setMobileSidebarOpen(false); }}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
+          padding: '11px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: activeTab === 'enquiries' ? 700 : 500,
+          color: activeTab === 'enquiries' ? '#5B1F28' : '#57524B',
+          background: activeTab === 'enquiries' ? '#F7EDE6' : 'transparent',
+          border: 'none', cursor: 'pointer', transition: 'all 0.15s ease'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Users size={17} color={activeTab === 'enquiries' ? '#5B1F28' : '#7D756C'} />
+          <span>Enquiries</span>
+        </div>
+        <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 7px', borderRadius: '10px', background: '#F1EBE4', color: '#685D52' }}>
+          82
+        </span>
+      </button>
+
+      <button
+        onClick={() => { setActiveTab('brands'); setSearchQuery(''); setMobileSidebarOpen(false); }}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
+          padding: '11px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: activeTab === 'brands' ? 700 : 500,
+          color: activeTab === 'brands' ? '#5B1F28' : '#57524B',
+          background: activeTab === 'brands' ? '#F7EDE6' : 'transparent',
+          border: 'none', cursor: 'pointer', transition: 'all 0.15s ease'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Building2 size={17} color={activeTab === 'brands' ? '#5B1F28' : '#7D756C'} />
+          <span>Brands</span>
+        </div>
+        <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 7px', borderRadius: '10px', background: '#F1EBE4', color: '#685D52' }}>
+          32
+        </span>
+      </button>
+
+      <button
+        onClick={() => { setActiveTab('calls'); setSearchQuery(''); setMobileSidebarOpen(false); }}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
+          padding: '11px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: activeTab === 'calls' ? 700 : 500,
+          color: activeTab === 'calls' ? '#5B1F28' : '#57524B',
+          background: activeTab === 'calls' ? '#F7EDE6' : 'transparent',
+          border: 'none', cursor: 'pointer', transition: 'all 0.15s ease'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <PhoneCall size={17} color={activeTab === 'calls' ? '#5B1F28' : '#7D756C'} />
+          <span>Discovery Calls</span>
+        </div>
+        <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 7px', borderRadius: '10px', background: '#F1EBE4', color: '#685D52' }}>
+          18
+        </span>
+      </button>
+
+      <button
+        onClick={() => { setActiveTab('users'); setSearchQuery(''); setMobileSidebarOpen(false); }}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '12px', width: '100%', padding: '11px 14px',
+          borderRadius: '8px', fontSize: '13px', fontWeight: activeTab === 'users' ? 700 : 500,
+          color: activeTab === 'users' ? '#5B1F28' : '#57524B',
+          background: activeTab === 'users' ? '#F7EDE6' : 'transparent',
+          border: 'none', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s ease'
+        }}
+      >
+        <Users size={17} color={activeTab === 'users' ? '#5B1F28' : '#7D756C'} />
+        <span>Users</span>
+      </button>
+
+      <div>
+        <button
+          onClick={() => setContentMenuOpen(!contentMenuOpen)}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
+            padding: '11px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 500,
+            color: '#57524B', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'all 0.15s ease'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <FolderKanban size={17} color="#7D756C" />
+            <span>Content Management</span>
+          </div>
+          <ChevronDown size={14} color="#7D756C" style={{ transform: contentMenuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+        </button>
+      </div>
+
+      <button
+        onClick={() => { setActiveTab('casestudies'); setSearchQuery(''); setMobileSidebarOpen(false); }}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '12px', width: '100%', padding: '11px 14px',
+          borderRadius: '8px', fontSize: '13px', fontWeight: activeTab === 'casestudies' ? 700 : 500,
+          color: activeTab === 'casestudies' ? '#5B1F28' : '#57524B',
+          background: activeTab === 'casestudies' ? '#F7EDE6' : 'transparent',
+          border: 'none', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s ease'
+        }}
+      >
+        <BookOpen size={17} color={activeTab === 'casestudies' ? '#5B1F28' : '#7D756C'} />
+        <span>Case Studies</span>
+      </button>
+
+      <button
+        onClick={() => { setActiveTab('insights'); setSearchQuery(''); setMobileSidebarOpen(false); }}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '12px', width: '100%', padding: '11px 14px',
+          borderRadius: '8px', fontSize: '13px', fontWeight: activeTab === 'insights' ? 700 : 500,
+          color: activeTab === 'insights' ? '#5B1F28' : '#57524B',
+          background: activeTab === 'insights' ? '#F7EDE6' : 'transparent',
+          border: 'none', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s ease'
+        }}
+      >
+        <BarChart3 size={17} color={activeTab === 'insights' ? '#5B1F28' : '#7D756C'} />
+        <span>Insights &amp; Reports</span>
+      </button>
+
+      <button
+        onClick={() => { setActiveTab('settings'); setSearchQuery(''); setMobileSidebarOpen(false); }}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '12px', width: '100%', padding: '11px 14px',
+          borderRadius: '8px', fontSize: '13px', fontWeight: activeTab === 'settings' ? 700 : 500,
+          color: activeTab === 'settings' ? '#5B1F28' : '#57524B',
+          background: activeTab === 'settings' ? '#F7EDE6' : 'transparent',
+          border: 'none', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s ease'
+        }}
+      >
+        <Settings size={17} color={activeTab === 'settings' ? '#5B1F28' : '#7D756C'} />
+        <span>Settings</span>
+      </button>
+
+      <button
+        onClick={() => { setActiveTab('integrations'); setSearchQuery(''); setMobileSidebarOpen(false); }}
+        style={{
+          display: 'flex', alignItems: 'center', gap: '12px', width: '100%', padding: '11px 14px',
+          borderRadius: '8px', fontSize: '13px', fontWeight: activeTab === 'integrations' ? 700 : 500,
+          color: activeTab === 'integrations' ? '#5B1F28' : '#57524B',
+          background: activeTab === 'integrations' ? '#F7EDE6' : 'transparent',
+          border: 'none', cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s ease'
+        }}
+      >
+        <Compass size={17} color={activeTab === 'integrations' ? '#5B1F28' : '#7D756C'} />
+        <span>Integrations</span>
+      </button>
+    </nav>
+  );
+
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#FBF9F6', fontFamily: "'Manrope', -apple-system, BlinkMacSystemFont, sans-serif", color: '#1E1E1E' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#FBF9F6', fontFamily: "'Manrope', -apple-system, BlinkMacSystemFont, sans-serif", color: '#1E1E1E', flexDirection: 'column' }}>
       
-      {/* ── LEFT SIDEBAR ──────────────────────────────────────────────────────── */}
-      <aside style={{
-        width: '260px',
+      {/* ── MOBILE TOP NAVIGATION BAR (< 1024px) ─────────────────────────────── */}
+      <header className="admin-mobile-nav" style={{
         background: '#FFFFFF',
-        borderRight: '1px solid #EFEAE3',
-        display: 'flex',
-        flexDirection: 'column',
+        borderBottom: '1px solid #EFEAE3',
+        padding: '14px 20px',
         justifyContent: 'space-between',
-        padding: '28px 18px',
+        alignItems: 'center',
         position: 'sticky',
         top: 0,
-        height: '100vh',
-        zIndex: 40,
-        boxShadow: '1px 0 10px rgba(0,0,0,0.02)'
+        zIndex: 50,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
       }}>
-        <div>
-          {/* Brand Logo Header */}
-          <div style={{ padding: '0 8px 24px', borderBottom: '1px solid #F2ECE4' }}>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', fontWeight: 600, letterSpacing: '4px', color: '#1A1817', lineHeight: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <button
+            onClick={() => setMobileSidebarOpen(true)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '4px' }}
+            aria-label="Open menu"
+          >
+            <Menu size={22} color="#1A1817" />
+          </button>
+          <div>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', fontWeight: 600, letterSpacing: '3px', color: '#1A1817', lineHeight: 1 }}>
               LAL10
             </div>
-            <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#9B9084', fontWeight: 600, marginTop: '4px', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '8px', letterSpacing: '2px', color: '#9B9084', fontWeight: 600, textTransform: 'uppercase' }}>
               FASHIONS
             </div>
           </div>
-
-          {/* User Profile Pill */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '12px',
-            margin: '16px 0 20px',
-            background: '#FAF6F0',
-            borderRadius: '10px',
-            border: '1px solid #EFE7DC'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <img
-                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80"
-                alt="Admin User"
-                style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }}
-              />
-              <div>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817', lineHeight: 1.2 }}>Admin User</div>
-                <div style={{ fontSize: '11px', color: '#8A7D71', marginTop: '2px' }}>Super Admin</div>
-              </div>
-            </div>
-            <ChevronDown size={14} color="#8A7D71" />
-          </div>
-
-          {/* Main Navigation Menu */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {/* Dashboard */}
-            <button
-              onClick={() => { setActiveTab('dashboard'); setSearchQuery(''); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '11px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                fontWeight: activeTab === 'dashboard' ? 700 : 500,
-                color: activeTab === 'dashboard' ? '#5B1F28' : '#57524B',
-                background: activeTab === 'dashboard' ? '#F7EDE6' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <LayoutDashboard size={17} color={activeTab === 'dashboard' ? '#5B1F28' : '#7D756C'} />
-              <span>Dashboard</span>
-            </button>
-
-            {/* Enquiries / Leads */}
-            <button
-              onClick={() => { setActiveTab('enquiries'); setSearchQuery(''); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '100%',
-                padding: '11px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                fontWeight: activeTab === 'enquiries' ? 700 : 500,
-                color: activeTab === 'enquiries' ? '#5B1F28' : '#57524B',
-                background: activeTab === 'enquiries' ? '#F7EDE6' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <Users size={17} color={activeTab === 'enquiries' ? '#5B1F28' : '#7D756C'} />
-                <span>Enquiries</span>
-              </div>
-              <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 7px', borderRadius: '10px', background: '#F1EBE4', color: '#685D52' }}>
-                82
-              </span>
-            </button>
-
-            {/* Brands */}
-            <button
-              onClick={() => { setActiveTab('brands'); setSearchQuery(''); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '100%',
-                padding: '11px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                fontWeight: activeTab === 'brands' ? 700 : 500,
-                color: activeTab === 'brands' ? '#5B1F28' : '#57524B',
-                background: activeTab === 'brands' ? '#F7EDE6' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <Building2 size={17} color={activeTab === 'brands' ? '#5B1F28' : '#7D756C'} />
-                <span>Brands</span>
-              </div>
-              <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 7px', borderRadius: '10px', background: '#F1EBE4', color: '#685D52' }}>
-                32
-              </span>
-            </button>
-
-            {/* Discovery Calls */}
-            <button
-              onClick={() => { setActiveTab('calls'); setSearchQuery(''); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '100%',
-                padding: '11px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                fontWeight: activeTab === 'calls' ? 700 : 500,
-                color: activeTab === 'calls' ? '#5B1F28' : '#57524B',
-                background: activeTab === 'calls' ? '#F7EDE6' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <PhoneCall size={17} color={activeTab === 'calls' ? '#5B1F28' : '#7D756C'} />
-                <span>Discovery Calls</span>
-              </div>
-              <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 7px', borderRadius: '10px', background: '#F1EBE4', color: '#685D52' }}>
-                18
-              </span>
-            </button>
-
-            {/* Users */}
-            <button
-              onClick={() => { setActiveTab('users'); setSearchQuery(''); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '11px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                fontWeight: activeTab === 'users' ? 700 : 500,
-                color: activeTab === 'users' ? '#5B1F28' : '#57524B',
-                background: activeTab === 'users' ? '#F7EDE6' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <Users size={17} color={activeTab === 'users' ? '#5B1F28' : '#7D756C'} />
-              <span>Users</span>
-            </button>
-
-            {/* Content Management (Collapsible) */}
-            <div>
-              <button
-                onClick={() => setContentMenuOpen(!contentMenuOpen)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  padding: '11px 14px',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  color: '#57524B',
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <FolderKanban size={17} color="#7D756C" />
-                  <span>Content Management</span>
-                </div>
-                <ChevronDown size={14} color="#7D756C" style={{ transform: contentMenuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
-              </button>
-            </div>
-
-            {/* Case Studies */}
-            <button
-              onClick={() => { setActiveTab('casestudies'); setSearchQuery(''); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '11px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                fontWeight: activeTab === 'casestudies' ? 700 : 500,
-                color: activeTab === 'casestudies' ? '#5B1F28' : '#57524B',
-                background: activeTab === 'casestudies' ? '#F7EDE6' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <BookOpen size={17} color={activeTab === 'casestudies' ? '#5B1F28' : '#7D756C'} />
-              <span>Case Studies</span>
-            </button>
-
-            {/* Insights & Reports */}
-            <button
-              onClick={() => { setActiveTab('insights'); setSearchQuery(''); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '11px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                fontWeight: activeTab === 'insights' ? 700 : 500,
-                color: activeTab === 'insights' ? '#5B1F28' : '#57524B',
-                background: activeTab === 'insights' ? '#F7EDE6' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <BarChart3 size={17} color={activeTab === 'insights' ? '#5B1F28' : '#7D756C'} />
-              <span>Insights &amp; Reports</span>
-            </button>
-
-            {/* Settings */}
-            <button
-              onClick={() => { setActiveTab('settings'); setSearchQuery(''); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '11px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                fontWeight: activeTab === 'settings' ? 700 : 500,
-                color: activeTab === 'settings' ? '#5B1F28' : '#57524B',
-                background: activeTab === 'settings' ? '#F7EDE6' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <Settings size={17} color={activeTab === 'settings' ? '#5B1F28' : '#7D756C'} />
-              <span>Settings</span>
-            </button>
-
-            {/* Integrations */}
-            <button
-              onClick={() => { setActiveTab('integrations'); setSearchQuery(''); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '11px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                fontWeight: activeTab === 'integrations' ? 700 : 500,
-                color: activeTab === 'integrations' ? '#5B1F28' : '#57524B',
-                background: activeTab === 'integrations' ? '#F7EDE6' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <Compass size={17} color={activeTab === 'integrations' ? '#5B1F28' : '#7D756C'} />
-              <span>Integrations</span>
-            </button>
-          </nav>
         </div>
 
-        {/* Bottom Actions: Log out & Return to Live Website */}
-        <div style={{ paddingTop: '16px', borderTop: '1px solid #F2ECE4', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <Link
-            href="/home1"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '9px 12px',
-              fontSize: '12px',
-              color: '#5B1F28',
-              textDecoration: 'none',
-              fontWeight: 600,
-              background: '#FAF6F0',
-              borderRadius: '6px'
-            }}
-          >
-            <ExternalLink size={14} />
-            <span>View Live Site</span>
-          </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button
-            onClick={() => alert('Logged out successfully.')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '9px 12px',
-              fontSize: '13px',
-              color: '#6E675E',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: 500
-            }}
+            onClick={() => setShowNotifications(!showNotifications)}
+            style={{ width: '34px', height: '34px', borderRadius: '8px', background: '#FAF6F0', border: '1px solid #E4DDD4', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
           >
-            <LogOut size={16} />
-            <span>Log out</span>
+            <Bell size={15} color="#57524B" />
+            {unreadNotifications > 0 && (
+              <span style={{ position: 'absolute', top: '-3px', right: '-3px', background: '#5B1F28', color: '#FFF', fontSize: '9px', fontWeight: 700, width: '15px', height: '15px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {unreadNotifications}
+              </span>
+            )}
           </button>
+          <img
+            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80"
+            alt="Admin User"
+            style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
+          />
         </div>
-      </aside>
+      </header>
 
-      {/* ── MAIN CONTENT AREA ─────────────────────────────────────────────────── */}
-      <main style={{ flex: 1, padding: '32px 40px 60px', overflowY: 'auto', maxWidth: '1440px', margin: '0 auto' }}>
+      {/* ── MOBILE DRAWER SIDEBAR (< 1024px) ─────────────────────────────────── */}
+      {mobileSidebarOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex' }}>
+          {/* Backdrop */}
+          <div
+            onClick={() => setMobileSidebarOpen(false)}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(3px)' }}
+          />
 
-        {/* TOP HEADER ROW */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' }}>
-          <div>
-            {activeTab === 'dashboard' ? (
-              <>
-                <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#1A1817', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  Welcome back, Admin <span style={{ fontSize: '22px' }}>👋</span>
-                </h1>
-                <p style={{ fontSize: '13.5px', color: '#7E766D', margin: '4px 0 0' }}>
-                  Here&apos;s what&apos;s happening with LAL10 Fashions today.
-                </p>
-              </>
-            ) : (
-              <>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#8A8279', marginBottom: '4px' }}>
-                  <span>Dashboard</span>
-                  <ChevronRight size={13} />
-                  <span style={{ color: '#1A1817', fontWeight: 600, textTransform: 'capitalize' }}>
-                    {activeTab === 'calls' ? 'Discovery Calls' : activeTab === 'casestudies' ? 'Case Studies' : activeTab}
-                  </span>
-                </div>
-                <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#1A1817', margin: 0, textTransform: 'capitalize' }}>
-                  {activeTab === 'calls' ? 'Discovery Calls' : activeTab === 'casestudies' ? 'Case Studies' : activeTab}
-                </h1>
-              </>
-            )}
-          </div>
-
-          {/* Right Header Controls: Date Range, Search Icon, Bell, Action Button */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {/* Date Range Picker */}
-            <div style={{ position: 'relative' }}>
-              <button
-                onClick={() => setShowDateDropdown(!showDateDropdown)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  background: '#FFFFFF',
-                  border: '1px solid #E4DDD4',
-                  borderRadius: '8px',
-                  padding: '9px 14px',
-                  fontSize: '12.5px',
-                  fontWeight: 600,
-                  color: '#1A1817',
-                  cursor: 'pointer',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
-                }}
-              >
-                <span>{dateRange}</span>
-                <Calendar size={15} color="#7E766D" />
-              </button>
-
-              {showDateDropdown && (
-                <div style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: 0,
-                  marginTop: '6px',
-                  background: '#FFFFFF',
-                  border: '1px solid #E4DDD4',
-                  borderRadius: '8px',
-                  boxShadow: '0 10px 25px rgba(0,0,0,0.08)',
-                  padding: '8px 0',
-                  minWidth: '220px',
-                  zIndex: 50
-                }}>
-                  {['Today', 'Last 7 Days', 'May 24, 2025 – May 30, 2025', 'This Month', 'All Time'].map(range => (
-                    <button
-                      key={range}
-                      onClick={() => { setDateRange(range); setShowDateDropdown(false); }}
-                      style={{
-                        display: 'block',
-                        width: '100%',
-                        textAlign: 'left',
-                        padding: '8px 16px',
-                        fontSize: '12.5px',
-                        color: range === dateRange ? '#5B1F28' : '#333',
-                        fontWeight: range === dateRange ? 700 : 500,
-                        background: range === dateRange ? '#FAF5F1' : 'transparent',
-                        border: 'none',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      {range}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Quick Search */}
-            <div style={{ position: 'relative' }}>
-              <button
-                onClick={() => {
-                  const input = document.getElementById('admin-filter-search');
-                  if (input) input.focus();
-                }}
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '8px',
-                  background: '#FFFFFF',
-                  border: '1px solid #E4DDD4',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer'
-                }}
-              >
-                <Search size={16} color="#57524B" />
-              </button>
-            </div>
-
-            {/* Notification Bell */}
-            <div style={{ position: 'relative' }}>
-              <button
-                onClick={() => setShowNotifications(!showNotifications)}
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '8px',
-                  background: '#FFFFFF',
-                  border: '1px solid #E4DDD4',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  position: 'relative'
-                }}
-              >
-                <Bell size={16} color="#57524B" />
-                {unreadNotifications > 0 && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '-4px',
-                    right: '-4px',
-                    background: '#5B1F28',
-                    color: '#FFF',
-                    fontSize: '10px',
-                    fontWeight: 700,
-                    width: '17px',
-                    height: '17px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    {unreadNotifications}
-                  </span>
-                )}
-              </button>
-
-              {showNotifications && (
-                <div style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: 0,
-                  marginTop: '6px',
-                  background: '#FFFFFF',
-                  border: '1px solid #E4DDD4',
-                  borderRadius: '10px',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-                  padding: '14px',
-                  width: '320px',
-                  zIndex: 50
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 700 }}>Notifications</span>
-                    <button onClick={() => setUnreadNotifications(0)} style={{ fontSize: '11px', color: '#5B1F28', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Mark read</button>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div style={{ fontSize: '12px', padding: '8px', background: '#FAF6F0', borderRadius: '6px' }}>
-                      <strong>Arjun Mehta</strong> booked a discovery call for <strong>Aria Studio</strong>.
-                      <div style={{ fontSize: '10px', color: '#888', marginTop: '2px' }}>10 mins ago</div>
-                    </div>
-                    <div style={{ fontSize: '12px', padding: '8px', background: '#FAF6F0', borderRadius: '6px' }}>
-                      Discovery call completed with <strong>Noma Living</strong>.
-                      <div style={{ fontSize: '10px', color: '#888', marginTop: '2px' }}>1 hour ago</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Action Buttons specific to each tab */}
-            {activeTab === 'users' && (
-              <button
-                onClick={() => setActiveModal('add-user')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  background: '#3D1219',
-                  color: '#FFFFFF',
-                  padding: '10px 16px',
-                  borderRadius: '8px',
-                  fontSize: '12.5px',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-              >
-                <Plus size={15} />
-                <span>Add User</span>
-              </button>
-            )}
-
-            {activeTab === 'calls' && (
-              <button
-                onClick={() => setActiveModal('book-call')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  background: '#3D1219',
-                  color: '#FFFFFF',
-                  padding: '10px 16px',
-                  borderRadius: '8px',
-                  fontSize: '12.5px',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-              >
-                <Plus size={15} />
-                <span>Book Call</span>
-              </button>
-            )}
-
-            {activeTab === 'brands' && (
-              <button
-                onClick={() => setActiveModal('add-brand')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  background: '#3D1219',
-                  color: '#FFFFFF',
-                  padding: '10px 16px',
-                  borderRadius: '8px',
-                  fontSize: '12.5px',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-              >
-                <Plus size={15} />
-                <span>Add Brand</span>
-              </button>
-            )}
-
-            {activeTab === 'casestudies' && (
-              <button
-                onClick={() => setActiveModal('add-casestudy')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  background: '#3D1219',
-                  color: '#FFFFFF',
-                  padding: '10px 16px',
-                  borderRadius: '8px',
-                  fontSize: '12.5px',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-              >
-                <Plus size={15} />
-                <span>Add Case Study</span>
-              </button>
-            )}
-
-            {activeTab === 'dashboard' && (
-              <button
-                onClick={() => exportData('enquiries')}
-                title="Export Enquiries CSV"
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '8px',
-                  background: '#FFFFFF',
-                  border: '1px solid #E4DDD4',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer'
-                }}
-              >
-                <Share2 size={16} color="#57524B" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* ══════════════════════════════════════════════════════════════════════
-            TAB 1: DASHBOARD
-        ══════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'dashboard' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            
-            {/* 4 Top Metric Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
-              {/* Card 1: Total Enquiries */}
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Users size={18} color="#8A4A32" />
-                  </div>
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Total Enquiries</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '6px' }}>
-                  <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', lineHeight: 1 }}>248</div>
-                  {/* Mini Sparkline SVG */}
-                  <svg width="80" height="26" viewBox="0 0 80 26" fill="none">
-                    <path d="M2 20L20 16L40 18L60 10L78 4" stroke="#C97A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span>↑ 18.6%</span>
-                  <span style={{ color: '#9B9084', fontWeight: 400 }}>vs May 17 – May 23</span>
-                </div>
-              </div>
-
-              {/* Card 2: New This Week */}
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Plus size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>New This Week</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '6px' }}>
-                  <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', lineHeight: 1 }}>18</div>
-                  <svg width="80" height="26" viewBox="0 0 80 26" fill="none">
-                    <path d="M2 18L22 19L42 14L62 12L78 6" stroke="#C97A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span>↑ 12.4%</span>
-                  <span style={{ color: '#9B9084', fontWeight: 400 }}>vs May 17 – May 23</span>
-                </div>
-              </div>
-
-              {/* Card 3: Discovery Calls */}
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <PhoneCall size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Discovery Calls</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '6px' }}>
-                  <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', lineHeight: 1 }}>12</div>
-                  <svg width="80" height="26" viewBox="0 0 80 26" fill="none">
-                    <path d="M2 22L20 18L40 20L60 14L78 8" stroke="#C97A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span>↑ 9.1%</span>
-                  <span style={{ color: '#9B9084', fontWeight: 400 }}>vs May 17 – May 23</span>
-                </div>
-              </div>
-
-              {/* Card 4: Active Prospects */}
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Sparkles size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Active Prospects</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '6px' }}>
-                  <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', lineHeight: 1 }}>34</div>
-                  <svg width="80" height="26" viewBox="0 0 80 26" fill="none">
-                    <path d="M2 22L20 20L40 16L60 18L78 6" stroke="#C97A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span>↑ 13.3%</span>
-                  <span style={{ color: '#9B9084', fontWeight: 400 }}>vs May 17 – May 23</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Middle Row: Enquiries Over Time (Line Chart) & Enquiries by Source (Donut Chart) */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
-              
-              {/* Line Chart Card */}
-              <div style={{ background: '#FFFFFF', padding: '24px 28px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#1A1817', margin: 0 }}>Enquiries Over Time</h3>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FAF6F0', padding: '6px 12px', borderRadius: '6px', border: '1px solid #EFEAE3', fontSize: '12px', fontWeight: 600 }}>
-                    <span>Daily</span>
-                    <ChevronDown size={13} color="#666" />
-                  </div>
-                </div>
-
-                {/* SVG Line Chart with Tooltip */}
-                <div style={{ position: 'relative', width: '100%', height: '220px' }}>
-                  <svg width="100%" height="180" viewBox="0 0 600 180" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#8A4A32" stopOpacity="0.25"/>
-                        <stop offset="100%" stopColor="#8A4A32" stopOpacity="0.0"/>
-                      </linearGradient>
-                    </defs>
-
-                    {/* Grid horizontal lines */}
-                    <line x1="0" y1="20" x2="600" y2="20" stroke="#F0EBE4" strokeDasharray="3 3" />
-                    <line x1="0" y1="60" x2="600" y2="60" stroke="#F0EBE4" strokeDasharray="3 3" />
-                    <line x1="0" y1="100" x2="600" y2="100" stroke="#F0EBE4" strokeDasharray="3 3" />
-                    <line x1="0" y1="140" x2="600" y2="140" stroke="#F0EBE4" strokeDasharray="3 3" />
-
-                    {/* Filled Area */}
-                    <path
-                      d="M 20 120 L 70 80 L 130 95 L 180 90 L 230 50 L 280 70 L 330 90 L 380 50 L 440 50 L 510 30 L 580 10 L 580 170 L 20 170 Z"
-                      fill="url(#chartGradient)"
-                    />
-
-                    {/* Line */}
-                    <path
-                      d="M 20 120 L 70 80 L 130 95 L 180 90 L 230 50 L 280 70 L 330 90 L 380 50 L 440 50 L 510 30 L 580 10"
-                      fill="none"
-                      stroke="#5B1F28"
-                      strokeWidth="3"
-                    />
-
-                    {/* Data Points */}
-                    {[
-                      [20, 120], [70, 80], [130, 95], [180, 90], [230, 50],
-                      [280, 70], [330, 90], [380, 50], [440, 50], [510, 30], [580, 10]
-                    ].map(([x, y], idx) => (
-                      <circle key={idx} cx={x} cy={y} r="4.5" fill="#5B1F28" stroke="#FFFFFF" strokeWidth="2" />
-                    ))}
-                  </svg>
-
-                  {/* Tooltip Box over latest point */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '20px',
-                    right: '10px',
-                    background: '#FFFFFF',
-                    border: '1px solid #E5DFD7',
-                    borderRadius: '8px',
-                    padding: '8px 12px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
-                    fontSize: '11.5px',
-                    zIndex: 10
-                  }}>
-                    <div style={{ color: '#8A7D71', fontWeight: 600 }}>May 30, 2025</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#5B1F28' }}></span>
-                      <span style={{ fontWeight: 700, color: '#1A1817' }}>Enquiries: 42</span>
-                    </div>
-                  </div>
-
-                  {/* X Axis Dates */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px', fontSize: '10.5px', color: '#8A8279' }}>
-                    <span>May 17</span><span>May 18</span><span>May 19</span><span>May 20</span>
-                    <span>May 21</span><span>May 22</span><span>May 23</span><span>May 24</span>
-                    <span>May 25</span><span>May 26</span><span>May 27</span><span>May 28</span>
-                    <span>May 29</span><span>May 30</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Donut Chart Card: Enquiries by Source */}
-              <div style={{ background: '#FFFFFF', padding: '24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#1A1817', margin: '0 0 16px' }}>Enquiries by Source</h3>
-
-                {/* Donut Graphic */}
-                <div style={{ position: 'relative', width: '160px', height: '160px', margin: '0 auto' }}>
-                  <svg width="160" height="160" viewBox="0 0 160 160">
-                    <circle cx="80" cy="80" r="60" fill="transparent" stroke="#5B1F28" strokeWidth="24" strokeDasharray="194 377" strokeDashoffset="0" />
-                    <circle cx="80" cy="80" r="60" fill="transparent" stroke="#B07058" strokeWidth="24" strokeDasharray="85 377" strokeDashoffset="-194" />
-                    <circle cx="80" cy="80" r="60" fill="transparent" stroke="#D19E75" strokeWidth="24" strokeDasharray="57 377" strokeDashoffset="-279" />
-                    <circle cx="80" cy="80" r="60" fill="transparent" stroke="#DEC8B5" strokeWidth="24" strokeDasharray="24 377" strokeDashoffset="-336" />
-                    <circle cx="80" cy="80" r="60" fill="transparent" stroke="#EFE4D8" strokeWidth="24" strokeDasharray="17 377" strokeDashoffset="-360" />
-                  </svg>
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ fontSize: '22px', fontWeight: 800, color: '#1A1817' }}>248</div>
-                    <div style={{ fontSize: '11px', color: '#8A7D71' }}>Total</div>
-                  </div>
-                </div>
-
-                {/* Source Legend */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px', fontSize: '12px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#5B1F28' }}></span>
-                      <span>Website</span>
-                    </div>
-                    <strong>128 (51.6%)</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#B07058' }}></span>
-                      <span>LinkedIn</span>
-                    </div>
-                    <strong>56 (22.6%)</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#D19E75' }}></span>
-                      <span>Referral</span>
-                    </div>
-                    <strong>38 (15.3%)</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#DEC8B5' }}></span>
-                      <span>Instagram</span>
-                    </div>
-                    <strong>16 (6.5%)</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ width: '9px', height: '9px', borderRadius: '50%', background: '#EFE4D8' }}></span>
-                      <span>Other</span>
-                    </div>
-                    <strong>10 (4.0%)</strong>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Row: Recent Enquiries Table (Left) + Upcoming Calls & Activity (Right) */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
-              
-              {/* Recent Enquiries Table Card */}
-              <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          {/* Drawer Content */}
+          <div style={{
+            position: 'relative',
+            width: '280px',
+            background: '#FFFFFF',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            padding: '24px 18px',
+            zIndex: 101,
+            boxShadow: '4px 0 25px rgba(0,0,0,0.15)',
+            overflowY: 'auto'
+          }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 8px 18px', borderBottom: '1px solid #F2ECE4' }}>
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
-                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#1A1817', margin: 0 }}>Recent Enquiries</h3>
-                    <button
-                      onClick={() => setActiveTab('enquiries')}
-                      style={{ fontSize: '12px', fontWeight: 600, color: '#1A1817', background: '#FAF6F0', border: '1px solid #EBE4DA', padding: '5px 12px', borderRadius: '6px', cursor: 'pointer' }}
-                    >
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '26px', fontWeight: 600, letterSpacing: '4px', color: '#1A1817', lineHeight: 1 }}>
+                    LAL10
+                  </div>
+                  <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#9B9084', fontWeight: 600, marginTop: '3px' }}>
+                    FASHIONS
+                  </div>
+                </div>
+                <button onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
+                  <X size={20} color="#666" />
+                </button>
+              </div>
+
+              {/* Profile Pill */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px', margin: '16px 0', background: '#FAF6F0', borderRadius: '10px', border: '1px solid #EFE7DC' }}>
+                <img
+                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80"
+                  alt="Admin User"
+                  style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover' }}
+                />
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817' }}>Admin User</div>
+                  <div style={{ fontSize: '11px', color: '#8A7D71' }}>Super Admin</div>
+                </div>
+              </div>
+
+              {renderNavLinks()}
+            </div>
+
+            <div style={{ paddingTop: '16px', borderTop: '1px solid #F2ECE4', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <Link
+                href="/home1"
+                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', fontSize: '12px', color: '#5B1F28', textDecoration: 'none', fontWeight: 600, background: '#FAF6F0', borderRadius: '6px' }}
+              >
+                <ExternalLink size={14} />
+                <span>View Live Site</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── DESKTOP LAYOUT WRAPPER ───────────────────────────────────────────── */}
+      <div style={{ display: 'flex', flex: 1 }}>
+
+        {/* ── DESKTOP SIDEBAR (>= 1024px) ──────────────────────────────────────── */}
+        <aside className="admin-sidebar-desktop" style={{
+          width: '260px',
+          background: '#FFFFFF',
+          borderRight: '1px solid #EFEAE3',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: '28px 18px',
+          position: 'sticky',
+          top: 0,
+          height: '100vh',
+          zIndex: 40,
+          boxShadow: '1px 0 10px rgba(0,0,0,0.02)'
+        }}>
+          <div>
+            <div style={{ padding: '0 8px 24px', borderBottom: '1px solid #F2ECE4' }}>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', fontWeight: 600, letterSpacing: '4px', color: '#1A1817', lineHeight: 1 }}>
+                LAL10
+              </div>
+              <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#9B9084', fontWeight: 600, marginTop: '4px', textTransform: 'uppercase' }}>
+                FASHIONS
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', margin: '16px 0 20px', background: '#FAF6F0', borderRadius: '10px', border: '1px solid #EFE7DC' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <img
+                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80"
+                  alt="Admin User"
+                  style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }}
+                />
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817', lineHeight: 1.2 }}>Admin User</div>
+                  <div style={{ fontSize: '11px', color: '#8A7D71', marginTop: '2px' }}>Super Admin</div>
+                </div>
+              </div>
+              <ChevronDown size={14} color="#8A7D71" />
+            </div>
+
+            {renderNavLinks()}
+          </div>
+
+          <div style={{ paddingTop: '16px', borderTop: '1px solid #F2ECE4', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Link
+              href="/home1"
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', fontSize: '12px', color: '#5B1F28', textDecoration: 'none', fontWeight: 600, background: '#FAF6F0', borderRadius: '6px' }}
+            >
+              <ExternalLink size={14} />
+              <span>View Live Site</span>
+            </Link>
+            <button
+              onClick={() => alert('Logged out successfully.')}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', fontSize: '13px', color: '#6E675E', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 500 }}
+            >
+              <LogOut size={16} />
+              <span>Log out</span>
+            </button>
+          </div>
+        </aside>
+
+        {/* ── MAIN CONTENT AREA ─────────────────────────────────────────────────── */}
+        <main className="admin-main-container" style={{ flex: 1, overflowY: 'auto', maxWidth: '1440px', margin: '0 auto', width: '100%' }}>
+
+          {/* TOP HEADER ROW */}
+          <div className="admin-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px' }}>
+            <div>
+              {activeTab === 'dashboard' ? (
+                <>
+                  <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#1A1817', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    Welcome back, Admin <span style={{ fontSize: '22px' }}>👋</span>
+                  </h1>
+                  <p style={{ fontSize: '13.5px', color: '#7E766D', margin: '4px 0 0' }}>
+                    Here&apos;s what&apos;s happening with LAL10 Fashions today.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#8A8279', marginBottom: '4px' }}>
+                    <span>Dashboard</span>
+                    <ChevronRight size={13} />
+                    <span style={{ color: '#1A1817', fontWeight: 600, textTransform: 'capitalize' }}>
+                      {activeTab === 'calls' ? 'Discovery Calls' : activeTab === 'casestudies' ? 'Case Studies' : activeTab}
+                    </span>
+                  </div>
+                  <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#1A1817', margin: 0, textTransform: 'capitalize' }}>
+                    {activeTab === 'calls' ? 'Discovery Calls' : activeTab === 'casestudies' ? 'Case Studies' : activeTab}
+                  </h1>
+                </>
+              )}
+            </div>
+
+            {/* Right Header Controls */}
+            <div className="admin-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {/* Date Range Picker */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setShowDateDropdown(!showDateDropdown)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '8px', background: '#FFFFFF',
+                    border: '1px solid #E4DDD4', borderRadius: '8px', padding: '9px 12px',
+                    fontSize: '12px', fontWeight: 600, color: '#1A1817', cursor: 'pointer'
+                  }}
+                >
+                  <span style={{ maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{dateRange}</span>
+                  <Calendar size={14} color="#7E766D" />
+                </button>
+
+                {showDateDropdown && (
+                  <div style={{
+                    position: 'absolute', top: '100%', right: 0, marginTop: '6px',
+                    background: '#FFFFFF', border: '1px solid #E4DDD4', borderRadius: '8px',
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.08)', padding: '8px 0', minWidth: '200px', zIndex: 50
+                  }}>
+                    {['Today', 'Last 7 Days', 'May 24, 2025 – May 30, 2025', 'This Month', 'All Time'].map(range => (
+                      <button
+                        key={range}
+                        onClick={() => { setDateRange(range); setShowDateDropdown(false); }}
+                        style={{
+                          display: 'block', width: '100%', textAlign: 'left', padding: '8px 16px',
+                          fontSize: '12.5px', color: range === dateRange ? '#5B1F28' : '#333',
+                          fontWeight: range === dateRange ? 700 : 500,
+                          background: range === dateRange ? '#FAF5F1' : 'transparent',
+                          border: 'none', cursor: 'pointer'
+                        }}
+                      >
+                        {range}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons specific to each tab */}
+              {activeTab === 'users' && (
+                <button onClick={() => setActiveModal('add-user')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#3D1219', color: '#FFFFFF', padding: '9px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
+                  <Plus size={14} /><span>Add User</span>
+                </button>
+              )}
+              {activeTab === 'calls' && (
+                <button onClick={() => setActiveModal('book-call')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#3D1219', color: '#FFFFFF', padding: '9px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
+                  <Plus size={14} /><span>Book Call</span>
+                </button>
+              )}
+              {activeTab === 'brands' && (
+                <button onClick={() => setActiveModal('add-brand')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#3D1219', color: '#FFFFFF', padding: '9px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
+                  <Plus size={14} /><span>Add Brand</span>
+                </button>
+              )}
+              {activeTab === 'casestudies' && (
+                <button onClick={() => setActiveModal('add-casestudy')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#3D1219', color: '#FFFFFF', padding: '9px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
+                  <Plus size={14} /><span>Add Case Study</span>
+                </button>
+              )}
+              {activeTab === 'dashboard' && (
+                <button onClick={() => exportData('enquiries')} title="Export CSV" style={{ width: '36px', height: '36px', borderRadius: '8px', background: '#FFFFFF', border: '1px solid #E4DDD4', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                  <Share2 size={15} color="#57524B" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* ══════════════════════════════════════════════════════════════════════
+              TAB 1: DASHBOARD
+          ══════════════════════════════════════════════════════════════════════ */}
+          {activeTab === 'dashboard' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+              
+              {/* 4 Stat Cards */}
+              <div className="admin-stats-grid">
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Users size={17} color="#8A4A32" />
+                  </div>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500, marginTop: '12px' }}>Total Enquiries</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '4px' }}>
+                    <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', lineHeight: 1 }}>248</div>
+                    <svg width="70" height="24" viewBox="0 0 80 26" fill="none">
+                      <path d="M2 20L20 16L40 18L60 10L78 4" stroke="#C97A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '8px' }}>↑ 18.6% vs May 17 – May 23</div>
+                </div>
+
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Plus size={17} color="#8A4A32" />
+                  </div>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500, marginTop: '12px' }}>New This Week</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '4px' }}>
+                    <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', lineHeight: 1 }}>18</div>
+                    <svg width="70" height="24" viewBox="0 0 80 26" fill="none">
+                      <path d="M2 18L22 19L42 14L62 12L78 6" stroke="#C97A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '8px' }}>↑ 12.4% vs May 17 – May 23</div>
+                </div>
+
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <PhoneCall size={17} color="#8A4A32" />
+                  </div>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500, marginTop: '12px' }}>Discovery Calls</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '4px' }}>
+                    <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', lineHeight: 1 }}>12</div>
+                    <svg width="70" height="24" viewBox="0 0 80 26" fill="none">
+                      <path d="M2 22L20 18L40 20L60 14L78 8" stroke="#C97A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '8px' }}>↑ 9.1% vs May 17 – May 23</div>
+                </div>
+
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Sparkles size={17} color="#8A4A32" />
+                  </div>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500, marginTop: '12px' }}>Active Prospects</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '4px' }}>
+                    <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', lineHeight: 1 }}>34</div>
+                    <svg width="70" height="24" viewBox="0 0 80 26" fill="none">
+                      <path d="M2 22L20 20L40 16L60 18L78 6" stroke="#C97A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '8px' }}>↑ 13.3% vs May 17 – May 23</div>
+                </div>
+              </div>
+
+              {/* Middle Row: Charts */}
+              <div className="admin-charts-grid">
+                
+                {/* Line Chart */}
+                <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1A1817', margin: 0 }}>Enquiries Over Time</h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#FAF6F0', padding: '4px 10px', borderRadius: '6px', border: '1px solid #EFEAE3', fontSize: '11.5px', fontWeight: 600 }}>
+                      <span>Daily</span>
+                      <ChevronDown size={12} color="#666" />
+                    </div>
+                  </div>
+
+                  <div style={{ position: 'relative', width: '100%', height: '190px' }}>
+                    <svg width="100%" height="150" viewBox="0 0 600 180" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="chartGradient2" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#8A4A32" stopOpacity="0.25"/>
+                          <stop offset="100%" stopColor="#8A4A32" stopOpacity="0.0"/>
+                        </linearGradient>
+                      </defs>
+                      <line x1="0" y1="20" x2="600" y2="20" stroke="#F0EBE4" strokeDasharray="3 3" />
+                      <line x1="0" y1="60" x2="600" y2="60" stroke="#F0EBE4" strokeDasharray="3 3" />
+                      <line x1="0" y1="100" x2="600" y2="100" stroke="#F0EBE4" strokeDasharray="3 3" />
+                      <line x1="0" y1="140" x2="600" y2="140" stroke="#F0EBE4" strokeDasharray="3 3" />
+                      <path d="M 20 120 L 70 80 L 130 95 L 180 90 L 230 50 L 280 70 L 330 90 L 380 50 L 440 50 L 510 30 L 580 10 L 580 170 L 20 170 Z" fill="url(#chartGradient2)" />
+                      <path d="M 20 120 L 70 80 L 130 95 L 180 90 L 230 50 L 280 70 L 330 90 L 380 50 L 440 50 L 510 30 L 580 10" fill="none" stroke="#5B1F28" strokeWidth="3" />
+                      {[ [20, 120], [70, 80], [130, 95], [180, 90], [230, 50], [280, 70], [330, 90], [380, 50], [440, 50], [510, 30], [580, 10] ].map(([x, y], idx) => (
+                        <circle key={idx} cx={x} cy={y} r="4.5" fill="#5B1F28" stroke="#FFFFFF" strokeWidth="2" />
+                      ))}
+                    </svg>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '10px', color: '#8A8279' }}>
+                      <span>May 17</span><span>May 20</span><span>May 23</span><span>May 26</span><span>May 30</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Donut Chart */}
+                <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1A1817', margin: '0 0 12px' }}>Enquiries by Source</h3>
+
+                  <div style={{ position: 'relative', width: '140px', height: '140px', margin: '0 auto' }}>
+                    <svg width="140" height="140" viewBox="0 0 160 160">
+                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#5B1F28" strokeWidth="22" strokeDasharray="194 377" strokeDashoffset="0" />
+                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#B07058" strokeWidth="22" strokeDasharray="85 377" strokeDashoffset="-194" />
+                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#D19E75" strokeWidth="22" strokeDasharray="57 377" strokeDashoffset="-279" />
+                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#DEC8B5" strokeWidth="22" strokeDasharray="24 377" strokeDashoffset="-336" />
+                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#EFE4D8" strokeWidth="22" strokeDasharray="17 377" strokeDashoffset="-360" />
+                    </svg>
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ fontSize: '20px', fontWeight: 800, color: '#1A1817' }}>248</div>
+                      <div style={{ fontSize: '10.5px', color: '#8A7D71' }}>Total</div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '12px', fontSize: '11.5px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Website</span><strong>128 (51.6%)</strong></div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>LinkedIn</span><strong>56 (22.6%)</strong></div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Referral</span><strong>38 (15.3%)</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Row */}
+              <div className="admin-bottom-grid">
+                {/* Recent Enquiries Table Card */}
+                <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', padding: '22px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1A1817', margin: 0 }}>Recent Enquiries</h3>
+                    <button onClick={() => setActiveTab('enquiries')} style={{ fontSize: '11.5px', fontWeight: 600, color: '#1A1817', background: '#FAF6F0', border: '1px solid #EBE4DA', padding: '5px 12px', borderRadius: '6px', cursor: 'pointer' }}>
                       View all
                     </button>
                   </div>
 
-                  {/* Table */}
-                  <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+                  <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                    <table style={{ width: '100%', minWidth: '550px', borderCollapse: 'collapse', fontSize: '12.5px' }}>
                       <thead>
-                        <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11.5px', fontWeight: 600, textTransform: 'none' }}>
-                          <th style={{ padding: '10px 8px' }}>Name</th>
-                          <th style={{ padding: '10px 8px' }}>Brand</th>
-                          <th style={{ padding: '10px 8px' }}>Stage / Revenue</th>
-                          <th style={{ padding: '10px 8px' }}>Source</th>
-                          <th style={{ padding: '10px 8px' }}>Enquiry Date</th>
-                          <th style={{ padding: '10px 8px' }}>Status</th>
-                          <th style={{ padding: '10px 8px', textAlign: 'right' }}>Actions</th>
+                        <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11px', fontWeight: 600 }}>
+                          <th style={{ padding: '8px 6px' }}>Name</th>
+                          <th style={{ padding: '8px 6px' }}>Brand</th>
+                          <th style={{ padding: '8px 6px' }}>Stage</th>
+                          <th style={{ padding: '8px 6px' }}>Status</th>
+                          <th style={{ padding: '8px 6px', textAlign: 'right' }}>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {enquiries.slice(0, 5).map(enq => (
                           <tr key={enq.id} style={{ borderBottom: '1px solid #FAF6F0' }}>
-                            <td style={{ padding: '12px 8px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#FBE8D6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700, color: '#8A4A32' }}>
-                                  {enq.name.split(' ').map(n => n[0]).join('')}
-                                </div>
-                                <div>
-                                  <div style={{ fontWeight: 600, color: '#1A1817' }}>{enq.name}</div>
-                                  <div style={{ fontSize: '11px', color: '#8A7D71' }}>{enq.email}</div>
-                                </div>
-                              </div>
+                            <td style={{ padding: '10px 6px' }}>
+                              <div style={{ fontWeight: 600, color: '#1A1817' }}>{enq.name}</div>
+                              <div style={{ fontSize: '10.5px', color: '#8A7D71' }}>{enq.email}</div>
                             </td>
-                            <td style={{ padding: '12px 8px', fontWeight: 600, color: '#1A1817' }}>{enq.brand}</td>
-                            <td style={{ padding: '12px 8px' }}>
-                              <span style={{ fontSize: '11.5px', padding: '3px 8px', borderRadius: '6px', fontWeight: 600, ...getStageBadgeStyle(enq.stage) }}>
+                            <td style={{ padding: '10px 6px', fontWeight: 600 }}>{enq.brand}</td>
+                            <td style={{ padding: '10px 6px' }}>
+                              <span style={{ fontSize: '10.5px', padding: '2px 6px', borderRadius: '4px', fontWeight: 600, ...getStageBadgeStyle(enq.stage) }}>
                                 {enq.stage}
                               </span>
                             </td>
-                            <td style={{ padding: '12px 8px', color: '#57524B', fontSize: '12px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                {enq.source === 'Website' && <Globe size={13} color="#666" />}
-                                {enq.source === 'LinkedIn' && <Share2 size={13} color="#0077b5" />}
-                                {enq.source === 'Referral' && <Users size={13} color="#888" />}
-                                {enq.source === 'Instagram' && <Tag size={13} color="#E1306C" />}
-                                <span>{enq.source}</span>
-                              </div>
-                            </td>
-                            <td style={{ padding: '12px 8px', color: '#7E766D', fontSize: '12px' }}>{enq.date}</td>
-                            <td style={{ padding: '12px 8px' }}>
-                              <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 8px', borderRadius: '12px', ...getStatusBadgeStyle(enq.status) }}>
+                            <td style={{ padding: '10px 6px' }}>
+                              <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 7px', borderRadius: '10px', ...getStatusBadgeStyle(enq.status) }}>
                                 {enq.status}
                               </span>
                             </td>
-                            <td style={{ padding: '12px 8px', textAlign: 'right' }}>
-                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                                <button
-                                  onClick={() => { setSelectedEnquiry(enq); setActiveModal('view-enquiry'); }}
-                                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}
-                                  title="View Enquiry"
-                                >
-                                  <Eye size={15} />
-                                </button>
-                                <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}>
-                                  <MoreVertical size={15} />
-                                </button>
-                              </div>
+                            <td style={{ padding: '10px 6px', textAlign: 'right' }}>
+                              <button onClick={() => { setSelectedEnquiry(enq); setActiveModal('view-enquiry'); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}>
+                                <Eye size={15} />
+                              </button>
                             </td>
                           </tr>
                         ))}
@@ -1400,989 +1048,427 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
 
-                {/* Table Footer / Pagination */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', paddingTop: '12px', borderTop: '1px solid #F0EBE4', fontSize: '12px', color: '#7E766D' }}>
-                  <div>Showing 1 to 5 of 82 enquiries</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span>10 per page</span>
-                      <ChevronDown size={12} />
+                {/* Right Widgets */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                  <div style={{ background: '#FFFFFF', padding: '20px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                      <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#1A1817', margin: 0 }}>Upcoming Calls</h4>
+                      <button onClick={() => setActiveTab('calls')} style={{ fontSize: '11px', fontWeight: 600, color: '#1A1817', background: 'none', border: 'none', cursor: 'pointer' }}>View all</button>
                     </div>
-                    <div style={{ display: 'flex', gap: '4px' }}>
-                      <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF', cursor: 'pointer' }}>&lt;</button>
-                      <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 700, cursor: 'pointer' }}>1</button>
-                      <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF', cursor: 'pointer' }}>2</button>
-                      <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF', cursor: 'pointer' }}>3</button>
-                      <span>...</span>
-                      <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF', cursor: 'pointer' }}>9</button>
-                      <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF', cursor: 'pointer' }}>&gt;</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Side Widgets: Upcoming Discovery Calls & Recent Activity */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                
-                {/* Upcoming Discovery Calls Widget */}
-                <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                    <h4 style={{ fontSize: '14.5px', fontWeight: 700, color: '#1A1817', margin: 0 }}>Upcoming Discovery Calls</h4>
-                    <button onClick={() => setActiveTab('calls')} style={{ fontSize: '11.5px', fontWeight: 600, color: '#1A1817', background: 'none', border: 'none', cursor: 'pointer' }}>View all</button>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    {/* Call Item 1 */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ padding: '4px 8px', background: '#FAF5EE', border: '1px solid #EADDCF', borderRadius: '6px', textAlign: 'center', minWidth: '40px' }}>
-                          <div style={{ fontSize: '8.5px', fontWeight: 700, color: '#8A5336', letterSpacing: '0.5px' }}>MAY</div>
-                          <div style={{ fontSize: '14px', fontWeight: 800, color: '#1A1817', lineHeight: 1 }}>31</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <div style={{ padding: '3px 6px', background: '#FAF5EE', border: '1px solid #EADDCF', borderRadius: '6px', textAlign: 'center', minWidth: '36px' }}>
+                            <div style={{ fontSize: '8px', fontWeight: 700, color: '#8A5336' }}>MAY</div>
+                            <div style={{ fontSize: '13px', fontWeight: 800, color: '#1A1817', lineHeight: 1 }}>31</div>
+                          </div>
+                          <div>
+                            <div style={{ fontSize: '12px', fontWeight: 700, color: '#1A1817' }}>Aria Studio</div>
+                            <div style={{ fontSize: '10.5px', color: '#8A7D71' }}>Arjun Mehta</div>
+                          </div>
                         </div>
-                        <div>
-                          <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817' }}>Aria Studio</div>
-                          <div style={{ fontSize: '11px', color: '#8A7D71' }}>Arjun Mehta</div>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#57524B' }}>11:00 AM</span>
-                    </div>
-
-                    {/* Call Item 2 */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ padding: '4px 8px', background: '#FAF5EE', border: '1px solid #EADDCF', borderRadius: '6px', textAlign: 'center', minWidth: '40px' }}>
-                          <div style={{ fontSize: '8.5px', fontWeight: 700, color: '#8A5336', letterSpacing: '0.5px' }}>JUN</div>
-                          <div style={{ fontSize: '14px', fontWeight: 800, color: '#1A1817', lineHeight: 1 }}>01</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817' }}>House of Riya</div>
-                          <div style={{ fontSize: '11px', color: '#8A7D71' }}>Riya Shah</div>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#57524B' }}>02:30 PM</span>
-                    </div>
-
-                    {/* Call Item 3 */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ padding: '4px 8px', background: '#FAF5EE', border: '1px solid #EADDCF', borderRadius: '6px', textAlign: 'center', minWidth: '40px' }}>
-                          <div style={{ fontSize: '8.5px', fontWeight: 700, color: '#8A5336', letterSpacing: '0.5px' }}>JUN</div>
-                          <div style={{ fontSize: '14px', fontWeight: 800, color: '#1A1817', lineHeight: 1 }}>02</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817' }}>Urban Form</div>
-                          <div style={{ fontSize: '11px', color: '#8A7D71' }}>Karan Patel</div>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#57524B' }}>04:00 PM</span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => setActiveTab('calls')}
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '16px', fontSize: '12px', fontWeight: 700, color: '#5B1F28', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                  >
-                    <span>View full calendar</span>
-                    <ArrowRightIcon />
-                  </button>
-                </div>
-
-                {/* Recent Activity Widget */}
-                <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                  <h4 style={{ fontSize: '14.5px', fontWeight: 700, color: '#1A1817', margin: '0 0 14px' }}>Recent Activity</h4>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                      <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#F7EDE6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <Users size={13} color="#8A4A32" />
-                      </div>
-                      <div>
-                        <div style={{ fontSize: '12px', color: '#1A1817' }}>New enquiry from <strong>Aria Studio</strong></div>
-                        <div style={{ fontSize: '10.5px', color: '#8A7D71', marginTop: '2px' }}>May 30, 2025 at 10:15 AM</div>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                      <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#F7EDE6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <PhoneCall size={13} color="#8A4A32" />
-                      </div>
-                      <div>
-                        <div style={{ fontSize: '12px', color: '#1A1817' }}>Discovery call completed with <strong>Noma Living</strong></div>
-                        <div style={{ fontSize: '10.5px', color: '#8A7D71', marginTop: '2px' }}>May 29, 2025 at 04:30 PM</div>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                      <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#F7EDE6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <BookOpen size={13} color="#8A4A32" />
-                      </div>
-                      <div>
-                        <div style={{ fontSize: '12px', color: '#1A1817' }}>Proposal sent to <strong>Urban Form</strong></div>
-                        <div style={{ fontSize: '10.5px', color: '#8A7D71', marginTop: '2px' }}>May 29, 2025 at 11:20 AM</div>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#57524B' }}>11:00 AM</span>
                       </div>
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => setActiveTab('enquiries')}
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '16px', fontSize: '12px', fontWeight: 700, color: '#5B1F28', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                  >
-                    <span>View all activity</span>
-                    <ArrowRightIcon />
-                  </button>
+                  <div style={{ background: '#FFFFFF', padding: '20px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                    <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#1A1817', margin: '0 0 12px' }}>Recent Activity</h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '11.5px' }}>
+                      <div>New enquiry from <strong>Aria Studio</strong> <div style={{ fontSize: '10px', color: '#888' }}>10 mins ago</div></div>
+                      <div>Call completed with <strong>Noma Living</strong> <div style={{ fontSize: '10px', color: '#888' }}>1 hour ago</div></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            TAB 2: USERS (Screenshot 2 Match)
-        ══════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'users' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            
-            {/* 4 Stat Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Users size={18} color="#8A4A32" />
+          {/* ══════════════════════════════════════════════════════════════════════
+              TAB 2: USERS
+          ══════════════════════════════════════════════════════════════════════ */}
+          {activeTab === 'users' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+              <div className="admin-stats-grid">
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Total Users</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>142</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 12.5% vs May 17 – May 23</div>
                 </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Total Users</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>142</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 12.5% vs May 17 – May 23</div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Active Users</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>118</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 14.2% vs May 17 – May 23</div>
+                </div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>New This Week</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>12</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 20.0% vs May 17 – May 23</div>
+                </div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Admins</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>6</div>
+                  <div style={{ fontSize: '11px', color: '#7E766D', fontWeight: 600, marginTop: '6px' }}>↑ 0% vs May 17 – May 23</div>
+                </div>
               </div>
 
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <SlidersHorizontal size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Active Users</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>118</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 14.2% vs May 17 – May 23</div>
-              </div>
-
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <UserPlus size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>New This Week</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>12</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 20.0% vs May 17 – May 23</div>
-              </div>
-
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Shield size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Admins</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>6</div>
-                <div style={{ fontSize: '11.5px', color: '#7E766D', fontWeight: 600, marginTop: '10px' }}>↑ 0% vs May 17 – May 23</div>
-              </div>
-            </div>
-
-            {/* Filter Bar & Table Card */}
-            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', padding: '24px' }}>
-              
-              {/* Filter Controls Row */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '280px' }}>
-                  <div style={{ position: 'relative', width: '100%', maxWidth: '340px' }}>
-                    <Search size={15} color="#8A8279" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+              <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', padding: '20px' }}>
+                <div className="admin-filter-row" style={{ marginBottom: '18px' }}>
+                  <div style={{ display: 'flex', gap: '10px', flex: 1, flexWrap: 'wrap' }}>
                     <input
-                      id="admin-filter-search"
-                      type="text"
-                      placeholder="Search by name, email or role..."
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      style={{ width: '100%', padding: '9px 12px 9px 36px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', outline: 'none' }}
+                      type="text" placeholder="Search by name, email..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                      style={{ padding: '8px 12px', fontSize: '12.5px', border: '1px solid #E4DDD4', borderRadius: '6px', minWidth: '180px', flex: 1 }}
                     />
-                  </div>
-
-                  {/* Role Dropdown */}
-                  <div>
-                    <select
-                      value={roleFilter}
-                      onChange={e => setRoleFilter(e.target.value)}
-                      style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF', cursor: 'pointer', outline: 'none' }}
-                    >
-                      <option>All Roles</option>
-                      <option>Admin</option>
-                      <option>Editor</option>
-                      <option>Manager</option>
-                      <option>Viewer</option>
+                    <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)} style={{ padding: '8px 12px', fontSize: '12.5px', border: '1px solid #E4DDD4', borderRadius: '6px', background: '#FFF' }}>
+                      <option>All Roles</option><option>Admin</option><option>Editor</option><option>Manager</option><option>Viewer</option>
                     </select>
                   </div>
+                  <button onClick={() => exportData('users')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFF', border: '1px solid #E4DDD4', padding: '8px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                    <Download size={13} /><span>Export</span>
+                  </button>
+                </div>
 
-                  {/* Status Dropdown */}
-                  <div>
-                    <select
-                      value={statusFilter}
-                      onChange={e => setStatusFilter(e.target.value)}
-                      style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF', cursor: 'pointer', outline: 'none' }}
-                    >
-                      <option>All Status</option>
-                      <option>Active</option>
-                      <option>Inactive</option>
+                <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                  <table style={{ width: '100%', minWidth: '600px', borderCollapse: 'collapse', fontSize: '12.5px' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11px', fontWeight: 600 }}>
+                        <th style={{ padding: '10px 8px' }}>User</th>
+                        <th style={{ padding: '10px 8px' }}>Email</th>
+                        <th style={{ padding: '10px 8px' }}>Role</th>
+                        <th style={{ padding: '10px 8px' }}>Status</th>
+                        <th style={{ padding: '10px 8px' }}>Joined On</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredUsers.map(usr => (
+                        <tr key={usr.id} style={{ borderBottom: '1px solid #FAF6F0' }}>
+                          <td style={{ padding: '12px 8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: usr.avatarColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700 }}>
+                                {usr.name.split(' ').map(n => n[0]).join('')}
+                              </div>
+                              <span style={{ fontWeight: 600 }}>{usr.name}</span>
+                            </div>
+                          </td>
+                          <td style={{ padding: '12px 8px', color: '#57524B' }}>{usr.email}</td>
+                          <td style={{ padding: '12px 8px' }}>
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', ...getRoleBadgeStyle(usr.role) }}>{usr.role}</span>
+                          </td>
+                          <td style={{ padding: '12px 8px' }}>
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', ...getStatusBadgeStyle(usr.status) }}>{usr.status}</span>
+                          </td>
+                          <td style={{ padding: '12px 8px', color: '#7E766D' }}>{usr.joinedOn}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ══════════════════════════════════════════════════════════════════════
+              TAB 3: DISCOVERY CALLS
+          ══════════════════════════════════════════════════════════════════════ */}
+          {activeTab === 'calls' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+              <div className="admin-stats-grid">
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Total Calls</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>156</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 12.4% vs May 17 – May 23</div>
+                </div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Completed</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>98</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 8.7% vs May 17 – May 23</div>
+                </div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Scheduled</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>42</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 15.2% vs May 17 – May 23</div>
+                </div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Cancelled</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>16</div>
+                  <div style={{ fontSize: '11px', color: '#C5221F', fontWeight: 600, marginTop: '6px' }}>↓ 5.6% vs May 17 – May 23</div>
+                </div>
+              </div>
+
+              <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', padding: '20px' }}>
+                <div className="admin-filter-row" style={{ marginBottom: '18px' }}>
+                  <div style={{ display: 'flex', gap: '10px', flex: 1, flexWrap: 'wrap' }}>
+                    <input
+                      type="text" placeholder="Search by brand or contact..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                      style={{ padding: '8px 12px', fontSize: '12.5px', border: '1px solid #E4DDD4', borderRadius: '6px', minWidth: '180px', flex: 1 }}
+                    />
+                    <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ padding: '8px 12px', fontSize: '12.5px', border: '1px solid #E4DDD4', borderRadius: '6px', background: '#FFF' }}>
+                      <option>All Status</option><option>Completed</option><option>Scheduled</option><option>Cancelled</option>
                     </select>
                   </div>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <button
-                    onClick={() => exportData('users')}
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFF', border: '1px solid #E4DDD4', padding: '9px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}
-                  >
-                    <Download size={14} />
-                    <span>Export</span>
-                  </button>
-                  <button
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FAF6F0', border: '1px solid #EAE2D8', padding: '9px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}
-                  >
-                    <Filter size={14} />
-                    <span>Filters</span>
+                  <button onClick={() => exportData('calls')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFF', border: '1px solid #E4DDD4', padding: '8px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                    <Download size={13} /><span>Export</span>
                   </button>
                 </div>
-              </div>
 
-              {/* Users Table */}
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11.5px', fontWeight: 600 }}>
-                      <th style={{ padding: '12px 10px' }}>User</th>
-                      <th style={{ padding: '12px 10px' }}>Email</th>
-                      <th style={{ padding: '12px 10px' }}>Role</th>
-                      <th style={{ padding: '12px 10px' }}>Status</th>
-                      <th style={{ padding: '12px 10px' }}>Joined On ↓</th>
-                      <th style={{ padding: '12px 10px' }}>Last Active</th>
-                      <th style={{ padding: '12px 10px', textAlign: 'right' }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredUsers.map(usr => (
-                      <tr key={usr.id} style={{ borderBottom: '1px solid #FAF6F0' }}>
-                        <td style={{ padding: '14px 10px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: usr.avatarColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, color: '#57524B' }}>
-                              {usr.name.split(' ').map(n => n[0]).join('')}
-                            </div>
-                            <span style={{ fontWeight: 600, color: '#1A1817' }}>{usr.name}</span>
-                          </div>
-                        </td>
-                        <td style={{ padding: '14px 10px', color: '#57524B' }}>{usr.email}</td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 9px', borderRadius: '12px', ...getRoleBadgeStyle(usr.role) }}>
-                            {usr.role}
-                          </span>
-                        </td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 9px', borderRadius: '12px', ...getStatusBadgeStyle(usr.status) }}>
-                            {usr.status}
-                          </span>
-                        </td>
-                        <td style={{ padding: '14px 10px', color: '#7E766D', fontSize: '12.5px' }}>{usr.joinedOn}</td>
-                        <td style={{ padding: '14px 10px', color: '#7E766D', fontSize: '12.5px' }}>{usr.lastActive}</td>
-                        <td style={{ padding: '14px 10px', textAlign: 'right' }}>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}><Eye size={15} /></button>
-                            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}><MoreVertical size={15} /></button>
-                          </div>
-                        </td>
+                <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                  <table style={{ width: '100%', minWidth: '650px', borderCollapse: 'collapse', fontSize: '12.5px' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11px', fontWeight: 600 }}>
+                        <th style={{ padding: '10px 8px' }}>Brand &amp; Contact</th>
+                        <th style={{ padding: '10px 8px' }}>Stage</th>
+                        <th style={{ padding: '10px 8px' }}>Date &amp; Time</th>
+                        <th style={{ padding: '10px 8px' }}>Host</th>
+                        <th style={{ padding: '10px 8px' }}>Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Table Footer */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #F0EBE4', fontSize: '12px', color: '#7E766D' }}>
-                <div>Showing 1 to {filteredUsers.length} of 142 users</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span>10 per page</span>
-                    <ChevronDown size={12} />
-                  </div>
-                  <div style={{ display: 'flex', gap: '4px' }}>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>&lt;</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 700 }}>1</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>2</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>3</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>4</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>5</button>
-                    <span>...</span>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>15</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>&gt;</button>
-                  </div>
+                    </thead>
+                    <tbody>
+                      {filteredCalls.map(cl => (
+                        <tr key={cl.id} style={{ borderBottom: '1px solid #FAF6F0' }}>
+                          <td style={{ padding: '12px 8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#1A1817', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9.5px', fontWeight: 700 }}>
+                                {cl.brandCode}
+                              </div>
+                              <div>
+                                <div style={{ fontWeight: 700, color: '#1A1817' }}>{cl.brand}</div>
+                                <div style={{ fontSize: '11px', color: '#7E766D' }}>{cl.contactName}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td style={{ padding: '12px 8px' }}>
+                            <span style={{ fontSize: '10.5px', padding: '2px 6px', borderRadius: '4px', fontWeight: 600, ...getStageBadgeStyle(cl.stage) }}>{cl.stage}</span>
+                          </td>
+                          <td style={{ padding: '12px 8px', color: '#1A1817' }}>{cl.callDate} {cl.callTime}</td>
+                          <td style={{ padding: '12px 8px', fontWeight: 600 }}>{cl.callHost}</td>
+                          <td style={{ padding: '12px 8px' }}>
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', ...getStatusBadgeStyle(cl.callStatus) }}>{cl.callStatus}</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            TAB 3: DISCOVERY CALLS (Screenshot 3 Match)
-        ══════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'calls' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            
-            {/* 4 Stat Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <PhoneCall size={18} color="#8A4A32" />
+          {/* ══════════════════════════════════════════════════════════════════════
+              TAB 4: BRANDS
+          ══════════════════════════════════════════════════════════════════════ */}
+          {activeTab === 'brands' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+              <div className="admin-stats-grid">
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Total Brands</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>32</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 14.3% vs May 17 – May 23</div>
                 </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Total Calls</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>156</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 12.4% vs May 17 – May 23</div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Active Brands</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>28</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 16.1% vs May 17 – May 23</div>
+                </div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>New This Week</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>4</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 33.3% vs May 17 – May 23</div>
+                </div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Onboarded to Call</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>18</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 12.5% vs May 17 – May 23</div>
+                </div>
               </div>
 
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <CheckCircle2 size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Completed</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>98</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 8.7% vs May 17 – May 23</div>
-              </div>
-
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Clock size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Scheduled</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>42</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 15.2% vs May 17 – May 23</div>
-              </div>
-
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <X size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Cancelled</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>16</div>
-                <div style={{ fontSize: '11.5px', color: '#C5221F', fontWeight: 600, marginTop: '10px' }}>↓ 5.6% vs May 17 – May 23</div>
-              </div>
-            </div>
-
-            {/* Filter Bar & Table */}
-            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', padding: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '280px' }}>
-                  <div style={{ position: 'relative', width: '100%', maxWidth: '340px' }}>
-                    <Search size={15} color="#8A8279" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+              <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', padding: '20px' }}>
+                <div className="admin-filter-row" style={{ marginBottom: '18px' }}>
+                  <div style={{ display: 'flex', gap: '10px', flex: 1, flexWrap: 'wrap' }}>
                     <input
-                      type="text"
-                      placeholder="Search by brand, name or email..."
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      style={{ width: '100%', padding: '9px 12px 9px 36px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', outline: 'none' }}
+                      type="text" placeholder="Search brands..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                      style={{ padding: '8px 12px', fontSize: '12.5px', border: '1px solid #E4DDD4', borderRadius: '6px', minWidth: '180px', flex: 1 }}
                     />
+                    <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ padding: '8px 12px', fontSize: '12.5px', border: '1px solid #E4DDD4', borderRadius: '6px', background: '#FFF' }}>
+                      <option>All Status</option><option>Active</option><option>Inactive</option>
+                    </select>
                   </div>
-
-                  <select
-                    value={stageFilter}
-                    onChange={e => setStageFilter(e.target.value)}
-                    style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF' }}
-                  >
-                    <option>All Stages</option>
-                    <option>Pre-launch</option>
-                    <option>First collection live</option>
-                    <option>₹1–5 Cr revenue</option>
-                    <option>₹5 Cr+ revenue</option>
-                  </select>
-
-                  <select
-                    value={statusFilter}
-                    onChange={e => setStatusFilter(e.target.value)}
-                    style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF' }}
-                  >
-                    <option>All Status</option>
-                    <option>Completed</option>
-                    <option>Scheduled</option>
-                    <option>Cancelled</option>
-                  </select>
-
-                  <select
-                    value={hostFilter}
-                    onChange={e => setHostFilter(e.target.value)}
-                    style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF' }}
-                  >
-                    <option>All Hosts</option>
-                    <option>Rohit Verma</option>
-                    <option>Ananya Rao</option>
-                    <option>Priya Nair</option>
-                  </select>
-                </div>
-
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => exportData('calls')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFF', border: '1px solid #E4DDD4', padding: '9px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
-                    <Download size={14} />
-                    <span>Export</span>
-                  </button>
-                  <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FAF6F0', border: '1px solid #EAE2D8', padding: '9px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
-                    <Filter size={14} />
-                    <span>Filters</span>
+                  <button onClick={() => exportData('brands')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFF', border: '1px solid #E4DDD4', padding: '8px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                    <Download size={13} /><span>Export</span>
                   </button>
                 </div>
-              </div>
 
-              {/* Calls Table */}
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11.5px', fontWeight: 600 }}>
-                      <th style={{ padding: '12px 10px' }}>Brand &amp; Contact</th>
-                      <th style={{ padding: '12px 10px' }}>Stage / Revenue Band</th>
-                      <th style={{ padding: '12px 10px' }}>Call Date &amp; Time ↓</th>
-                      <th style={{ padding: '12px 10px' }}>Call Host</th>
-                      <th style={{ padding: '12px 10px' }}>Call Status</th>
-                      <th style={{ padding: '12px 10px' }}>Outcome</th>
-                      <th style={{ padding: '12px 10px', textAlign: 'right' }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredCalls.map(cl => (
-                      <tr key={cl.id} style={{ borderBottom: '1px solid #FAF6F0' }}>
-                        <td style={{ padding: '14px 10px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: '#1A1817', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700 }}>
-                              {cl.brandCode}
-                            </div>
-                            <div>
-                              <div style={{ fontWeight: 700, color: '#1A1817', fontSize: '12.5px', letterSpacing: '0.5px' }}>{cl.brand}</div>
-                              <div style={{ fontSize: '12px', color: '#57524B' }}>{cl.contactName}</div>
-                              <div style={{ fontSize: '11px', color: '#8A7D71' }}>{cl.contactEmail}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <span style={{ fontSize: '11.5px', padding: '3px 8px', borderRadius: '6px', fontWeight: 600, ...getStageBadgeStyle(cl.stage) }}>
-                            {cl.stage}
-                          </span>
-                        </td>
-                        <td style={{ padding: '14px 10px', color: '#1A1817', fontSize: '12.5px' }}>
-                          <div style={{ fontWeight: 600 }}>{cl.callDate}</div>
-                          <div style={{ fontSize: '11.5px', color: '#7E766D' }}>{cl.callTime}</div>
-                        </td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <img src={cl.hostAvatar} alt={cl.callHost} style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
-                            <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#1A1817' }}>{cl.callHost}</span>
-                          </div>
-                        </td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 9px', borderRadius: '12px', ...getStatusBadgeStyle(cl.callStatus) }}>
-                            {cl.callStatus}
-                          </span>
-                        </td>
-                        <td style={{ padding: '14px 10px', color: '#57524B', fontSize: '12.5px' }}>{cl.outcome}</td>
-                        <td style={{ padding: '14px 10px', textAlign: 'right' }}>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}><Eye size={15} /></button>
-                            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}><MoreVertical size={15} /></button>
-                          </div>
-                        </td>
+                <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                  <table style={{ width: '100%', minWidth: '600px', borderCollapse: 'collapse', fontSize: '12.5px' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11px', fontWeight: 600 }}>
+                        <th style={{ padding: '10px 8px' }}>Brand</th>
+                        <th style={{ padding: '10px 8px' }}>Contact</th>
+                        <th style={{ padding: '10px 8px' }}>Stage</th>
+                        <th style={{ padding: '10px 8px' }}>Status</th>
+                        <th style={{ padding: '10px 8px' }}>Onboarded</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Table Footer */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #F0EBE4', fontSize: '12px', color: '#7E766D' }}>
-                <div>Showing 1 to {filteredCalls.length} of 156 calls</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span>10 per page</span>
-                    <ChevronDown size={12} />
-                  </div>
-                  <div style={{ display: 'flex', gap: '4px' }}>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>&lt;</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 700 }}>1</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>2</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>3</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>4</button>
-                    <span>...</span>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>16</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>&gt;</button>
-                  </div>
+                    </thead>
+                    <tbody>
+                      {filteredBrands.map(br => (
+                        <tr key={br.id} style={{ borderBottom: '1px solid #FAF6F0' }}>
+                          <td style={{ padding: '12px 8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#1A1817', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9.5px', fontWeight: 700 }}>
+                                {br.code}
+                              </div>
+                              <div>
+                                <div style={{ fontWeight: 700, color: '#1A1817' }}>{br.name}</div>
+                                <div style={{ fontSize: '10.5px', color: '#8A7D71' }}>{br.website}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td style={{ padding: '12px 8px' }}>
+                            <div style={{ fontWeight: 600 }}>{br.contactName}</div>
+                            <div style={{ fontSize: '10.5px', color: '#8A7D71' }}>{br.contactEmail}</div>
+                          </td>
+                          <td style={{ padding: '12px 8px' }}>
+                            <span style={{ fontSize: '10.5px', padding: '2px 6px', borderRadius: '4px', fontWeight: 600, ...getStageBadgeStyle(br.stage) }}>{br.stage}</span>
+                          </td>
+                          <td style={{ padding: '12px 8px' }}>
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', ...getStatusBadgeStyle(br.status) }}>{br.status}</span>
+                          </td>
+                          <td style={{ padding: '12px 8px', color: '#7E766D' }}>{br.onboardedOn}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            TAB 4: BRANDS (Screenshot 4 Match)
-        ══════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'brands' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            
-            {/* 4 Stat Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Building2 size={18} color="#8A4A32" />
+          {/* ══════════════════════════════════════════════════════════════════════
+              TAB 5: CASE STUDIES
+          ══════════════════════════════════════════════════════════════════════ */}
+          {activeTab === 'casestudies' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+              <div className="admin-stats-grid">
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Total Case Studies</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>24</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 14.3% vs May 17 – May 23</div>
                 </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Total Brands</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>32</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 14.3% vs May 17 – May 23</div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Published</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>20</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 11.1% vs May 17 – May 23</div>
+                </div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>In Draft</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>3</div>
+                  <div style={{ fontSize: '11px', color: '#C5221F', fontWeight: 600, marginTop: '6px' }}>↓ 25.0% vs May 17 – May 23</div>
+                </div>
+                <div style={{ background: '#FFFFFF', padding: '20px 22px', borderRadius: '12px', border: '1px solid #EFEAE3' }}>
+                  <div style={{ fontSize: '12.5px', color: '#7E766D', fontWeight: 500 }}>Total Views</div>
+                  <div style={{ fontSize: '28px', fontWeight: 700, color: '#1A1817', marginTop: '4px' }}>1,248</div>
+                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '6px' }}>↑ 18.8% vs May 17 – May 23</div>
+                </div>
               </div>
 
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Sparkles size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Active Brands</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>28</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 16.1% vs May 17 – May 23</div>
-              </div>
-
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Calendar size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>New This Week</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>4</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 33.3% vs May 17 – May 23</div>
-              </div>
-
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <CheckCheck size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Onboarded to Call</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>18</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 12.5% vs May 17 – May 23</div>
-              </div>
-            </div>
-
-            {/* Filter Bar & Table */}
-            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', padding: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '280px' }}>
-                  <div style={{ position: 'relative', width: '100%', maxWidth: '340px' }}>
-                    <Search size={15} color="#8A8279" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+              <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', padding: '20px' }}>
+                <div className="admin-filter-row" style={{ marginBottom: '18px' }}>
+                  <div style={{ display: 'flex', gap: '10px', flex: 1, flexWrap: 'wrap' }}>
                     <input
-                      type="text"
-                      placeholder="Search by brand name, contact or email..."
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      style={{ width: '100%', padding: '9px 12px 9px 36px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', outline: 'none' }}
+                      type="text" placeholder="Search case studies..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                      style={{ padding: '8px 12px', fontSize: '12.5px', border: '1px solid #E4DDD4', borderRadius: '6px', minWidth: '180px', flex: 1 }}
                     />
+                    <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ padding: '8px 12px', fontSize: '12.5px', border: '1px solid #E4DDD4', borderRadius: '6px', background: '#FFF' }}>
+                      <option>All Status</option><option>Published</option><option>Draft</option>
+                    </select>
                   </div>
-
-                  <select
-                    value={stageFilter}
-                    onChange={e => setStageFilter(e.target.value)}
-                    style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF' }}
-                  >
-                    <option>All Stages</option>
-                    <option>Pre-launch</option>
-                    <option>First collection live</option>
-                    <option>₹1–5 Cr revenue</option>
-                    <option>₹5 Cr+ revenue</option>
-                  </select>
-
-                  <select
-                    value={revenueFilter}
-                    onChange={e => setRevenueFilter(e.target.value)}
-                    style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF' }}
-                  >
-                    <option>All Revenue</option>
-                    <option>₹1–5 Cr revenue</option>
-                    <option>₹5 Cr+ revenue</option>
-                  </select>
-
-                  <select
-                    value={statusFilter}
-                    onChange={e => setStatusFilter(e.target.value)}
-                    style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF' }}
-                  >
-                    <option>All Status</option>
-                    <option>Active</option>
-                    <option>Inactive</option>
-                  </select>
-                </div>
-
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => exportData('brands')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFF', border: '1px solid #E4DDD4', padding: '9px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
-                    <Download size={14} />
-                    <span>Export</span>
-                  </button>
-                  <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FAF6F0', border: '1px solid #EAE2D8', padding: '9px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
-                    <Filter size={14} />
-                    <span>Filters</span>
+                  <button onClick={() => exportData('casestudies')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFF', border: '1px solid #E4DDD4', padding: '8px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                    <Download size={13} /><span>Export</span>
                   </button>
                 </div>
-              </div>
 
-              {/* Brands Table */}
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11.5px', fontWeight: 600 }}>
-                      <th style={{ padding: '12px 10px' }}>Brand</th>
-                      <th style={{ padding: '12px 10px' }}>Contact</th>
-                      <th style={{ padding: '12px 10px' }}>Stage / Revenue Band</th>
-                      <th style={{ padding: '12px 10px' }}>Status</th>
-                      <th style={{ padding: '12px 10px' }}>Discovery Call</th>
-                      <th style={{ padding: '12px 10px' }}>Onboarded On</th>
-                      <th style={{ padding: '12px 10px', textAlign: 'right' }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredBrands.map(br => (
-                      <tr key={br.id} style={{ borderBottom: '1px solid #FAF6F0' }}>
-                        <td style={{ padding: '14px 10px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: '#1A1817', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700 }}>
-                              {br.code}
-                            </div>
-                            <div>
-                              <div style={{ fontWeight: 700, color: '#1A1817', fontSize: '13px' }}>{br.name}</div>
-                              <div style={{ fontSize: '11.5px', color: '#8A7D71' }}>{br.website}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <div style={{ fontWeight: 600, color: '#1A1817' }}>{br.contactName}</div>
-                          <div style={{ fontSize: '11.5px', color: '#8A7D71' }}>{br.contactEmail}</div>
-                        </td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <span style={{ fontSize: '11.5px', padding: '3px 8px', borderRadius: '6px', fontWeight: 600, ...getStageBadgeStyle(br.stage) }}>
-                            {br.stage}
-                          </span>
-                        </td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 9px', borderRadius: '12px', ...getStatusBadgeStyle(br.status) }}>
-                            {br.status}
-                          </span>
-                        </td>
-                        <td style={{ padding: '14px 10px', color: '#57524B', fontSize: '12px' }}>
-                          {br.discoveryCallDate !== '–' ? (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <Calendar size={13} color="#8A7D71" />
-                              <span>{br.discoveryCallDate} {br.discoveryCallTime}</span>
-                            </div>
-                          ) : (
-                            <span>–</span>
-                          )}
-                        </td>
-                        <td style={{ padding: '14px 10px', color: '#7E766D', fontSize: '12px' }}>{br.onboardedOn}</td>
-                        <td style={{ padding: '14px 10px', textAlign: 'right' }}>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}><Eye size={15} /></button>
-                            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}><MoreVertical size={15} /></button>
-                          </div>
-                        </td>
+                <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                  <table style={{ width: '100%', minWidth: '600px', borderCollapse: 'collapse', fontSize: '12.5px' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11px', fontWeight: 600 }}>
+                        <th style={{ padding: '10px 8px' }}>Case Study</th>
+                        <th style={{ padding: '10px 8px' }}>Brand</th>
+                        <th style={{ padding: '10px 8px' }}>Industry</th>
+                        <th style={{ padding: '10px 8px' }}>Status</th>
+                        <th style={{ padding: '10px 8px' }}>Views</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Table Footer */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #F0EBE4', fontSize: '12px', color: '#7E766D' }}>
-                <div>Showing 1 to {filteredBrands.length} of 32 brands</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span>10 per page</span>
-                    <ChevronDown size={12} />
-                  </div>
-                  <div style={{ display: 'flex', gap: '4px' }}>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>&lt;</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 700 }}>1</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>2</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>3</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>4</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>&gt;</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════════════
-            TAB 5: CASE STUDIES (Screenshot 5 Match)
-        ══════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'casestudies' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            
-            {/* 4 Stat Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <BookOpen size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Total Case Studies</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>24</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 14.3% vs May 17 – May 23</div>
-              </div>
-
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Check size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Published</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>20</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 11.1% vs May 17 – May 23</div>
-              </div>
-
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Edit3 size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>In Draft</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>3</div>
-                <div style={{ fontSize: '11.5px', color: '#C5221F', fontWeight: 600, marginTop: '10px' }}>↓ 25.0% vs May 17 – May 23</div>
-              </div>
-
-              <div style={{ background: '#FFFFFF', padding: '22px 24px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#F8F1EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Eye size={18} color="#8A4A32" />
-                </div>
-                <div style={{ fontSize: '13px', color: '#7E766D', fontWeight: 500, marginTop: '14px' }}>Total Views</div>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: '#1A1817', marginTop: '6px' }}>1,248</div>
-                <div style={{ fontSize: '11.5px', color: '#137333', fontWeight: 600, marginTop: '10px' }}>↑ 18.8% vs May 17 – May 23</div>
-              </div>
-            </div>
-
-            {/* Filter Bar & Table */}
-            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', padding: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '280px' }}>
-                  <div style={{ position: 'relative', width: '100%', maxWidth: '340px' }}>
-                    <Search size={15} color="#8A8279" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
-                    <input
-                      type="text"
-                      placeholder="Search case studies by title, brand or tag..."
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      style={{ width: '100%', padding: '9px 12px 9px 36px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', outline: 'none' }}
-                    />
-                  </div>
-
-                  <select
-                    value={statusFilter}
-                    onChange={e => setStatusFilter(e.target.value)}
-                    style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF' }}
-                  >
-                    <option>All Status</option>
-                    <option>Published</option>
-                    <option>Draft</option>
-                  </select>
-
-                  <select
-                    value={industryFilter}
-                    onChange={e => setIndustryFilter(e.target.value)}
-                    style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF' }}
-                  >
-                    <option>All Industry</option>
-                    <option>D2C Fashion</option>
-                    <option>Home &amp; Living</option>
-                    <option>Women&apos;s Wear</option>
-                    <option>Menswear</option>
-                    <option>Accessories</option>
-                    <option>Athleisure</option>
-                  </select>
-
-                  <select
-                    value={sortBy}
-                    onChange={e => setSortBy(e.target.value)}
-                    style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF' }}
-                  >
-                    <option>Newest First</option>
-                    <option>Most Viewed</option>
-                    <option>Alphabetical</option>
-                  </select>
-                </div>
-
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => exportData('casestudies')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFF', border: '1px solid #E4DDD4', padding: '9px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
-                    <Download size={14} />
-                    <span>Export</span>
-                  </button>
-                  <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FAF6F0', border: '1px solid #EAE2D8', padding: '9px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
-                    <Filter size={14} />
-                    <span>Filters</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Case Studies Table */}
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11.5px', fontWeight: 600 }}>
-                      <th style={{ padding: '12px 10px' }}>Case Study</th>
-                      <th style={{ padding: '12px 10px' }}>Brand</th>
-                      <th style={{ padding: '12px 10px' }}>Industry</th>
-                      <th style={{ padding: '12px 10px' }}>Status</th>
-                      <th style={{ padding: '12px 10px' }}>Published On</th>
-                      <th style={{ padding: '12px 10px' }}>Views</th>
-                      <th style={{ padding: '12px 10px', textAlign: 'right' }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredCaseStudies.map(cs => (
-                      <tr key={cs.id} style={{ borderBottom: '1px solid #FAF6F0' }}>
-                        <td style={{ padding: '14px 10px', maxWidth: '300px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <img src={cs.imageUrl} alt={cs.title} style={{ width: '42px', height: '42px', borderRadius: '6px', objectFit: 'cover' }} />
-                            <div style={{ fontWeight: 600, color: '#1A1817', lineHeight: 1.3 }}>{cs.title}</div>
-                          </div>
-                        </td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#FAF0E6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10.5px', fontWeight: 700, color: '#8A4A32' }}>
-                              {cs.brandCode}
+                    </thead>
+                    <tbody>
+                      {filteredCaseStudies.map(cs => (
+                        <tr key={cs.id} style={{ borderBottom: '1px solid #FAF6F0' }}>
+                          <td style={{ padding: '12px 8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <img src={cs.imageUrl} alt={cs.title} style={{ width: '36px', height: '36px', borderRadius: '6px', objectFit: 'cover' }} />
+                              <div style={{ fontWeight: 600, color: '#1A1817' }}>{cs.title}</div>
                             </div>
-                            <span style={{ fontWeight: 600, color: '#1A1817' }}>{cs.brandName}</span>
-                          </div>
-                        </td>
-                        <td style={{ padding: '14px 10px', color: '#57524B', fontSize: '12.5px' }}>{cs.industry}</td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 9px', borderRadius: '12px', ...getStatusBadgeStyle(cs.status) }}>
-                            {cs.status}
-                          </span>
-                        </td>
-                        <td style={{ padding: '14px 10px', color: '#7E766D', fontSize: '12.5px' }}>{cs.publishedOn}</td>
-                        <td style={{ padding: '14px 10px', color: '#1A1817', fontWeight: 600, fontSize: '12.5px' }}>{cs.views}</td>
-                        <td style={{ padding: '14px 10px', textAlign: 'right' }}>
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}><Eye size={15} /></button>
-                            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}><Edit3 size={15} /></button>
-                            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}><MoreVertical size={15} /></button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Table Footer */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #F0EBE4', fontSize: '12px', color: '#7E766D' }}>
-                <div>Showing 1 to {filteredCaseStudies.length} of 24 case studies</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span>10 per page</span>
-                    <ChevronDown size={12} />
-                  </div>
-                  <div style={{ display: 'flex', gap: '4px' }}>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>&lt;</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 700 }}>1</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>2</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>3</button>
-                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #E4DDD4', background: '#FFF' }}>&gt;</button>
-                  </div>
+                          </td>
+                          <td style={{ padding: '12px 8px', fontWeight: 600 }}>{cs.brandName}</td>
+                          <td style={{ padding: '12px 8px', color: '#57524B' }}>{cs.industry}</td>
+                          <td style={{ padding: '12px 8px' }}>
+                            <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', ...getStatusBadgeStyle(cs.status) }}>{cs.status}</span>
+                          </td>
+                          <td style={{ padding: '12px 8px', fontWeight: 600 }}>{cs.views}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            TAB 6: ENQUIRIES / LEADS COMPLETE VIEW
-        ══════════════════════════════════════════════════════════════════════ */}
-        {activeTab === 'enquiries' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', padding: '24px' }}>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '280px' }}>
-                  <div style={{ position: 'relative', width: '100%', maxWidth: '340px' }}>
-                    <Search size={15} color="#8A8279" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
-                    <input
-                      type="text"
-                      placeholder="Search enquiries..."
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      style={{ width: '100%', padding: '9px 12px 9px 36px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', outline: 'none' }}
-                    />
-                  </div>
-
-                  <select
-                    value={statusFilter}
-                    onChange={e => setStatusFilter(e.target.value)}
-                    style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF' }}
-                  >
-                    <option>All Status</option>
-                    <option>New</option>
-                    <option>Contacted</option>
-                    <option>Qualified</option>
-                    <option>In Discussion</option>
-                    <option>Discovery Call</option>
-                  </select>
-
-                  <select
-                    value={stageFilter}
-                    onChange={e => setStageFilter(e.target.value)}
-                    style={{ padding: '9px 14px', fontSize: '13px', border: '1px solid #E4DDD4', borderRadius: '8px', background: '#FFF' }}
-                  >
-                    <option>All Stages</option>
-                    <option>Pre-launch</option>
-                    <option>First collection live</option>
-                    <option>₹1–5 Cr revenue</option>
-                    <option>₹5 Cr+ revenue</option>
+          {/* ══════════════════════════════════════════════════════════════════════
+              TAB 6: ENQUIRIES / LEADS COMPLETE VIEW
+          ══════════════════════════════════════════════════════════════════════ */}
+          {activeTab === 'enquiries' && (
+            <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', padding: '20px' }}>
+              <div className="admin-filter-row" style={{ marginBottom: '18px' }}>
+                <div style={{ display: 'flex', gap: '10px', flex: 1, flexWrap: 'wrap' }}>
+                  <input
+                    type="text" placeholder="Search enquiries..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                    style={{ padding: '8px 12px', fontSize: '12.5px', border: '1px solid #E4DDD4', borderRadius: '6px', minWidth: '180px', flex: 1 }}
+                  />
+                  <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ padding: '8px 12px', fontSize: '12.5px', border: '1px solid #E4DDD4', borderRadius: '6px', background: '#FFF' }}>
+                    <option>All Status</option><option>New</option><option>Contacted</option><option>Qualified</option><option>In Discussion</option><option>Discovery Call</option>
                   </select>
                 </div>
-
-                <button onClick={() => exportData('enquiries')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFF', border: '1px solid #E4DDD4', padding: '9px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
-                  <Download size={14} />
-                  <span>Export CSV</span>
+                <button onClick={() => exportData('enquiries')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFF', border: '1px solid #E4DDD4', padding: '8px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                  <Download size={13} /><span>Export CSV</span>
                 </button>
               </div>
 
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+              <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                <table style={{ width: '100%', minWidth: '600px', borderCollapse: 'collapse', fontSize: '12.5px' }}>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11.5px', fontWeight: 600 }}>
-                      <th style={{ padding: '12px 10px' }}>Name</th>
-                      <th style={{ padding: '12px 10px' }}>Brand</th>
-                      <th style={{ padding: '12px 10px' }}>Stage / Revenue</th>
-                      <th style={{ padding: '12px 10px' }}>Source</th>
-                      <th style={{ padding: '12px 10px' }}>Enquiry Date</th>
-                      <th style={{ padding: '12px 10px' }}>Status</th>
-                      <th style={{ padding: '12px 10px', textAlign: 'right' }}>Actions</th>
+                    <tr style={{ borderBottom: '1px solid #F0EBE4', textAlign: 'left', color: '#7E766D', fontSize: '11px', fontWeight: 600 }}>
+                      <th style={{ padding: '10px 8px' }}>Name</th>
+                      <th style={{ padding: '10px 8px' }}>Brand</th>
+                      <th style={{ padding: '10px 8px' }}>Stage</th>
+                      <th style={{ padding: '10px 8px' }}>Status</th>
+                      <th style={{ padding: '10px 8px', textAlign: 'right' }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredEnquiries.map(enq => (
                       <tr key={enq.id} style={{ borderBottom: '1px solid #FAF6F0' }}>
-                        <td style={{ padding: '14px 10px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#FBE8D6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, color: '#8A4A32' }}>
-                              {enq.name.split(' ').map(n => n[0]).join('')}
-                            </div>
-                            <div>
-                              <div style={{ fontWeight: 600, color: '#1A1817' }}>{enq.name}</div>
-                              <div style={{ fontSize: '11.5px', color: '#8A7D71' }}>{enq.email}</div>
-                            </div>
-                          </div>
+                        <td style={{ padding: '12px 8px' }}>
+                          <div style={{ fontWeight: 600, color: '#1A1817' }}>{enq.name}</div>
+                          <div style={{ fontSize: '11px', color: '#8A7D71' }}>{enq.email}</div>
                         </td>
-                        <td style={{ padding: '14px 10px', fontWeight: 600, color: '#1A1817' }}>{enq.brand}</td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <span style={{ fontSize: '11.5px', padding: '3px 8px', borderRadius: '6px', fontWeight: 600, ...getStageBadgeStyle(enq.stage) }}>
-                            {enq.stage}
-                          </span>
+                        <td style={{ padding: '12px 8px', fontWeight: 600 }}>{enq.brand}</td>
+                        <td style={{ padding: '12px 8px' }}>
+                          <span style={{ fontSize: '10.5px', padding: '2px 6px', borderRadius: '4px', fontWeight: 600, ...getStageBadgeStyle(enq.stage) }}>{enq.stage}</span>
                         </td>
-                        <td style={{ padding: '14px 10px', color: '#57524B' }}>{enq.source}</td>
-                        <td style={{ padding: '14px 10px', color: '#7E766D' }}>{enq.date}</td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 9px', borderRadius: '12px', ...getStatusBadgeStyle(enq.status) }}>
-                            {enq.status}
-                          </span>
+                        <td style={{ padding: '12px 8px' }}>
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', ...getStatusBadgeStyle(enq.status) }}>{enq.status}</span>
                         </td>
-                        <td style={{ padding: '14px 10px', textAlign: 'right' }}>
-                          <button
-                            onClick={() => { setSelectedEnquiry(enq); setActiveModal('view-enquiry'); }}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}
-                          >
-                            <Eye size={16} />
+                        <td style={{ padding: '12px 8px', textAlign: 'right' }}>
+                          <button onClick={() => { setSelectedEnquiry(enq); setActiveModal('view-enquiry'); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#7E766D' }}>
+                            <Eye size={15} />
                           </button>
                         </td>
                       </tr>
@@ -2391,45 +1477,42 @@ export default function AdminDashboardPage() {
                 </table>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            TAB 7, 8, 9: INSIGHTS, SETTINGS, INTEGRATIONS
-        ══════════════════════════════════════════════════════════════════════ */}
-        {(activeTab === 'insights' || activeTab === 'settings' || activeTab === 'integrations') && (
-          <div style={{ background: '#FFFFFF', padding: '40px', borderRadius: '12px', border: '1px solid #EFEAE3', textAlign: 'center' }}>
-            <div style={{ width: '54px', height: '54px', borderRadius: '50%', background: '#F8EDE5', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <Settings size={26} color="#5B1F28" />
+          {/* ══════════════════════════════════════════════════════════════════════
+              TAB 7, 8, 9: INSIGHTS, SETTINGS, INTEGRATIONS
+          ══════════════════════════════════════════════════════════════════════ */}
+          {(activeTab === 'insights' || activeTab === 'settings' || activeTab === 'integrations') && (
+            <div style={{ background: '#FFFFFF', padding: '36px 20px', borderRadius: '12px', border: '1px solid #EFEAE3', textAlign: 'center' }}>
+              <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#F8EDE5', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+                <Settings size={24} color="#5B1F28" />
+              </div>
+              <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1A1817', margin: '0 0 8px', textTransform: 'capitalize' }}>
+                {activeTab} Management
+              </h3>
+              <p style={{ fontSize: '13.5px', color: '#7E766D', maxWidth: '400px', margin: '0 auto 20px', lineHeight: 1.5 }}>
+                Configure your system preferences, API endpoints, webhook subscriptions, and team permissions.
+              </p>
+              <button onClick={() => setActiveTab('dashboard')} style={{ background: '#5B1F28', color: '#FFF', border: 'none', padding: '10px 20px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                Back to Dashboard
+              </button>
             </div>
-            <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#1A1817', margin: '0 0 8px', textTransform: 'capitalize' }}>
-              {activeTab} Management
-            </h3>
-            <p style={{ fontSize: '14px', color: '#7E766D', maxWidth: '440px', margin: '0 auto 24px', lineHeight: 1.6 }}>
-              Configure your system preferences, API endpoints, webhook subscriptions, and team role permissions.
-            </p>
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              style={{ background: '#5B1F28', color: '#FFF', border: 'none', padding: '11px 24px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}
-            >
-              Back to Dashboard
-            </button>
-          </div>
-        )}
+          )}
 
-      </main>
+        </main>
+      </div>
 
       {/* ── MODALS ───────────────────────────────────────────────────────────── */}
 
       {/* Modal: View / Edit Enquiry */}
       {activeModal === 'view-enquiry' && selectedEnquiry && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <div style={{ background: '#FFFFFF', width: '100%', maxWidth: '520px', borderRadius: '16px', padding: '28px', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0 }}>Enquiry Details</h3>
-              <button onClick={() => setActiveModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} /></button>
+          <div style={{ background: '#FFFFFF', width: '100%', maxWidth: '480px', borderRadius: '16px', padding: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+              <h3 style={{ fontSize: '17px', fontWeight: 700, margin: 0 }}>Enquiry Details</h3>
+              <button onClick={() => setActiveModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13.5px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px' }}>
               <div><strong>Name:</strong> {selectedEnquiry.name}</div>
               <div><strong>Email:</strong> <a href={`mailto:${selectedEnquiry.email}`} style={{ color: '#5B1F28' }}>{selectedEnquiry.email}</a></div>
               <div><strong>Phone:</strong> {selectedEnquiry.phone || '–'}</div>
@@ -2438,14 +1521,14 @@ export default function AdminDashboardPage() {
               <div><strong>Source:</strong> {selectedEnquiry.source}</div>
               <div><strong>Date:</strong> {selectedEnquiry.date}</div>
               {selectedEnquiry.notes && (
-                <div style={{ background: '#FAF6F0', padding: '12px', borderRadius: '8px' }}>
+                <div style={{ background: '#FAF6F0', padding: '10px', borderRadius: '8px' }}>
                   <strong>Notes:</strong>
                   <div style={{ marginTop: '4px', color: '#555' }}>{selectedEnquiry.notes}</div>
                 </div>
               )}
               <div>
                 <strong>Update Status:</strong>
-                <div style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '6px', marginTop: '6px', flexWrap: 'wrap' }}>
                   {(['New', 'Contacted', 'Qualified', 'In Discussion', 'Discovery Call'] as const).map(st => (
                     <button
                       key={st}
@@ -2454,14 +1537,10 @@ export default function AdminDashboardPage() {
                         setSelectedEnquiry({ ...selectedEnquiry, status: st });
                       }}
                       style={{
-                        padding: '6px 12px',
-                        borderRadius: '20px',
-                        fontSize: '11.5px',
-                        fontWeight: 600,
+                        padding: '5px 10px', borderRadius: '16px', fontSize: '11px', fontWeight: 600,
                         border: selectedEnquiry.status === st ? '2px solid #5B1F28' : '1px solid #E4DDD4',
                         background: selectedEnquiry.status === st ? '#F7EDE6' : '#FFF',
-                        color: selectedEnquiry.status === st ? '#5B1F28' : '#666',
-                        cursor: 'pointer'
+                        color: selectedEnquiry.status === st ? '#5B1F28' : '#666', cursor: 'pointer'
                       }}
                     >
                       {st}
@@ -2470,8 +1549,8 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px' }}>
-              <button onClick={() => setActiveModal(null)} style={{ background: '#1A1817', color: '#FFF', padding: '10px 20px', borderRadius: '8px', border: 'none', fontWeight: 600, cursor: 'pointer' }}>Close</button>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+              <button onClick={() => setActiveModal(null)} style={{ background: '#1A1817', color: '#FFF', padding: '9px 18px', borderRadius: '8px', border: 'none', fontWeight: 600, cursor: 'pointer', fontSize: '12px' }}>Close</button>
             </div>
           </div>
         </div>
@@ -2480,33 +1559,30 @@ export default function AdminDashboardPage() {
       {/* Modal: Add User */}
       {activeModal === 'add-user' && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <form onSubmit={handleAddUser} style={{ background: '#FFFFFF', width: '100%', maxWidth: '480px', borderRadius: '16px', padding: '28px', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0 }}>Add New Team User</h3>
-              <button type="button" onClick={() => setActiveModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} /></button>
+          <form onSubmit={handleAddUser} style={{ background: '#FFFFFF', width: '100%', maxWidth: '440px', borderRadius: '16px', padding: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+              <h3 style={{ fontSize: '17px', fontWeight: 700, margin: 0 }}>Add New Team User</h3>
+              <button type="button" onClick={() => setActiveModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Full Name *</label>
-                <input required type="text" placeholder="e.g. Vikram Singhania" value={newUser.name} onChange={e => setNewUser({ ...newUser, name: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
+                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Full Name *</label>
+                <input required type="text" placeholder="e.g. Vikram Singhania" value={newUser.name} onChange={e => setNewUser({ ...newUser, name: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Email Address *</label>
-                <input required type="email" placeholder="vikram@brand.com" value={newUser.email} onChange={e => setNewUser({ ...newUser, email: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
+                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Email Address *</label>
+                <input required type="email" placeholder="vikram@brand.com" value={newUser.email} onChange={e => setNewUser({ ...newUser, email: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Role</label>
-                <select value={newUser.role} onChange={e => setNewUser({ ...newUser, role: e.target.value as any })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }}>
-                  <option>Admin</option>
-                  <option>Editor</option>
-                  <option>Manager</option>
-                  <option>Viewer</option>
+                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Role</label>
+                <select value={newUser.role} onChange={e => setNewUser({ ...newUser, role: e.target.value as any })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }}>
+                  <option>Admin</option><option>Editor</option><option>Manager</option><option>Viewer</option>
                 </select>
               </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '24px' }}>
-              <button type="button" onClick={() => setActiveModal(null)} style={{ padding: '10px 18px', borderRadius: '8px', border: '1px solid #DDD', background: '#FFF', cursor: 'pointer' }}>Cancel</button>
-              <button type="submit" style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 600, cursor: 'pointer' }}>Save User</button>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '20px' }}>
+              <button type="button" onClick={() => setActiveModal(null)} style={{ padding: '9px 16px', borderRadius: '8px', border: '1px solid #DDD', background: '#FFF', cursor: 'pointer', fontSize: '12px' }}>Cancel</button>
+              <button type="submit" style={{ padding: '9px 18px', borderRadius: '8px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 600, cursor: 'pointer', fontSize: '12px' }}>Save User</button>
             </div>
           </form>
         </div>
@@ -2515,48 +1591,36 @@ export default function AdminDashboardPage() {
       {/* Modal: Book Discovery Call */}
       {activeModal === 'book-call' && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <form onSubmit={handleBookCall} style={{ background: '#FFFFFF', width: '100%', maxWidth: '480px', borderRadius: '16px', padding: '28px', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0 }}>Schedule Discovery Call</h3>
-              <button type="button" onClick={() => setActiveModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} /></button>
+          <form onSubmit={handleBookCall} style={{ background: '#FFFFFF', width: '100%', maxWidth: '440px', borderRadius: '16px', padding: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+              <h3 style={{ fontSize: '17px', fontWeight: 700, margin: 0 }}>Schedule Discovery Call</h3>
+              <button type="button" onClick={() => setActiveModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Brand Name *</label>
-                <input required type="text" placeholder="e.g. AURELIA" value={newCall.brand} onChange={e => setNewCall({ ...newCall, brand: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
+                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Brand Name *</label>
+                <input required type="text" placeholder="e.g. AURELIA" value={newCall.brand} onChange={e => setNewCall({ ...newCall, brand: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Contact Person *</label>
-                  <input required type="text" placeholder="Priya Sharma" value={newCall.contactName} onChange={e => setNewCall({ ...newCall, contactName: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
+                  <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Contact Person *</label>
+                  <input required type="text" placeholder="Priya Sharma" value={newCall.contactName} onChange={e => setNewCall({ ...newCall, contactName: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Email *</label>
-                  <input required type="email" placeholder="priya@aurelia.com" value={newCall.contactEmail} onChange={e => setNewCall({ ...newCall, contactEmail: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
-                </div>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Call Date</label>
-                  <input type="text" value={newCall.callDate} onChange={e => setNewCall({ ...newCall, callDate: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Time Slot</label>
-                  <input type="text" value={newCall.callTime} onChange={e => setNewCall({ ...newCall, callTime: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
+                  <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Email *</label>
+                  <input required type="email" placeholder="priya@brand.com" value={newCall.contactEmail} onChange={e => setNewCall({ ...newCall, contactEmail: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
                 </div>
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Assigned Host</label>
-                <select value={newCall.callHost} onChange={e => setNewCall({ ...newCall, callHost: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }}>
-                  <option>Rohit Verma</option>
-                  <option>Ananya Rao</option>
-                  <option>Priya Nair</option>
+                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Assigned Host</label>
+                <select value={newCall.callHost} onChange={e => setNewCall({ ...newCall, callHost: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }}>
+                  <option>Rohit Verma</option><option>Ananya Rao</option><option>Priya Nair</option>
                 </select>
               </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '24px' }}>
-              <button type="button" onClick={() => setActiveModal(null)} style={{ padding: '10px 18px', borderRadius: '8px', border: '1px solid #DDD', background: '#FFF', cursor: 'pointer' }}>Cancel</button>
-              <button type="submit" style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 600, cursor: 'pointer' }}>Book Call</button>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '20px' }}>
+              <button type="button" onClick={() => setActiveModal(null)} style={{ padding: '9px 16px', borderRadius: '8px', border: '1px solid #DDD', background: '#FFF', cursor: 'pointer', fontSize: '12px' }}>Cancel</button>
+              <button type="submit" style={{ padding: '9px 18px', borderRadius: '8px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 600, cursor: 'pointer', fontSize: '12px' }}>Book Call</button>
             </div>
           </form>
         </div>
@@ -2565,34 +1629,30 @@ export default function AdminDashboardPage() {
       {/* Modal: Add Brand */}
       {activeModal === 'add-brand' && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <form onSubmit={handleAddBrand} style={{ background: '#FFFFFF', width: '100%', maxWidth: '480px', borderRadius: '16px', padding: '28px', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0 }}>Add New Brand</h3>
-              <button type="button" onClick={() => setActiveModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} /></button>
+          <form onSubmit={handleAddBrand} style={{ background: '#FFFFFF', width: '100%', maxWidth: '440px', borderRadius: '16px', padding: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+              <h3 style={{ fontSize: '17px', fontWeight: 700, margin: 0 }}>Add New Brand</h3>
+              <button type="button" onClick={() => setActiveModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Brand Name *</label>
-                <input required type="text" placeholder="e.g. MOIRAE" value={newBrand.name} onChange={e => setNewBrand({ ...newBrand, name: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Website Domain</label>
-                <input type="text" placeholder="moirae.in" value={newBrand.website} onChange={e => setNewBrand({ ...newBrand, website: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
+                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Brand Name *</label>
+                <input required type="text" placeholder="e.g. MOIRAE" value={newBrand.name} onChange={e => setNewBrand({ ...newBrand, name: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Founder / Contact *</label>
-                  <input required type="text" placeholder="Aman Gupta" value={newBrand.contactName} onChange={e => setNewBrand({ ...newBrand, contactName: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
+                  <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Contact Person *</label>
+                  <input required type="text" placeholder="Aman Gupta" value={newBrand.contactName} onChange={e => setNewBrand({ ...newBrand, contactName: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Email *</label>
-                  <input required type="email" placeholder="aman@moirae.in" value={newBrand.contactEmail} onChange={e => setNewBrand({ ...newBrand, contactEmail: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
+                  <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Email *</label>
+                  <input required type="email" placeholder="aman@moirae.in" value={newBrand.contactEmail} onChange={e => setNewBrand({ ...newBrand, contactEmail: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
                 </div>
               </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '24px' }}>
-              <button type="button" onClick={() => setActiveModal(null)} style={{ padding: '10px 18px', borderRadius: '8px', border: '1px solid #DDD', background: '#FFF', cursor: 'pointer' }}>Cancel</button>
-              <button type="submit" style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 600, cursor: 'pointer' }}>Save Brand</button>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '20px' }}>
+              <button type="button" onClick={() => setActiveModal(null)} style={{ padding: '9px 16px', borderRadius: '8px', border: '1px solid #DDD', background: '#FFF', cursor: 'pointer', fontSize: '12px' }}>Cancel</button>
+              <button type="submit" style={{ padding: '9px 18px', borderRadius: '8px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 600, cursor: 'pointer', fontSize: '12px' }}>Save Brand</button>
             </div>
           </form>
         </div>
@@ -2601,58 +1661,37 @@ export default function AdminDashboardPage() {
       {/* Modal: Add Case Study */}
       {activeModal === 'add-casestudy' && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <form onSubmit={handleAddCaseStudy} style={{ background: '#FFFFFF', width: '100%', maxWidth: '480px', borderRadius: '16px', padding: '28px', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0 }}>Add New Case Study</h3>
-              <button type="button" onClick={() => setActiveModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} /></button>
+          <form onSubmit={handleAddCaseStudy} style={{ background: '#FFFFFF', width: '100%', maxWidth: '440px', borderRadius: '16px', padding: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+              <h3 style={{ fontSize: '17px', fontWeight: 700, margin: 0 }}>Add New Case Study</h3>
+              <button type="button" onClick={() => setActiveModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Headline / Title *</label>
-                <input required type="text" placeholder="e.g. How Maison 10 Built a 100% On-Demand Supply Chain" value={newCaseStudy.title} onChange={e => setNewCaseStudy({ ...newCaseStudy, title: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Brand Name *</label>
-                <input required type="text" placeholder="Maison 10" value={newCaseStudy.brandName} onChange={e => setNewCaseStudy({ ...newCaseStudy, brandName: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }} />
+                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Headline / Title *</label>
+                <input required type="text" placeholder="How Maison 10 Built On-Demand Sourcing" value={newCaseStudy.title} onChange={e => setNewCaseStudy({ ...newCaseStudy, title: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Industry</label>
-                  <select value={newCaseStudy.industry} onChange={e => setNewCaseStudy({ ...newCaseStudy, industry: e.target.value })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }}>
-                    <option>D2C Fashion</option>
-                    <option>Home &amp; Living</option>
-                    <option>Women&apos;s Wear</option>
-                    <option>Menswear</option>
-                    <option>Accessories</option>
-                    <option>Athleisure</option>
-                  </select>
+                  <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Brand Name *</label>
+                  <input required type="text" placeholder="Maison 10" value={newCaseStudy.brandName} onChange={e => setNewCaseStudy({ ...newCaseStudy, brandName: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Status</label>
-                  <select value={newCaseStudy.status} onChange={e => setNewCaseStudy({ ...newCaseStudy, status: e.target.value as any })} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '13px' }}>
-                    <option>Published</option>
-                    <option>Draft</option>
+                  <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Industry</label>
+                  <select value={newCaseStudy.industry} onChange={e => setNewCaseStudy({ ...newCaseStudy, industry: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }}>
+                    <option>D2C Fashion</option><option>Home &amp; Living</option><option>Women&apos;s Wear</option><option>Menswear</option><option>Accessories</option><option>Athleisure</option>
                   </select>
                 </div>
               </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '24px' }}>
-              <button type="button" onClick={() => setActiveModal(null)} style={{ padding: '10px 18px', borderRadius: '8px', border: '1px solid #DDD', background: '#FFF', cursor: 'pointer' }}>Cancel</button>
-              <button type="submit" style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 600, cursor: 'pointer' }}>Save Case Study</button>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '20px' }}>
+              <button type="button" onClick={() => setActiveModal(null)} style={{ padding: '9px 16px', borderRadius: '8px', border: '1px solid #DDD', background: '#FFF', cursor: 'pointer', fontSize: '12px' }}>Cancel</button>
+              <button type="submit" style={{ padding: '9px 18px', borderRadius: '8px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 600, cursor: 'pointer', fontSize: '12px' }}>Save Case Study</button>
             </div>
           </form>
         </div>
       )}
 
     </div>
-  );
-}
-
-// Inline Sub-Icon helper
-function ArrowRightIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-      <path d="M2.5 7H11.5M11.5 7L7.5 3M11.5 7L7.5 11" stroke="#5B1F28" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
   );
 }
