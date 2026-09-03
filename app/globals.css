@@ -170,10 +170,24 @@ a:hover {
   padding-bottom: 4px;
 }
 
+.mobile-stats-card {
+  display: none;
+}
+
+.desktop-stats-row {
+  display: flex;
+}
+
 /* Mobile Breakpoint Styles (< 768px) matching reference design */
 @media (max-width: 768px) {
   .mobile-only-break {
     display: inline !important;
+  }
+  .desktop-stats-row {
+    display: none !important;
+  }
+  .mobile-stats-card {
+    display: block !important;
   }
   .desktop-logo-img {
     display: none !important;

@@ -162,12 +162,26 @@ export default function Home1Page() {
             </div>
 
             {/* Headline */}
-            <h1 className="hero-headline-responsive">
+            <h1 className="hero-headline-responsive" style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 400,
+              fontSize: '70px',
+              lineHeight: 1.05,
+              letterSpacing: '-0.5px',
+              marginBottom: '26px',
+              color: '#171615'
+            }}>
               We build<br className="mobile-only-break" /> fashion brands<br className="mobile-only-break" /> that lead,<br className="mobile-only-break" /> <em style={{ fontStyle: 'italic', color: '#171615' }}>not follow.</em>
             </h1>
 
             {/* Subtitle */}
-            <p className="hero-body-responsive">
+            <p className="hero-body-responsive" style={{
+              fontSize: '17px',
+              lineHeight: 1.65,
+              color: '#57524B',
+              maxWidth: '520px',
+              marginBottom: '38px'
+            }}>
               From <strong>market intelligence</strong> to <strong>brand launch</strong> and scale, we partner with founders to build iconic fashion brands that win in the real world.
             </p>
 
@@ -176,6 +190,21 @@ export default function Home1Page() {
               <button
                 className="hero-cta-btn-mobile"
                 onClick={(e) => openBooking('Launch Sprint', e)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  background: '#5B1F28',
+                  color: '#FBFAF7',
+                  padding: '16px 28px',
+                  fontSize: '11.5px',
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                  border: 'none',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(91,31,40,0.25)'
+                }}
               >
                 BOOK A DISCOVERY CALL <span style={{ fontSize: '14px' }}>↗</span>
               </button>
@@ -183,13 +212,49 @@ export default function Home1Page() {
               <a
                 href="#offerings"
                 className="hero-sec-link-mobile"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  color: '#171615',
+                  fontSize: '12px',
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  borderBottom: '1px solid #171615',
+                  paddingBottom: '4px'
+                }}
               >
                 SEE HOW WE WORK <span>→</span>
               </a>
             </div>
 
-            {/* Floating Card Stats Container */}
-            <div className="stats-card-container">
+            {/* Desktop Horizontal Stats Row (Hidden on mobile) */}
+            <div className="desktop-stats-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '28px', paddingTop: '28px', borderTop: '1px solid #EAE4D9' }}>
+              <div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>10+</div>
+                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>Years of Experience</div>
+              </div>
+              <div style={{ width: '1px', background: '#EAE4D9' }} />
+              <div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>50+</div>
+                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>Brands Launched &amp; Scaled</div>
+              </div>
+              <div style={{ width: '1px', background: '#EAE4D9' }} />
+              <div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>25+</div>
+                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>Markets Worldwide</div>
+              </div>
+              <div style={{ width: '1px', background: '#EAE4D9' }} />
+              <div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>EnF</div>
+                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>End-to-End FashionOS</div>
+              </div>
+            </div>
+
+            {/* Mobile 2x2 Floating Stats Card (Hidden on desktop) */}
+            <div className="mobile-stats-card stats-card-container">
               <div className="stats-grid-responsive">
                 <div className="stats-item stats-item-0">
                   <User size={24} style={{ color: '#57524B', strokeWidth: 1.4, margin: '0 auto 8px', display: 'block' }} />
