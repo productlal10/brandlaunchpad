@@ -230,6 +230,16 @@ export default function AdminDashboardPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
+  // Sign Up & Auth Portal State
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [signupName, setSignupName] = useState<string>('');
+  const [signupEmail, setSignupEmail] = useState<string>('');
+  const [signupRole, setSignupRole] = useState<'Admin' | 'Manager' | 'Editor'>('Admin');
+  const [signupPassword, setSignupPassword] = useState<string>('');
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState<string>('');
+  const [signupError, setSignupError] = useState<string | null>(null);
+  const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
+
   // Dynamic Date Ranges
   const dynamicDateRanges = useMemo(() => {
     const now = new Date();
@@ -437,6 +447,78 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleQuickLogin = (username: string, pass: string) => {
+    setLoginUsername(username);
+    setLoginPassword(pass);
+    setLoginError(null);
+    setIsLoggingIn(true);
+
+    const userKey = username.trim().toLowerCase();
+    const account = AUTHORIZED_ACCOUNTS[userKey];
+
+    if (account) {
+      try {
+        localStorage.setItem('lal10_auth_user', JSON.stringify(account.profile));
+      } catch (err) {}
+      setTimeout(() => {
+        setCurrentUser(account.profile);
+        setIsAuthenticated(true);
+        setIsLoggingIn(false);
+      }, 200);
+    }
+  };
+
+  const handleSignupSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSignupError(null);
+
+    if (!signupName.trim() || !signupEmail.trim() || !signupPassword.trim()) {
+      setSignupError('Please fill in all required fields.');
+      return;
+    }
+
+    if (signupPassword !== signupConfirmPassword) {
+      setSignupError('Passwords do not match. Please verify.');
+      return;
+    }
+
+    setIsSigningUp(true);
+
+    const initials = signupName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U';
+    const profile: AuthUser = {
+      username: signupEmail.split('@')[0].toLowerCase(),
+      name: signupName.trim(),
+      email: signupEmail.trim(),
+      role: signupRole,
+      avatarInitials: initials,
+      avatarColor: '#5B1F28'
+    };
+
+    const newUserItem: UserItem = {
+      id: `usr-${Date.now()}`,
+      name: signupName.trim(),
+      email: signupEmail.trim(),
+      role: signupRole,
+      status: 'Active',
+      joinedOn: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      lastActive: 'Active now',
+      avatarInitials: initials,
+      avatarColor: '#5B1F28'
+    };
+
+    setUsers(prev => [newUserItem, ...prev]);
+
+    try {
+      localStorage.setItem('lal10_auth_user', JSON.stringify(profile));
+    } catch {}
+
+    setTimeout(() => {
+      setCurrentUser(profile);
+      setIsAuthenticated(true);
+      setIsSigningUp(false);
+    }, 300);
+  };
+
   const handleLogout = () => {
     try {
       localStorage.removeItem('lal10_auth_user');
@@ -445,6 +527,7 @@ export default function AdminDashboardPage() {
     setLoginUsername('');
     setLoginPassword('');
     setLoginError(null);
+    setSignupError(null);
   };
 
   // Update lead status in state and via API
@@ -738,7 +821,7 @@ export default function AdminDashboardPage() {
   }
 
   // ════════════════════════════════════════════════════════════════════════════
-  // 1. LOGIN PORTAL
+  // 1. LOGIN & SIGN UP PORTAL
   // ════════════════════════════════════════════════════════════════════════════
   if (!isAuthenticated) {
     return (
@@ -753,126 +836,354 @@ export default function AdminDashboardPage() {
       }}>
         <div style={{
           width: '100%',
-          maxWidth: '420px',
+          maxWidth: '460px',
           background: '#FFFFFF',
           borderRadius: '16px',
           border: '1px solid #EFEAE3',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.06)',
+          boxShadow: '0 16px 50px rgba(0,0,0,0.08)',
           padding: '36px 32px'
         }}>
-          <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '32px', fontWeight: 600, letterSpacing: '4px', color: '#1A1817' }}>
+          {/* Header Logo */}
+          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '34px', fontWeight: 600, letterSpacing: '5px', color: '#1A1817' }}>
               LAL10
             </div>
-            <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#9B9084', fontWeight: 700, marginTop: '2px', textTransform: 'uppercase' }}>
-              Operations Portal
+            <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#9B9084', fontWeight: 700, marginTop: '3px', textTransform: 'uppercase' }}>
+              Operations &amp; Admin Portal
             </div>
           </div>
 
-          <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '6px' }}>
-                Username / Team Email
-              </label>
-              <input
-                type="text"
-                required
-                value={loginUsername}
-                onChange={e => setLoginUsername(e.target.value)}
-                placeholder="e.g. maneet / sanchit / buitlal10"
-                style={{
-                  width: '100%',
-                  padding: '11px 14px',
-                  borderRadius: '8px',
-                  border: '1px solid #DCD6CC',
-                  fontSize: '13.5px',
-                  outline: 'none',
-                  color: '#1A1817'
-                }}
-              />
-            </div>
+          {/* Mode Switcher Tabs */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: '#F5EFE6', padding: '4px', borderRadius: '10px', marginBottom: '24px' }}>
+            <button
+              type="button"
+              onClick={() => { setAuthMode('login'); setLoginError(null); setSignupError(null); }}
+              style={{
+                padding: '9px', borderRadius: '8px', border: 'none', fontSize: '13px', fontWeight: 700,
+                background: authMode === 'login' ? '#FFFFFF' : 'transparent',
+                color: authMode === 'login' ? '#5B1F28' : '#7D756C',
+                boxShadow: authMode === 'login' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
+                cursor: 'pointer', transition: 'all 0.15s ease'
+              }}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => { setAuthMode('signup'); setLoginError(null); setSignupError(null); }}
+              style={{
+                padding: '9px', borderRadius: '8px', border: 'none', fontSize: '13px', fontWeight: 700,
+                background: authMode === 'signup' ? '#FFFFFF' : 'transparent',
+                color: authMode === 'signup' ? '#5B1F28' : '#7D756C',
+                boxShadow: authMode === 'signup' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
+                cursor: 'pointer', transition: 'all 0.15s ease'
+              }}
+            >
+              Sign Up / Register
+            </button>
+          </div>
 
+          {/* TAB 1: SIGN IN */}
+          {authMode === 'login' ? (
             <div>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '6px' }}>
-                Password
-              </label>
-              <div style={{ position: 'relative' }}>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={loginPassword}
-                  onChange={e => setLoginPassword(e.target.value)}
-                  placeholder="••••••••••••"
+              {/* Quick Login One-Click Chips */}
+              <div style={{ marginBottom: '20px', padding: '14px', background: '#FAF6F0', borderRadius: '10px', border: '1px solid #EFE5D8' }}>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#8A5336', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Sparkles size={13} color="#8A5336" />
+                  <span>1-Click Team Quick Access</span>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {[
+                    { name: 'Super Admin', user: 'buitlal10', pass: 'founder@lal10@2026', color: '#5B1F28' },
+                    { name: 'Maneet Gohil', user: 'maneet', pass: 'founder@lal10@2026', color: '#1E293B' },
+                    { name: 'Sanchit', user: 'sanchit', pass: 'founder@lal10@2026', color: '#0F766E' },
+                    { name: 'Albin', user: 'albin', pass: 'founder@lal10@2026', color: '#1D4ED8' },
+                    { name: 'Ghanshyam', user: 'ghanshyam', pass: 'founder@lal10@2026', color: '#7E22CE' },
+                  ].map(acc => (
+                    <button
+                      key={acc.user}
+                      type="button"
+                      onClick={() => handleQuickLogin(acc.user, acc.pass)}
+                      style={{
+                        padding: '5px 10px', borderRadius: '6px', border: '1px solid #DDD3C6',
+                        background: '#FFFFFF', fontSize: '11px', fontWeight: 600, color: '#1A1817',
+                        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px'
+                      }}
+                    >
+                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: acc.color }} />
+                      <span>{acc.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '6px' }}>
+                    Username or Work Email
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={loginUsername}
+                    onChange={e => setLoginUsername(e.target.value)}
+                    placeholder="e.g. buitlal10 / maneet / sanchit"
+                    style={{
+                      width: '100%',
+                      padding: '11px 14px',
+                      borderRadius: '8px',
+                      border: '1px solid #DCD6CC',
+                      fontSize: '13.5px',
+                      outline: 'none',
+                      color: '#1A1817'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '6px' }}>
+                    Password
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      value={loginPassword}
+                      onChange={e => setLoginPassword(e.target.value)}
+                      placeholder="••••••••••••"
+                      style={{
+                        width: '100%',
+                        padding: '11px 14px',
+                        borderRadius: '8px',
+                        border: '1px solid #DCD6CC',
+                        fontSize: '13.5px',
+                        outline: 'none',
+                        color: '#1A1817'
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: '#8A7D71'
+                      }}
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+
+                {loginError && (
+                  <div style={{
+                    padding: '10px 12px',
+                    borderRadius: '8px',
+                    background: '#FEE2E2',
+                    border: '1px solid #F87171',
+                    color: '#991B1B',
+                    fontSize: '12.5px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <AlertCircle size={15} />
+                    <span>{loginError}</span>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isLoggingIn}
                   style={{
                     width: '100%',
-                    padding: '11px 14px',
+                    padding: '13px',
+                    background: '#5B1F28',
+                    color: '#FFFFFF',
+                    borderRadius: '8px',
+                    border: 'none',
+                    fontSize: '13.5px',
+                    fontWeight: 600,
+                    cursor: isLoggingIn ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    marginTop: '6px'
+                  }}
+                >
+                  {isLoggingIn ? <RefreshCw className="animate-spin" size={16} /> : <Lock size={16} />}
+                  <span>{isLoggingIn ? 'Signing In...' : 'Sign In to Dashboard'}</span>
+                </button>
+              </form>
+            </div>
+          ) : (
+            /* TAB 2: SIGN UP / REGISTER */
+            <form onSubmit={handleSignupSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '5px' }}>
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={signupName}
+                  onChange={e => setSignupName(e.target.value)}
+                  placeholder="e.g. Albin Thomas"
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
                     borderRadius: '8px',
                     border: '1px solid #DCD6CC',
-                    fontSize: '13.5px',
+                    fontSize: '13px',
                     outline: 'none',
                     color: '#1A1817'
                   }}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '5px' }}>
+                  Work Email (@lal10.com) *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={signupEmail}
+                  onChange={e => setSignupEmail(e.target.value)}
+                  placeholder="you@lal10.com"
                   style={{
-                    position: 'absolute',
-                    right: '12px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: '#8A7D71'
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    border: '1px solid #DCD6CC',
+                    fontSize: '13px',
+                    outline: 'none',
+                    color: '#1A1817'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '5px' }}>
+                  Role / Department
+                </label>
+                <select
+                  value={signupRole}
+                  onChange={e => setSignupRole(e.target.value as any)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    border: '1px solid #DCD6CC',
+                    fontSize: '13px',
+                    background: '#FFF',
+                    outline: 'none',
+                    color: '#1A1817'
                   }}
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
+                  <option value="Admin">Admin (Full Access)</option>
+                  <option value="Manager">Manager (Calls &amp; Enquiries)</option>
+                  <option value="Editor">Editor (Inquiry Management)</option>
+                </select>
               </div>
-            </div>
 
-            {loginError && (
-              <div style={{
-                padding: '10px 12px',
-                borderRadius: '8px',
-                background: '#FEE2E2',
-                border: '1px solid #F87171',
-                color: '#991B1B',
-                fontSize: '12.5px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <AlertCircle size={15} />
-                <span>{loginError}</span>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '5px' }}>
+                    Password *
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={signupPassword}
+                    onChange={e => setSignupPassword(e.target.value)}
+                    placeholder="••••••••"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      border: '1px solid #DCD6CC',
+                      fontSize: '13px',
+                      outline: 'none',
+                      color: '#1A1817'
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '5px' }}>
+                    Confirm *
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={signupConfirmPassword}
+                    onChange={e => setSignupConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      border: '1px solid #DCD6CC',
+                      fontSize: '13px',
+                      outline: 'none',
+                      color: '#1A1817'
+                    }}
+                  />
+                </div>
               </div>
-            )}
 
-            <button
-              type="submit"
-              disabled={isLoggingIn}
-              style={{
-                width: '100%',
-                padding: '12px',
-                background: '#5B1F28',
-                color: '#FFFFFF',
-                borderRadius: '8px',
-                border: 'none',
-                fontSize: '13.5px',
-                fontWeight: 600,
-                cursor: isLoggingIn ? 'not-allowed' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                marginTop: '4px'
-              }}
-            >
-              {isLoggingIn ? <RefreshCw className="animate-spin" size={16} /> : <Lock size={16} />}
-              <span>{isLoggingIn ? 'Verifying...' : 'Sign In to Dashboard'}</span>
-            </button>
-          </form>
+              {signupError && (
+                <div style={{
+                  padding: '10px 12px',
+                  borderRadius: '8px',
+                  background: '#FEE2E2',
+                  border: '1px solid #F87171',
+                  color: '#991B1B',
+                  fontSize: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <AlertCircle size={14} />
+                  <span>{signupError}</span>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSigningUp}
+                style={{
+                  width: '100%',
+                  padding: '13px',
+                  background: '#5B1F28',
+                  color: '#FFFFFF',
+                  borderRadius: '8px',
+                  border: 'none',
+                  fontSize: '13.5px',
+                  fontWeight: 600,
+                  cursor: isSigningUp ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  marginTop: '6px'
+                }}
+              >
+                {isSigningUp ? <RefreshCw className="animate-spin" size={16} /> : <CheckCircle2 size={16} />}
+                <span>{isSigningUp ? 'Creating Account...' : 'Register & Enter Dashboard'}</span>
+              </button>
+            </form>
+          )}
+
+          <div style={{ marginTop: '22px', textAlign: 'center', fontSize: '11.5px', color: '#8A7D71', borderTop: '1px solid #F0EAE1', paddingTop: '16px' }}>
+            Part of Lal10 FashionOS • Enterprise Secure Access
+          </div>
         </div>
       </div>
     );
@@ -1177,6 +1488,20 @@ export default function AdminDashboardPage() {
                   <Share2 size={15} color="#57524B" />
                 </button>
               )}
+
+              {/* Switch User / Log Out button */}
+              <button
+                onClick={handleLogout}
+                title="Switch Account or Sign Out"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '6px', background: '#FAF5F1',
+                  border: '1px solid #E8DDD2', borderRadius: '8px', padding: '9px 12px',
+                  fontSize: '11.5px', fontWeight: 600, color: '#8A323D', cursor: 'pointer'
+                }}
+              >
+                <LogOut size={13} color="#8A323D" />
+                <span>Log Out</span>
+              </button>
             </div>
           </div>
 
