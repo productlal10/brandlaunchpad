@@ -568,6 +568,79 @@ export default function AdminDashboardPage() {
     });
   }, [users, searchQuery, roleFilter, statusFilter]);
 
+  // Dynamic Category Breakdown & Donut Slices
+  const categoryStats = useMemo(() => {
+    const counts: Record<string, { count: number; color: string }> = {
+      'Womenswear': { count: 0, color: '#5B1F28' },
+      'Menswear': { count: 0, color: '#B07058' },
+      'Kidswear': { count: 0, color: '#D19E75' },
+      'Footwear & Accessories': { count: 0, color: '#DEC8B5' },
+      'General / Multi': { count: 0, color: '#8A4A32' },
+    };
+
+    enquiries.forEach(e => {
+      const cat = (e.category || '').toLowerCase();
+      if (cat.includes('women')) counts['Womenswear'].count++;
+      else if (cat.includes('men')) counts['Menswear'].count++;
+      else if (cat.includes('kid')) counts['Kidswear'].count++;
+      else if (cat.includes('footwear') || cat.includes('access')) counts['Footwear & Accessories'].count++;
+      else counts['General / Multi'].count++;
+    });
+
+    const total = enquiries.length;
+    const circumference = 339; // 2 * PI * 54
+
+    let accumulatedOffset = 0;
+    const slices = Object.entries(counts).map(([label, item]) => {
+      const pct = total > 0 ? item.count / total : 0;
+      const strokeDash = pct * circumference;
+      const dashoffset = -accumulatedOffset;
+      accumulatedOffset += strokeDash;
+      return {
+        label,
+        count: item.count,
+        percentage: total > 0 ? ((item.count / total) * 100).toFixed(1) : '0.0',
+        color: item.color,
+        dashArray: `${strokeDash.toFixed(1)} ${circumference}`,
+        dashOffset: dashoffset.toFixed(1),
+      };
+    });
+
+    return { total, counts, slices };
+  }, [enquiries]);
+
+  // Dynamic Daily Counts & Scaled SVG Line Chart
+  const lineChartData = useMemo(() => {
+    const now = new Date();
+    const days: { label: string; dateStr: string; count: number }[] = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const count = enquiries.filter(e => e.date === dateStr).length;
+      days.push({ label, dateStr, count });
+    }
+
+    const maxCount = Math.max(...days.map(d => d.count), 4);
+    const points = days.map((d, idx) => {
+      const x = 30 + idx * 90; // 30, 120, 210, 300, 390, 480, 570
+      const y = 135 - (d.count / maxCount) * 95;
+      return { x, y, count: d.count, label: d.label };
+    });
+
+    const pathD = points.length > 0
+      ? `M ${points[0].x} ${points[0].y} ` + points.slice(1).map(p => `L ${p.x} ${p.y}`).join(' ')
+      : 'M 30 135 L 570 135';
+
+    const areaD = points.length > 0
+      ? `${pathD} L ${points[points.length - 1].x} 145 L ${points[0].x} 145 Z`
+      : 'M 30 135 L 570 135 L 570 145 L 30 145 Z';
+
+    return { days, points, pathD, areaD, maxCount };
+  }, [enquiries]);
+
   // Stage Badge Styles
   const getStageBadgeStyle = (stage: string) => {
     if (stage.includes('₹5 Cr') || stage.includes('Scaling')) return { background: '#EBF3FB', color: '#185FA5' };
@@ -1182,74 +1255,119 @@ export default function AdminDashboardPage() {
                       <path d="M2 22L20 20L40 16L60 18L78 6" stroke="#C97A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </div>
-                  <div style={{ fontSize: '11px', color: '#137333', fontWeight: 600, marginTop: '8px' }}>
-                    100% verified portfolio
-                  </div>
                 </div>
               </div>
 
-              {/* Middle Row: Charts */}
+              {/* Middle Row: Inflow Line Chart & Category Donut */}
               <div className="admin-charts-grid">
-                
-                {/* Line Chart */}
-                <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                    <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1A1817', margin: 0 }}>Enquiries Over Time</h3>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#FAF6F0', padding: '4px 10px', borderRadius: '6px', border: '1px solid #EFEAE3', fontSize: '11.5px', fontWeight: 600 }}>
-                      <span>Daily</span>
-                      <ChevronDown size={12} color="#666" />
+                {/* 1. Inflow Trend Area Chart */}
+                <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', padding: '22px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+                    <div>
+                      <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1A1817', margin: 0 }}>Enquiry Inflow Trend</h3>
+                      <p style={{ fontSize: '12px', color: '#8A7D71', margin: '2px 0 0' }}>Daily received leads over the last 7 days</p>
                     </div>
+                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#5B1F28', background: '#F8EFEB', padding: '4px 10px', borderRadius: '6px' }}>
+                      {lineChartData.days.reduce((acc, d) => acc + d.count, 0)} leads in 7d
+                    </span>
                   </div>
 
-                  <div style={{ position: 'relative', width: '100%', height: '190px' }}>
-                    <svg width="100%" height="150" viewBox="0 0 600 180" preserveAspectRatio="none">
+                  <div style={{ height: '170px', width: '100%', position: 'relative' }}>
+                    <svg width="100%" height="100%" viewBox="0 0 600 170" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
                       <defs>
                         <linearGradient id="chartGradient2" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#8A4A32" stopOpacity="0.25"/>
-                          <stop offset="100%" stopColor="#8A4A32" stopOpacity="0.0"/>
+                          <stop offset="0%" stopColor="#5B1F28" stopOpacity="0.22" />
+                          <stop offset="100%" stopColor="#5B1F28" stopOpacity="0.0" />
                         </linearGradient>
                       </defs>
-                      <line x1="0" y1="20" x2="600" y2="20" stroke="#F0EBE4" strokeDasharray="3 3" />
-                      <line x1="0" y1="60" x2="600" y2="60" stroke="#F0EBE4" strokeDasharray="3 3" />
-                      <line x1="0" y1="100" x2="600" y2="100" stroke="#F0EBE4" strokeDasharray="3 3" />
-                      <line x1="0" y1="140" x2="600" y2="140" stroke="#F0EBE4" strokeDasharray="3 3" />
-                      <path d="M 20 120 L 70 80 L 130 95 L 180 90 L 230 50 L 280 70 L 330 90 L 380 50 L 440 50 L 510 30 L 580 10 L 580 170 L 20 170 Z" fill="url(#chartGradient2)" />
-                      <path d="M 20 120 L 70 80 L 130 95 L 180 90 L 230 50 L 280 70 L 330 90 L 380 50 L 440 50 L 510 30 L 580 10" fill="none" stroke="#5B1F28" strokeWidth="3" />
-                      {[ [20, 120], [70, 80], [130, 95], [180, 90], [230, 50], [280, 70], [330, 90], [380, 50], [440, 50], [510, 30], [580, 10] ].map(([x, y], idx) => (
-                        <circle key={idx} cx={x} cy={y} r="4.5" fill="#5B1F28" stroke="#FFFFFF" strokeWidth="2" />
+                      {/* Grid Horizontal Lines */}
+                      <line x1="30" y1="35" x2="570" y2="35" stroke="#F3EFE9" strokeDasharray="3 3" />
+                      <line x1="30" y1="87" x2="570" y2="87" stroke="#F3EFE9" strokeDasharray="3 3" />
+                      <line x1="30" y1="140" x2="570" y2="140" stroke="#EAE4DC" />
+
+                      {/* Y-axis Labels */}
+                      <text x="20" y="38" fontSize="10" fill="#9C9287" textAnchor="end">{lineChartData.maxCount}</text>
+                      <text x="20" y="90" fontSize="10" fill="#9C9287" textAnchor="end">{Math.round(lineChartData.maxCount / 2)}</text>
+                      <text x="20" y="143" fontSize="10" fill="#9C9287" textAnchor="end">0</text>
+
+                      {/* Dynamic Area and Line */}
+                      <path d={lineChartData.areaD} fill="url(#chartGradient2)" />
+                      <path d={lineChartData.pathD} stroke="#5B1F28" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+
+                      {/* SVG Points */}
+                      {lineChartData.points.map((pt, i) => (
+                        <g key={i}>
+                          <circle cx={pt.x} cy={pt.y} r="4" fill="#FFFFFF" stroke="#5B1F28" strokeWidth="2.5" />
+                          {pt.count > 0 && (
+                            <text x={pt.x} y={pt.y - 8} fontSize="10.5" fontWeight="700" fill="#5B1F28" textAnchor="middle">
+                              {pt.count}
+                            </text>
+                          )}
+                        </g>
+                      ))}
+
+                      {/* X-axis Date Labels */}
+                      {lineChartData.points.map((pt, i) => (
+                        <text key={i} x={pt.x} y="162" fontSize="10" fill="#8A7D71" textAnchor="middle">
+                          {pt.label}
+                        </text>
                       ))}
                     </svg>
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '10px', color: '#8A8279' }}>
-                      {chartDays.slice(0, 5).map((d, idx) => (
-                        <span key={idx}>{d}</span>
-                      ))}
-                    </div>
                   </div>
                 </div>
 
-                {/* Donut Chart */}
-                <div style={{ background: '#FFFFFF', padding: '22px', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1A1817', margin: '0 0 12px' }}>Enquiries by Category</h3>
-
-                  <div style={{ position: 'relative', width: '140px', height: '140px', margin: '0 auto' }}>
-                    <svg width="140" height="140" viewBox="0 0 160 160">
-                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#5B1F28" strokeWidth="22" strokeDasharray="194 377" strokeDashoffset="0" />
-                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#B07058" strokeWidth="22" strokeDasharray="85 377" strokeDashoffset="-194" />
-                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#D19E75" strokeWidth="22" strokeDasharray="57 377" strokeDashoffset="-279" />
-                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#DEC8B5" strokeWidth="22" strokeDasharray="24 377" strokeDashoffset="-336" />
-                      <circle cx="80" cy="80" r="60" fill="transparent" stroke="#EFE4D8" strokeWidth="22" strokeDasharray="17 377" strokeDashoffset="-360" />
-                    </svg>
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                      <div style={{ fontSize: '20px', fontWeight: 800, color: '#1A1817' }}>{enquiries.length}</div>
-                      <div style={{ fontSize: '10.5px', color: '#8A7D71' }}>Total</div>
-                    </div>
+                {/* 2. Enquiries by Category Donut Chart & Breakdown */}
+                <div style={{ background: '#FFFFFF', borderRadius: '12px', border: '1px solid #EFEAE3', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', padding: '22px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                    <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1A1817', margin: 0 }}>Enquiries by Category</h3>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#7E766D' }}>{categoryStats.total} Total</span>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '12px', fontSize: '11.5px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Womenswear</span><strong>{enquiries.filter(e => e.category === 'Womenswear' || e.category === 'General').length}</strong></div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Menswear</span><strong>{enquiries.filter(e => e.category === 'Menswear').length}</strong></div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Other Categories</span><strong>{enquiries.filter(e => e.category !== 'Womenswear' && e.category !== 'Menswear' && e.category !== 'General').length}</strong></div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '6px' }}>
+                    {/* Donut Chart SVG */}
+                    <div style={{ width: '130px', height: '130px', position: 'relative', flexShrink: 0 }}>
+                      <svg width="130" height="130" viewBox="0 0 140 140" style={{ transform: 'rotate(-90deg)' }}>
+                        <circle cx="70" cy="70" r="54" stroke="#F2EDE6" strokeWidth="18" fill="none" />
+                        {categoryStats.slices.map((slice, i) => (
+                          <circle
+                            key={i}
+                            cx="70"
+                            cy="70"
+                            r="54"
+                            stroke={slice.color}
+                            strokeWidth="18"
+                            fill="none"
+                            strokeDasharray={slice.dashArray}
+                            strokeDashoffset={slice.dashOffset}
+                            style={{ transition: 'stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease' }}
+                          />
+                        ))}
+                      </svg>
+                      <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ fontSize: '20px', fontWeight: 800, color: '#1A1817', lineHeight: 1 }}>{categoryStats.total}</div>
+                        <div style={{ fontSize: '10px', color: '#8A7D71', fontWeight: 600, marginTop: '2px' }}>Total</div>
+                      </div>
+                    </div>
+
+                    {/* Category Breakdown Progress List */}
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '9px' }}>
+                      {categoryStats.slices.map(slice => (
+                        <div key={slice.label}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', marginBottom: '3px' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#3A3530', fontWeight: 500 }}>
+                              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: slice.color, display: 'inline-block' }} />
+                              {slice.label}
+                            </span>
+                            <span style={{ fontWeight: 700, color: '#1A1817' }}>
+                              {slice.count} <span style={{ color: '#8A7D71', fontWeight: 400, fontSize: '10.5px' }}>({slice.percentage}%)</span>
+                            </span>
+                          </div>
+                          <div style={{ height: '4px', background: '#F4EFEA', borderRadius: '2px', overflow: 'hidden' }}>
+                            <div style={{ width: `${slice.percentage}%`, background: slice.color, height: '100%', borderRadius: '2px', transition: 'width 0.5s ease' }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
