@@ -822,7 +822,7 @@ export default function AdminDashboardPage() {
                 required
                 value={loginUsername}
                 onChange={e => setLoginUsername(e.target.value)}
-                placeholder="e.g. buitlal10 / maneet / sanchit"
+                placeholder="Username or Work Email"
                 style={{
                   width: '100%',
                   padding: '12px 14px',
@@ -846,7 +846,7 @@ export default function AdminDashboardPage() {
                   required
                   value={loginPassword}
                   onChange={e => setLoginPassword(e.target.value)}
-                  placeholder="••••••••••••"
+                  placeholder="Password"
                   style={{
                     width: '100%',
                     padding: '12px 14px',
