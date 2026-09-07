@@ -95,26 +95,97 @@ const INITIAL_ENQUIRIES: EnquiryItem[] = [
   { id: 'enq-8', name: 'Dhruv Malik', email: 'dhruv@dhruvandco.com', brand: 'Dhruv & Co.', stage: '₹5 Cr+ revenue', source: 'Referral', date: 'May 23, 2025', status: 'In Discussion', phone: '+91 98333 44556' },
 ];
 
+// ── AUTHORIZED TEAM USERS ───────────────────────────────────────────────────
+export interface AuthUser {
+  username: string;
+  name: string;
+  email: string;
+  role: string;
+  avatarInitials: string;
+  avatarColor: string;
+}
+
+const AUTHORIZED_ACCOUNTS: Record<string, { passwords: string[]; profile: AuthUser }> = {
+  // Super Admin
+  'buitlal10': {
+    passwords: ['founder@lal10@2026', 'admin@lal10@2026'],
+    profile: { username: 'buitlal10', name: 'Super Admin', email: 'admin@lal10.com', role: 'Super Administrator', avatarInitials: 'SA', avatarColor: '#5B1F28' }
+  },
+  'builtlal10': {
+    passwords: ['founder@lal10@2026', 'admin@lal10@2026'],
+    profile: { username: 'buitlal10', name: 'Super Admin', email: 'admin@lal10.com', role: 'Super Administrator', avatarInitials: 'SA', avatarColor: '#5B1F28' }
+  },
+  'admin': {
+    passwords: ['founder@lal10@2026', 'admin@lal10@2026'],
+    profile: { username: 'admin', name: 'Super Admin', email: 'admin@lal10.com', role: 'Super Administrator', avatarInitials: 'SA', avatarColor: '#5B1F28' }
+  },
+  'admin@lal10.com': {
+    passwords: ['founder@lal10@2026', 'admin@lal10@2026'],
+    profile: { username: 'admin@lal10.com', name: 'Super Admin', email: 'admin@lal10.com', role: 'Super Administrator', avatarInitials: 'SA', avatarColor: '#5B1F28' }
+  },
+
+  // User 1: Maneet Gohil
+  'maneet': {
+    passwords: ['founder@lal10@2026', 'maneet@lal10@2026'],
+    profile: { username: 'maneet', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'Founder & CEO', avatarInitials: 'MG', avatarColor: '#1E293B' }
+  },
+  'maneeth': {
+    passwords: ['founder@lal10@2026', 'maneet@lal10@2026'],
+    profile: { username: 'maneeth', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'Founder & CEO', avatarInitials: 'MG', avatarColor: '#1E293B' }
+  },
+  'maneet@lal10.com': {
+    passwords: ['founder@lal10@2026', 'maneet@lal10@2026'],
+    profile: { username: 'maneet@lal10.com', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'Founder & CEO', avatarInitials: 'MG', avatarColor: '#1E293B' }
+  },
+
+  // User 2: Sanchit
+  'sanchit': {
+    passwords: ['founder@lal10@2026', 'sanchit@lal10@2026'],
+    profile: { username: 'sanchit', name: 'Sanchit', email: 'sanchit@lal10.com', role: 'Co-Founder & Director', avatarInitials: 'SC', avatarColor: '#0F766E' }
+  },
+  'sanchit@lal10.com': {
+    passwords: ['founder@lal10@2026', 'sanchit@lal10@2026'],
+    profile: { username: 'sanchit@lal10.com', name: 'Sanchit', email: 'sanchit@lal10.com', role: 'Co-Founder & Director', avatarInitials: 'SC', avatarColor: '#0F766E' }
+  },
+
+  // User 3: Albin
+  'albin': {
+    passwords: ['founder@lal10@2026', 'albin@lal10@2026'],
+    profile: { username: 'albin', name: 'Albin', email: 'albin@lal10.com', role: 'Growth & Brand Partnerships', avatarInitials: 'AL', avatarColor: '#1D4ED8' }
+  },
+  'albin@lal10.com': {
+    passwords: ['founder@lal10@2026', 'albin@lal10@2026'],
+    profile: { username: 'albin@lal10.com', name: 'Albin', email: 'albin@lal10.com', role: 'Growth & Brand Partnerships', avatarInitials: 'AL', avatarColor: '#1D4ED8' }
+  },
+
+  // User 4: Ghanshyam
+  'ghanshyam': {
+    passwords: ['founder@lal10@2026', 'ghanshyam@lal10@2026'],
+    profile: { username: 'ghanshyam', name: 'Ghanshyam', email: 'ghanshyam@lal10.com', role: 'Technology & Operations', avatarInitials: 'GS', avatarColor: '#7E22CE' }
+  },
+  'ghanshyam@lal10.com': {
+    passwords: ['founder@lal10@2026', 'ghanshyam@lal10@2026'],
+    profile: { username: 'ghanshyam@lal10.com', name: 'Ghanshyam', email: 'ghanshyam@lal10.com', role: 'Technology & Operations', avatarInitials: 'GS', avatarColor: '#7E22CE' }
+  }
+};
+
 const INITIAL_USERS: UserItem[] = [
-  { id: 'usr-1', name: 'Aarav Mehta', email: 'aarav@voyage.in', role: 'Admin', status: 'Active', joinedOn: 'May 30, 2025 11:00 AM', lastActive: 'May 30, 2025 11:45 AM', avatarColor: '#F4E8D6' },
-  { id: 'usr-2', name: 'Simran Kaur', email: 'simran@eclat.com', role: 'Editor', status: 'Active', joinedOn: 'May 30, 2025 09:30 AM', lastActive: 'May 30, 2025 10:15 AM', avatarColor: '#E6E8F2' },
-  { id: 'usr-3', name: 'Rohit Kapoor', email: 'rohit@rawreal.com', role: 'Manager', status: 'Active', joinedOn: 'May 29, 2025 04:00 PM', lastActive: 'May 30, 2025 09:10 AM', avatarColor: '#FBE8E8' },
-  { id: 'usr-4', name: 'Pooja Sharma', email: 'pooja@maison10.in', role: 'Editor', status: 'Active', joinedOn: 'May 29, 2025 10:30 AM', lastActive: 'May 29, 2025 07:20 PM', avatarColor: '#FDECE6' },
-  { id: 'usr-5', name: 'Neha D\'souza', email: 'neha@noirtheory.com', role: 'Manager', status: 'Active', joinedOn: 'May 28, 2025 03:00 PM', lastActive: 'May 30, 2025 08:45 AM', avatarColor: '#E8F5E9' },
-  { id: 'usr-6', name: 'Ananya Bansal', email: 'ananya@aya.in', role: 'Editor', status: 'Inactive', joinedOn: 'May 28, 2025 11:45 AM', lastActive: 'May 28, 2025 02:30 PM', avatarColor: '#EDE7F6' },
-  { id: 'usr-7', name: 'Dhruv Malik', email: 'dhruv@dhruvandco.com', role: 'Viewer', status: 'Active', joinedOn: 'May 27, 2025 05:20 PM', lastActive: 'May 30, 2025 10:05 AM', avatarColor: '#E0F2F1' },
-  { id: 'usr-8', name: 'Karan Thakur', email: 'karan@sthreads.com', role: 'Viewer', status: 'Inactive', joinedOn: 'May 27, 2025 12:15 PM', lastActive: 'May 29, 2025 01:10 PM', avatarColor: '#FFF3E0' },
+  { id: 'usr-1', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'Admin', status: 'Active', joinedOn: 'Jan 15, 2024', lastActive: 'Active now', avatarColor: '#1E293B' },
+  { id: 'usr-2', name: 'Sanchit', email: 'sanchit@lal10.com', role: 'Admin', status: 'Active', joinedOn: 'Jan 15, 2024', lastActive: '10 mins ago', avatarColor: '#0F766E' },
+  { id: 'usr-3', name: 'Albin', email: 'albin@lal10.com', role: 'Manager', status: 'Active', joinedOn: 'Mar 01, 2024', lastActive: '25 mins ago', avatarColor: '#1D4ED8' },
+  { id: 'usr-4', name: 'Ghanshyam', email: 'ghanshyam@lal10.com', role: 'Manager', status: 'Active', joinedOn: 'Feb 10, 2024', lastActive: '1 hour ago', avatarColor: '#7E22CE' },
+  { id: 'usr-5', name: 'Super Admin', email: 'admin@lal10.com', role: 'Admin', status: 'Active', joinedOn: 'Jan 01, 2024', lastActive: 'Active now', avatarColor: '#5B1F28' },
 ];
 
 const INITIAL_CALLS: DiscoveryCallItem[] = [
-  { id: 'call-1', brand: 'VOYAGE', brandCode: 'V', contactName: 'Aarav Mehta', contactEmail: 'aarav@voyage.in', stage: '₹1–5 Cr revenue', callDate: 'May 30, 2025', callTime: '11:00 AM', callHost: 'Rohit Verma', hostAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80', callStatus: 'Completed', outcome: 'Follow up email sent' },
-  { id: 'call-2', brand: 'ÉCLAT', brandCode: 'É', contactName: 'Simran Kaur', contactEmail: 'simran@eclat.com', stage: 'Pre-launch', callDate: 'May 30, 2025', callTime: '02:30 PM', callHost: 'Ananya Rao', hostAvatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=80', callStatus: 'Scheduled', outcome: '–' },
-  { id: 'call-3', brand: 'RAW & REAL', brandCode: 'R&R', contactName: 'Rohit Kapoor', contactEmail: 'rohit@rawreal.com', stage: 'First collection live', callDate: 'May 29, 2025', callTime: '04:00 PM', callHost: 'Priya Nair', hostAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80', callStatus: 'Completed', outcome: 'Proposal shared' },
-  { id: 'call-4', brand: 'MAISON 10', brandCode: 'M10', contactName: 'Pooja Sharma', contactEmail: 'pooja@maison10.in', stage: '₹5 Cr+ revenue', callDate: 'May 29, 2025', callTime: '10:30 AM', callHost: 'Rohit Verma', hostAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80', callStatus: 'Completed', outcome: 'Interested – Next meeting' },
-  { id: 'call-5', brand: 'NOIR THEORY', brandCode: 'NT', contactName: 'Neha D\'souza', contactEmail: 'neha@noirtheory.com', stage: '₹1–5 Cr revenue', callDate: 'May 28, 2025', callTime: '03:00 PM', callHost: 'Ananya Rao', hostAvatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=80', callStatus: 'Cancelled', outcome: 'Rescheduled' },
-  { id: 'call-6', brand: 'AYA', brandCode: 'AYA', contactName: 'Ananya Bansal', contactEmail: 'ananya@aya.in', stage: 'Pre-launch', callDate: 'May 28, 2025', callTime: '11:45 AM', callHost: 'Priya Nair', hostAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80', callStatus: 'Scheduled', outcome: '–' },
-  { id: 'call-7', brand: 'DHRUV & CO.', brandCode: 'D&CO', contactName: 'Dhruv Malik', contactEmail: 'dhruv@dhruvandco.com', stage: '₹5 Cr+ revenue', callDate: 'May 27, 2025', callTime: '05:20 PM', callHost: 'Rohit Verma', hostAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80', callStatus: 'Completed', outcome: 'Follow up next week' },
-  { id: 'call-8', brand: 'STHREADS', brandCode: 'ST', contactName: 'Karan Thakur', contactEmail: 'karan@sthreads.com', stage: 'First collection live', callDate: 'May 27, 2025', callTime: '12:15 PM', callHost: 'Ananya Rao', hostAvatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=80', callStatus: 'Completed', outcome: 'Sample requested' },
+  { id: 'call-1', brand: 'VOYAGE', brandCode: 'V', contactName: 'Aarav Mehta', contactEmail: 'aarav@voyage.in', stage: '₹1–5 Cr revenue', callDate: 'May 30, 2025', callTime: '11:00 AM', callHost: 'Maneet Gohil', hostAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80', callStatus: 'Completed', outcome: 'Follow up email sent' },
+  { id: 'call-2', brand: 'ÉCLAT', brandCode: 'É', contactName: 'Simran Kaur', contactEmail: 'simran@eclat.com', stage: 'Pre-launch', callDate: 'May 30, 2025', callTime: '02:30 PM', callHost: 'Albin', hostAvatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=80', callStatus: 'Scheduled', outcome: '–' },
+  { id: 'call-3', brand: 'RAW & REAL', brandCode: 'R&R', contactName: 'Rohit Kapoor', contactEmail: 'rohit@rawreal.com', stage: 'First collection live', callDate: 'May 29, 2025', callTime: '04:00 PM', callHost: 'Sanchit', hostAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80', callStatus: 'Completed', outcome: 'Proposal shared' },
+  { id: 'call-4', brand: 'MAISON 10', brandCode: 'M10', contactName: 'Pooja Sharma', contactEmail: 'pooja@maison10.in', stage: '₹5 Cr+ revenue', callDate: 'May 29, 2025', callTime: '10:30 AM', callHost: 'Maneet Gohil', hostAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80', callStatus: 'Completed', outcome: 'Interested – Next meeting' },
+  { id: 'call-5', brand: 'NOIR THEORY', brandCode: 'NT', contactName: 'Neha D\'souza', contactEmail: 'neha@noirtheory.com', stage: '₹1–5 Cr revenue', callDate: 'May 28, 2025', callTime: '03:00 PM', callHost: 'Ghanshyam', hostAvatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=80', callStatus: 'Cancelled', outcome: 'Rescheduled' },
+  { id: 'call-6', brand: 'AYA', brandCode: 'AYA', contactName: 'Ananya Bansal', contactEmail: 'ananya@aya.in', stage: 'Pre-launch', callDate: 'May 28, 2025', callTime: '11:45 AM', callHost: 'Sanchit', hostAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80', callStatus: 'Scheduled', outcome: '–' },
+  { id: 'call-7', brand: 'DHRUV & CO.', brandCode: 'D&CO', contactName: 'Dhruv Malik', contactEmail: 'dhruv@dhruvandco.com', stage: '₹5 Cr+ revenue', callDate: 'May 27, 2025', callTime: '05:20 PM', callHost: 'Albin', hostAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80', callStatus: 'Completed', outcome: 'Follow up next week' },
+  { id: 'call-8', brand: 'STHREADS', brandCode: 'ST', contactName: 'Karan Thakur', contactEmail: 'karan@sthreads.com', stage: 'First collection live', callDate: 'May 27, 2025', callTime: '12:15 PM', callHost: 'Ghanshyam', hostAvatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=80', callStatus: 'Completed', outcome: 'Sample requested' },
 ];
 
 const INITIAL_BRANDS: BrandItem[] = [
@@ -141,6 +212,14 @@ export default function AdminDashboardPage() {
   // Production Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [authChecked, setAuthChecked] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<AuthUser>({
+    username: 'buitlal10',
+    name: 'Super Admin',
+    email: 'admin@lal10.com',
+    role: 'Super Administrator',
+    avatarInitials: 'SA',
+    avatarColor: '#5B1F28'
+  });
   const [loginUsername, setLoginUsername] = useState<string>('');
   const [loginPassword, setLoginPassword] = useState<string>('');
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -151,8 +230,18 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     try {
       const stored = localStorage.getItem('lal10_auth_user');
-      if (stored === 'buitlal10') {
-        setIsAuthenticated(true);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored) as AuthUser;
+          if (parsed && parsed.name) {
+            setCurrentUser(parsed);
+            setIsAuthenticated(true);
+          }
+        } catch {
+          if (stored === 'buitlal10' || stored === 'admin') {
+            setIsAuthenticated(true);
+          }
+        }
       }
     } catch (e) {
       console.warn('localStorage access error', e);
@@ -166,18 +255,21 @@ export default function AdminDashboardPage() {
     setLoginError(null);
     setIsLoggingIn(true);
 
-    const user = loginUsername.trim().toLowerCase();
+    const userKey = loginUsername.trim().toLowerCase();
     const pass = loginPassword.trim();
 
-    if ((user === 'buitlal10' || user === 'builtlal10' || user === 'admin@lal10.com') && pass === 'founder@lal10@2026') {
+    const account = AUTHORIZED_ACCOUNTS[userKey];
+
+    if (account && account.passwords.includes(pass)) {
       try {
-        localStorage.setItem('lal10_auth_user', 'buitlal10');
+        localStorage.setItem('lal10_auth_user', JSON.stringify(account.profile));
       } catch (err) {}
+      setCurrentUser(account.profile);
       setIsAuthenticated(true);
       setIsLoggingIn(false);
     } else {
       setTimeout(() => {
-        setLoginError('Invalid username or password. Please verify credentials.');
+        setLoginError('Invalid username or password. Please verify your team credentials.');
         setIsLoggingIn(false);
       }, 300);
     }
@@ -191,6 +283,14 @@ export default function AdminDashboardPage() {
     setLoginUsername('');
     setLoginPassword('');
     setLoginError(null);
+    setCurrentUser({
+      username: 'buitlal10',
+      name: 'Super Admin',
+      email: 'admin@lal10.com',
+      role: 'Super Administrator',
+      avatarInitials: 'SA',
+      avatarColor: '#5B1F28'
+    });
   };
 
   // Navigation State
@@ -912,14 +1012,26 @@ export default function AdminDashboardPage() {
 
               {/* Profile Pill */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px', margin: '16px 0', background: '#FAF6F0', borderRadius: '10px', border: '1px solid #EFE7DC' }}>
-                <img
-                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80"
-                  alt="Admin User"
-                  style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover' }}
-                />
+                <div
+                  style={{
+                    width: '34px',
+                    height: '34px',
+                    borderRadius: '50%',
+                    background: currentUser.avatarColor || '#5B1F28',
+                    color: '#FFFFFF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    letterSpacing: '0.5px'
+                  }}
+                >
+                  {currentUser.avatarInitials || 'LA'}
+                </div>
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817' }}>buitlal10</div>
-                  <div style={{ fontSize: '11px', color: '#8A7D71' }}>Founder &amp; Administrator</div>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817' }}>{currentUser.name}</div>
+                  <div style={{ fontSize: '11px', color: '#8A7D71' }}>{currentUser.role}</div>
                 </div>
               </div>
 
@@ -975,14 +1087,27 @@ export default function AdminDashboardPage() {
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', margin: '16px 0 20px', background: '#FAF6F0', borderRadius: '10px', border: '1px solid #EFE7DC' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <img
-                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80"
-                  alt="Admin User"
-                  style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }}
-                />
+                <div
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    background: currentUser.avatarColor || '#5B1F28',
+                    color: '#FFFFFF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    letterSpacing: '0.5px',
+                    flexShrink: 0
+                  }}
+                >
+                  {currentUser.avatarInitials || 'LA'}
+                </div>
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817', lineHeight: 1.2 }}>buitlal10</div>
-                  <div style={{ fontSize: '11px', color: '#8A7D71', marginTop: '2px' }}>Founder &amp; Administrator</div>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1A1817', lineHeight: 1.2 }}>{currentUser.name}</div>
+                  <div style={{ fontSize: '11px', color: '#8A7D71', marginTop: '2px' }}>{currentUser.role}</div>
                 </div>
               </div>
               <ChevronDown size={14} color="#8A7D71" />

@@ -98,12 +98,20 @@ graph TD
 * **Fault Isolation**: Email dispatch is wrapped in non-blocking try-catch blocks. If SMTP services face rate-limits or momentary downtime, the lead is **still guaranteed to be safely captured and saved to the database/storage**, returning HTTP 200 to the user.
 * **Interactive Inspector**: Developers can verify, debug, and preview email layouts anytime at `/email-preview`.
 
-### 4.3 Admin Authentication & Security Model
+### 4.3 Admin Authentication & Team Access Matrix
 * **Path**: `/admin`
-* **Credentials**:
-  - **Username**: `buitlal10` *(also accepts `builtlal10` or `admin@lal10.com`)*
-  - **Password**: `founder@lal10@2026`
-* **Implementation**:
+* **Authorized Team Accounts**:
+
+| User / Role | Username | Passwords Accepted | Default Email |
+|---|---|---|---|
+| **Super Admin** | `buitlal10` / `admin` / `admin@lal10.com` | `founder@lal10@2026` / `admin@lal10@2026` | `admin@lal10.com` |
+| **Maneet Gohil** (Founder & CEO) | `maneet` / `maneeth` / `maneet@lal10.com` | `founder@lal10@2026` / `maneet@lal10@2026` | `maneet@lal10.com` |
+| **Sanchit** (Co-Founder & Director) | `sanchit` / `sanchit@lal10.com` | `founder@lal10@2026` / `sanchit@lal10@2026` | `sanchit@lal10.com` |
+| **Albin** (Growth & Brand Partnerships) | `albin` / `albin@lal10.com` | `founder@lal10@2026` / `albin@lal10@2026` | `albin@lal10.com` |
+| **Ghanshyam** (Technology & Operations) | `ghanshyam` / `ghanshyam@lal10.com` | `founder@lal10@2026` / `ghanshyam@lal10@2026` | `ghanshyam@lal10.com` |
+
+* **Security & Personalization Features**:
+  - Personalized session storage with active user initials, role, and avatar branding in the sidebar.
   - Client-side auth gate with session persistence in `localStorage`.
   - Secure logout clears session tokens.
   - Zero dummy text or hardcoded sample placeholders in production forms.
