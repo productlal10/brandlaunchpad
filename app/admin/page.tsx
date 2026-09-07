@@ -930,51 +930,60 @@ export default function AdminDashboardPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#FAF6F0', display: 'flex', flexDirection: 'column', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
-      {/* ── TOP MOBILE BAR (< 1024px) ────────────────────────────────────────── */}
-      <header className="admin-mobile-header" style={{
+      {/* ── TOP APP BAR (SINGLE LOGO + BRAND LAUNCH PAD PORTAL) ──────────────── */}
+      <header style={{
         background: '#FFFFFF',
         borderBottom: '1px solid #EFEAE3',
-        padding: '14px 20px',
+        padding: '12px 24px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         position: 'sticky',
         top: 0,
-        zIndex: 50
+        zIndex: 50,
+        boxShadow: '0 1px 4px rgba(0,0,0,0.03)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <button
             onClick={() => setMobileSidebarOpen(true)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#1A1817' }}
+            className="lg:hidden"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#1A1817', display: 'flex', alignItems: 'center' }}
           >
             <Menu size={22} />
           </button>
-          <img
-            src="https://www.lal10.com/logo.png"
-            alt="LAL10"
-            style={{ height: '24px', width: 'auto', objectFit: 'contain' }}
-          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <img
+              src="https://www.lal10.com/logo.png"
+              alt="LAL10"
+              style={{ height: '32px', width: 'auto', objectFit: 'contain' }}
+            />
+            <div style={{ borderLeft: '1px solid #E4DDD4', paddingLeft: '12px' }}>
+              <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '2px', color: '#1A1817', textTransform: 'uppercase' }}>
+                BRAND LAUNCH PAD PORTAL
+              </div>
+            </div>
+          </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button
             onClick={fetchLiveLeads}
             title="Refresh Live Enquiries"
-            style={{ background: '#FAF6F0', border: '1px solid #E4DDD4', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+            style={{ background: '#FAF6F0', border: '1px solid #E4DDD4', borderRadius: '50%', width: '34px', height: '34px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
           >
             <RefreshCw size={14} className={isLoadingLeads ? 'animate-spin' : ''} color="#5B1F28" />
           </button>
           <div
             style={{
-              width: '32px',
-              height: '32px',
+              width: '34px',
+              height: '34px',
               borderRadius: '50%',
               background: currentUser.avatarColor,
               color: '#FFF',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: 700
             }}
           >
@@ -1006,11 +1015,9 @@ export default function AdminDashboardPage() {
           }}>
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 8px 18px', borderBottom: '1px solid #F2ECE4' }}>
-                <img
-                  src="https://www.lal10.com/logo.png"
-                  alt="LAL10"
-                  style={{ height: '28px', width: 'auto', objectFit: 'contain' }}
-                />
+                <div style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '1.5px', color: '#1A1817', textTransform: 'uppercase' }}>
+                  BRAND LAUNCH PAD
+                </div>
                 <button onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
                   <X size={20} color="#666" />
                 </button>
@@ -1060,23 +1067,16 @@ export default function AdminDashboardPage() {
           borderRight: '1px solid #EFEAE3',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '28px 18px',
+          padding: '20px 18px',
           position: 'sticky',
-          top: 0,
-          height: '100vh',
+          top: '57px',
+          height: 'calc(100vh - 57px)',
           zIndex: 40,
           boxShadow: '1px 0 10px rgba(0,0,0,0.02)'
         }}>
           <div>
-            <div style={{ padding: '0 8px 24px', borderBottom: '1px solid #F2ECE4' }}>
-              <img
-                src="https://www.lal10.com/logo.png"
-                alt="LAL10"
-                style={{ height: '34px', width: 'auto', objectFit: 'contain', display: 'block' }}
-              />
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', margin: '16px 0 20px', background: '#FAF6F0', borderRadius: '10px', border: '1px solid #EFE7DC' }}>
+            {/* Profile Pill */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', marginBottom: '16px', background: '#FAF6F0', borderRadius: '10px', border: '1px solid #EFE7DC' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: currentUser.avatarColor, color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 700, flexShrink: 0 }}>
                   {currentUser.avatarInitials}
