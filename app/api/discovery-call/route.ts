@@ -71,16 +71,8 @@ function buildTeamNotificationEmailHtml(data: {
                     <div style="font-family:Georgia,serif;font-size:28px;font-weight:700;letter-spacing:5px;color:#171615;line-height:1;">LAL10</div>
                     <div style="font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:#8A8075;font-weight:600;margin-top:5px;">FASHION BRAND OPERATING SYSTEM</div>
                   </td>
-                  <td align="right" valign="top">
-                    <!-- Black Monogram Badge -->
-                    <table cellpadding="0" cellspacing="0" style="background:#171615;border-radius:2px;">
-                      <tr>
-                        <td style="padding:8px 12px;text-align:center;">
-                          <span style="font-family:Georgia,serif;font-size:16px;font-weight:700;color:#C4956A;line-height:1;display:block;">L</span>
-                          <span style="font-family:Georgia,serif;font-size:11px;font-weight:700;color:#C4956A;line-height:1;display:block;">10</span>
-                        </td>
-                      </tr>
-                    </table>
+                  <td align="right" valign="middle">
+                    <img src="https://www.lal10.com/logo.png" alt="LAL10 Logo" width="95" style="display:block;max-width:105px;height:auto;border:0;" />
                   </td>
                 </tr>
               </table>

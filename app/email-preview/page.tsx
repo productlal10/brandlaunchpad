@@ -28,14 +28,13 @@ export default function EmailPreviewPage() {
         <div style="height:6px;background:linear-gradient(90deg, #A87944 0%, #D4AF37 35%, #F3E5AB 50%, #D4AF37 65%, #8B5A2B 100%);"></div>
         
         <!-- Header -->
-        <div style="padding:28px 32px 20px;border-bottom:1px solid #F0EAE1;display:flex;justify-content:space-between;align-items:flex-start;">
+        <div style="padding:24px 32px 18px;border-bottom:1px solid #F0EAE1;display:flex;justify-content:space-between;align-items:center;">
           <div>
             <div style="font-family:Georgia,serif;font-size:26px;font-weight:700;letter-spacing:5px;color:#171615;line-height:1;">LAL10</div>
             <div style="font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:#8A8075;font-weight:600;margin-top:4px;">FASHION BRAND OPERATING SYSTEM</div>
           </div>
-          <div style="background:#171615;padding:6px 10px;border-radius:2px;text-align:center;">
-            <div style="font-family:Georgia,serif;font-size:15px;font-weight:700;color:#C4956A;line-height:1;">L</div>
-            <div style="font-family:Georgia,serif;font-size:10px;font-weight:700;color:#C4956A;line-height:1;">10</div>
+          <div>
+            <img src="https://www.lal10.com/logo.png" alt="LAL10 Logo" width="90" style="display:block;max-width:100px;height:auto;border:0;" />
           </div>
         </div>
 

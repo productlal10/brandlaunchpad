@@ -230,16 +230,6 @@ export default function AdminDashboardPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
-  // Sign Up & Auth Portal State
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const [signupName, setSignupName] = useState<string>('');
-  const [signupEmail, setSignupEmail] = useState<string>('');
-  const [signupRole, setSignupRole] = useState<'Admin' | 'Manager' | 'Editor'>('Admin');
-  const [signupPassword, setSignupPassword] = useState<string>('');
-  const [signupConfirmPassword, setSignupConfirmPassword] = useState<string>('');
-  const [signupError, setSignupError] = useState<string | null>(null);
-  const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
-
   // Dynamic Date Ranges
   const dynamicDateRanges = useMemo(() => {
     const now = new Date();
@@ -479,85 +469,6 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleQuickLogin = async (username: string, pass: string) => {
-    setLoginUsername(username);
-    setLoginPassword(pass);
-    setLoginError(null);
-    setIsLoggingIn(true);
-
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password: pass }),
-      });
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Quick login failed');
-      }
-
-      try {
-        localStorage.setItem('lal10_auth_user', JSON.stringify(data.user));
-      } catch {}
-
-      setCurrentUser(data.user);
-      setIsAuthenticated(true);
-      fetchLiveUsers();
-    } catch (err: any) {
-      setLoginError(err.message || 'Quick access login failed.');
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
-
-  const handleSignupSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSignupError(null);
-
-    if (!signupName.trim() || !signupEmail.trim() || !signupPassword.trim()) {
-      setSignupError('Please fill in all required fields.');
-      return;
-    }
-
-    if (signupPassword !== signupConfirmPassword) {
-      setSignupError('Passwords do not match. Please verify.');
-      return;
-    }
-
-    setIsSigningUp(true);
-
-    try {
-      const res = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: signupName,
-          email: signupEmail,
-          role: signupRole,
-          password: signupPassword,
-        }),
-      });
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to create account.');
-      }
-
-      try {
-        localStorage.setItem('lal10_auth_user', JSON.stringify(data.user));
-      } catch {}
-
-      setCurrentUser(data.user);
-      setIsAuthenticated(true);
-      fetchLiveUsers();
-    } catch (err: any) {
-      setSignupError(err.message || 'Sign up error.');
-    } finally {
-      setIsSigningUp(false);
-    }
-  };
-
   const handleLogout = async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
@@ -569,7 +480,6 @@ export default function AdminDashboardPage() {
     setLoginUsername('');
     setLoginPassword('');
     setLoginError(null);
-    setSignupError(null);
   };
 
   // Update lead status in state and via API
@@ -886,344 +796,130 @@ export default function AdminDashboardPage() {
           padding: '36px 32px'
         }}>
           {/* Header Logo */}
-          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '34px', fontWeight: 600, letterSpacing: '5px', color: '#1A1817' }}>
+          <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+              <img
+                src="https://www.lal10.com/logo.png"
+                alt="LAL10 Logo"
+                style={{ height: '42px', width: 'auto', objectFit: 'contain' }}
+              />
+            </div>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', fontWeight: 600, letterSpacing: '4px', color: '#1A1817' }}>
               LAL10
             </div>
-            <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#9B9084', fontWeight: 700, marginTop: '3px', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#9B9084', fontWeight: 700, marginTop: '4px', textTransform: 'uppercase' }}>
               Operations &amp; Admin Portal
             </div>
           </div>
 
-          {/* Mode Switcher Tabs */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: '#F5EFE6', padding: '4px', borderRadius: '10px', marginBottom: '24px' }}>
-            <button
-              type="button"
-              onClick={() => { setAuthMode('login'); setLoginError(null); setSignupError(null); }}
-              style={{
-                padding: '9px', borderRadius: '8px', border: 'none', fontSize: '13px', fontWeight: 700,
-                background: authMode === 'login' ? '#FFFFFF' : 'transparent',
-                color: authMode === 'login' ? '#5B1F28' : '#7D756C',
-                boxShadow: authMode === 'login' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
-                cursor: 'pointer', transition: 'all 0.15s ease'
-              }}
-            >
-              Sign In
-            </button>
-            <button
-              type="button"
-              onClick={() => { setAuthMode('signup'); setLoginError(null); setSignupError(null); }}
-              style={{
-                padding: '9px', borderRadius: '8px', border: 'none', fontSize: '13px', fontWeight: 700,
-                background: authMode === 'signup' ? '#FFFFFF' : 'transparent',
-                color: authMode === 'signup' ? '#5B1F28' : '#7D756C',
-                boxShadow: authMode === 'signup' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
-                cursor: 'pointer', transition: 'all 0.15s ease'
-              }}
-            >
-              Sign Up / Register
-            </button>
-          </div>
-
-          {/* TAB 1: SIGN IN */}
-          {authMode === 'login' ? (
+          <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
-              {/* Quick Login One-Click Chips */}
-              <div style={{ marginBottom: '20px', padding: '14px', background: '#FAF6F0', borderRadius: '10px', border: '1px solid #EFE5D8' }}>
-                <div style={{ fontSize: '11px', fontWeight: 700, color: '#8A5336', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Sparkles size={13} color="#8A5336" />
-                  <span>1-Click Team Quick Access</span>
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {[
-                    { name: 'Super Admin', user: 'buitlal10', pass: 'founder@lal10@2026', color: '#5B1F28' },
-                    { name: 'Maneet Gohil', user: 'maneet', pass: 'founder@lal10@2026', color: '#1E293B' },
-                    { name: 'Sanchit', user: 'sanchit', pass: 'founder@lal10@2026', color: '#0F766E' },
-                    { name: 'Albin', user: 'albin', pass: 'founder@lal10@2026', color: '#1D4ED8' },
-                    { name: 'Ghanshyam', user: 'ghanshyam', pass: 'founder@lal10@2026', color: '#7E22CE' },
-                  ].map(acc => (
-                    <button
-                      key={acc.user}
-                      type="button"
-                      onClick={() => handleQuickLogin(acc.user, acc.pass)}
-                      style={{
-                        padding: '5px 10px', borderRadius: '6px', border: '1px solid #DDD3C6',
-                        background: '#FFFFFF', fontSize: '11px', fontWeight: 600, color: '#1A1817',
-                        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px'
-                      }}
-                    >
-                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: acc.color }} />
-                      <span>{acc.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '6px' }}>
-                    Username or Work Email
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={loginUsername}
-                    onChange={e => setLoginUsername(e.target.value)}
-                    placeholder="e.g. buitlal10 / maneet / sanchit"
-                    style={{
-                      width: '100%',
-                      padding: '11px 14px',
-                      borderRadius: '8px',
-                      border: '1px solid #DCD6CC',
-                      fontSize: '13.5px',
-                      outline: 'none',
-                      color: '#1A1817'
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '6px' }}>
-                    Password
-                  </label>
-                  <div style={{ position: 'relative' }}>
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      required
-                      value={loginPassword}
-                      onChange={e => setLoginPassword(e.target.value)}
-                      placeholder="••••••••••••"
-                      style={{
-                        width: '100%',
-                        padding: '11px 14px',
-                        borderRadius: '8px',
-                        border: '1px solid #DCD6CC',
-                        fontSize: '13.5px',
-                        outline: 'none',
-                        color: '#1A1817'
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      style={{
-                        position: 'absolute',
-                        right: '12px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        color: '#8A7D71'
-                      }}
-                    >
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
-                  </div>
-                </div>
-
-                {loginError && (
-                  <div style={{
-                    padding: '10px 12px',
-                    borderRadius: '8px',
-                    background: '#FEE2E2',
-                    border: '1px solid #F87171',
-                    color: '#991B1B',
-                    fontSize: '12.5px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}>
-                    <AlertCircle size={15} />
-                    <span>{loginError}</span>
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={isLoggingIn}
-                  style={{
-                    width: '100%',
-                    padding: '13px',
-                    background: '#5B1F28',
-                    color: '#FFFFFF',
-                    borderRadius: '8px',
-                    border: 'none',
-                    fontSize: '13.5px',
-                    fontWeight: 600,
-                    cursor: isLoggingIn ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    marginTop: '6px'
-                  }}
-                >
-                  {isLoggingIn ? <RefreshCw className="animate-spin" size={16} /> : <Lock size={16} />}
-                  <span>{isLoggingIn ? 'Signing In...' : 'Sign In to Dashboard'}</span>
-                </button>
-              </form>
-            </div>
-          ) : (
-            /* TAB 2: SIGN UP / REGISTER */
-            <form onSubmit={handleSignupSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '5px' }}>
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={signupName}
-                  onChange={e => setSignupName(e.target.value)}
-                  placeholder="e.g. Albin Thomas"
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: '8px',
-                    border: '1px solid #DCD6CC',
-                    fontSize: '13px',
-                    outline: 'none',
-                    color: '#1A1817'
-                  }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '5px' }}>
-                  Work Email (@lal10.com) *
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={signupEmail}
-                  onChange={e => setSignupEmail(e.target.value)}
-                  placeholder="you@lal10.com"
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: '8px',
-                    border: '1px solid #DCD6CC',
-                    fontSize: '13px',
-                    outline: 'none',
-                    color: '#1A1817'
-                  }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '5px' }}>
-                  Role / Department
-                </label>
-                <select
-                  value={signupRole}
-                  onChange={e => setSignupRole(e.target.value as any)}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: '8px',
-                    border: '1px solid #DCD6CC',
-                    fontSize: '13px',
-                    background: '#FFF',
-                    outline: 'none',
-                    color: '#1A1817'
-                  }}
-                >
-                  <option value="Admin">Admin (Full Access)</option>
-                  <option value="Manager">Manager (Calls &amp; Enquiries)</option>
-                  <option value="Editor">Editor (Inquiry Management)</option>
-                </select>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '5px' }}>
-                    Password *
-                  </label>
-                  <input
-                    type="password"
-                    required
-                    value={signupPassword}
-                    onChange={e => setSignupPassword(e.target.value)}
-                    placeholder="••••••••"
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      borderRadius: '8px',
-                      border: '1px solid #DCD6CC',
-                      fontSize: '13px',
-                      outline: 'none',
-                      color: '#1A1817'
-                    }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '5px' }}>
-                    Confirm *
-                  </label>
-                  <input
-                    type="password"
-                    required
-                    value={signupConfirmPassword}
-                    onChange={e => setSignupConfirmPassword(e.target.value)}
-                    placeholder="••••••••"
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      borderRadius: '8px',
-                      border: '1px solid #DCD6CC',
-                      fontSize: '13px',
-                      outline: 'none',
-                      color: '#1A1817'
-                    }}
-                  />
-                </div>
-              </div>
-
-              {signupError && (
-                <div style={{
-                  padding: '10px 12px',
-                  borderRadius: '8px',
-                  background: '#FEE2E2',
-                  border: '1px solid #F87171',
-                  color: '#991B1B',
-                  fontSize: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}>
-                  <AlertCircle size={14} />
-                  <span>{signupError}</span>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={isSigningUp}
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '6px' }}>
+                Username or Work Email
+              </label>
+              <input
+                type="text"
+                required
+                value={loginUsername}
+                onChange={e => setLoginUsername(e.target.value)}
+                placeholder="e.g. buitlal10 / maneet / sanchit"
                 style={{
                   width: '100%',
-                  padding: '13px',
-                  background: '#5B1F28',
-                  color: '#FFFFFF',
+                  padding: '12px 14px',
                   borderRadius: '8px',
-                  border: 'none',
+                  border: '1px solid #DCD6CC',
                   fontSize: '13.5px',
-                  fontWeight: 600,
-                  cursor: isSigningUp ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  marginTop: '6px'
+                  outline: 'none',
+                  color: '#1A1817',
+                  background: '#FAFAF9'
                 }}
-              >
-                {isSigningUp ? <RefreshCw className="animate-spin" size={16} /> : <CheckCircle2 size={16} />}
-                <span>{isSigningUp ? 'Creating Account...' : 'Register & Enter Dashboard'}</span>
-              </button>
-            </form>
-          )}
+              />
+            </div>
 
-          <div style={{ marginTop: '22px', textAlign: 'center', fontSize: '11.5px', color: '#8A7D71', borderTop: '1px solid #F0EAE1', paddingTop: '16px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#4A453E', marginBottom: '6px' }}>
+                Password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={loginPassword}
+                  onChange={e => setLoginPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: '8px',
+                    border: '1px solid #DCD6CC',
+                    fontSize: '13.5px',
+                    outline: 'none',
+                    color: '#1A1817',
+                    background: '#FAFAF9'
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#8A7D71'
+                  }}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            {loginError && (
+              <div style={{
+                padding: '10px 12px',
+                borderRadius: '8px',
+                background: '#FEE2E2',
+                border: '1px solid #F87171',
+                color: '#991B1B',
+                fontSize: '12.5px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <AlertCircle size={15} />
+                <span>{loginError}</span>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isLoggingIn}
+              style={{
+                width: '100%',
+                padding: '13px',
+                background: '#5B1F28',
+                color: '#FFFFFF',
+                borderRadius: '8px',
+                border: 'none',
+                fontSize: '13.5px',
+                fontWeight: 600,
+                cursor: isLoggingIn ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                marginTop: '6px'
+              }}
+            >
+              {isLoggingIn ? <RefreshCw className="animate-spin" size={16} /> : <Lock size={16} />}
+              <span>{isLoggingIn ? 'Signing In...' : 'Sign In to Dashboard'}</span>
+            </button>
+          </form>
+
+          <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '11.5px', color: '#8A7D71', borderTop: '1px solid #F0EAE1', paddingTop: '16px' }}>
             Part of Lal10 FashionOS • Enterprise Secure Access
           </div>
         </div>
@@ -1256,12 +952,19 @@ export default function AdminDashboardPage() {
           >
             <Menu size={22} />
           </button>
-          <div>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', fontWeight: 600, letterSpacing: '3px', color: '#1A1817', lineHeight: 1 }}>
-              LAL10
-            </div>
-            <div style={{ fontSize: '8px', letterSpacing: '2px', color: '#9B9084', fontWeight: 700 }}>
-              OPERATIONS
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <img
+              src="https://www.lal10.com/logo.png"
+              alt="LAL10"
+              style={{ height: '24px', width: 'auto', objectFit: 'contain' }}
+            />
+            <div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '18px', fontWeight: 600, letterSpacing: '2px', color: '#1A1817', lineHeight: 1 }}>
+                LAL10
+              </div>
+              <div style={{ fontSize: '7.5px', letterSpacing: '1.5px', color: '#9B9084', fontWeight: 700 }}>
+                OPERATIONS
+              </div>
             </div>
           </div>
         </div>
@@ -1316,12 +1019,19 @@ export default function AdminDashboardPage() {
           }}>
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 8px 18px', borderBottom: '1px solid #F2ECE4' }}>
-                <div>
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '26px', fontWeight: 600, letterSpacing: '4px', color: '#1A1817', lineHeight: 1 }}>
-                    LAL10
-                  </div>
-                  <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#9B9084', fontWeight: 600, marginTop: '3px' }}>
-                    OPERATIONS
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <img
+                    src="https://www.lal10.com/logo.png"
+                    alt="LAL10"
+                    style={{ height: '28px', width: 'auto', objectFit: 'contain' }}
+                  />
+                  <div>
+                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', fontWeight: 600, letterSpacing: '3px', color: '#1A1817', lineHeight: 1 }}>
+                      LAL10
+                    </div>
+                    <div style={{ fontSize: '8.5px', letterSpacing: '2px', color: '#9B9084', fontWeight: 600, marginTop: '2px' }}>
+                      OPERATIONS
+                    </div>
                   </div>
                 </div>
                 <button onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
@@ -1353,9 +1063,9 @@ export default function AdminDashboardPage() {
               </Link>
               <button
                 onClick={handleLogout}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', fontSize: '13px', color: '#B91C1C', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 600 }}
+                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', fontSize: '12px', color: '#991B1B', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, borderRadius: '6px' }}
               >
-                <LogOut size={16} />
+                <LogOut size={14} />
                 <span>Sign Out</span>
               </button>
             </div>
@@ -1382,11 +1092,20 @@ export default function AdminDashboardPage() {
         }}>
           <div>
             <div style={{ padding: '0 8px 24px', borderBottom: '1px solid #F2ECE4' }}>
-              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', fontWeight: 600, letterSpacing: '4px', color: '#1A1817', lineHeight: 1 }}>
-                LAL10
-              </div>
-              <div style={{ fontSize: '9px', letterSpacing: '3px', color: '#9B9084', fontWeight: 600, marginTop: '4px', textTransform: 'uppercase' }}>
-                FASHIONS PORTAL
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <img
+                  src="https://www.lal10.com/logo.png"
+                  alt="LAL10"
+                  style={{ height: '32px', width: 'auto', objectFit: 'contain' }}
+                />
+                <div>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', fontWeight: 600, letterSpacing: '3px', color: '#1A1817', lineHeight: 1 }}>
+                    LAL10
+                  </div>
+                  <div style={{ fontSize: '9px', letterSpacing: '2.5px', color: '#9B9084', fontWeight: 600, marginTop: '3px', textTransform: 'uppercase' }}>
+                    FASHIONS PORTAL
+                  </div>
+                </div>
               </div>
             </div>
 

@@ -31,9 +31,16 @@ export default function HomePage() {
       {/* NAV */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(251,250,247,0.92)', backdropFilter: 'blur(14px)', borderBottom: '1px solid #E4DED3' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
-          <div>
-            <div style={{ fontSize: '19px', fontWeight: 700, letterSpacing: '6px', color: '#171615' }}>LAL10</div>
-            <div style={{ fontSize: '10px', letterSpacing: '2.5px', color: '#8A837A', fontWeight: 500, marginTop: '3px' }}>FASHIONOS · FASHION BRAND OPERATING SYSTEM</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <img
+              src="https://www.lal10.com/logo.png"
+              alt="LAL10 Logo"
+              style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+            />
+            <div>
+              <div style={{ fontSize: '19px', fontWeight: 700, letterSpacing: '4px', color: '#171615', lineHeight: 1 }}>LAL10</div>
+              <div style={{ fontSize: '9px', letterSpacing: '2px', color: '#8A837A', fontWeight: 600, marginTop: '3px' }}>FASHION BRAND OPERATING SYSTEM</div>
+            </div>
           </div>
 
           {/* Desktop Navigation Links */}
