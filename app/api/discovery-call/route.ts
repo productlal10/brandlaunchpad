@@ -3,14 +3,23 @@ import { saveDiscoveryLead, getDiscoveryLeads, updateLeadStatus } from '@/lib/st
 import nodemailer from 'nodemailer';
 
 // ─── Email Transport ─────────────────────────────────────────────────────────
-// Uses Gmail SMTP. Set GMAIL_USER and GMAIL_APP_PASS in .env.local
+// Reads PROD_MAIL_* or GMAIL_* SMTP configuration from environment variables
 function createTransport() {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASS) return null;
+  const user = process.env.PROD_MAIL_USER || process.env.GMAIL_USER || process.env.SMTP_USER;
+  const rawPass = process.env.PROD_MAIL_PASS || process.env.GMAIL_APP_PASS || process.env.SMTP_PASS;
+  const pass = rawPass ? rawPass.replace(/\s+/g, '') : '';
+  const host = process.env.PROD_MAIL_HOST || process.env.SMTP_HOST || 'smtp.gmail.com';
+  const port = parseInt(process.env.PROD_MAIL_PORT || process.env.SMTP_PORT || '587', 10);
+
+  if (!user || !pass) return null;
+
   return nodemailer.createTransport({
-    service: 'gmail',
+    host,
+    port,
+    secure: port === 465,
     auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASS,
+      user,
+      pass,
     },
   });
 }
@@ -434,10 +443,11 @@ export async function POST(req: NextRequest) {
     // 2. Send emails via Nodemailer
     const transporter = createTransport();
     if (transporter) {
+      const senderEmail = process.env.PROD_MAIL_USER || process.env.GMAIL_USER || 'erpadmin@lal10.com';
       try {
         // Email 1: Send Internal Notification to LAL10 Team (alan@lal10.com)
         await transporter.sendMail({
-          from: `"Lal10 FashionOS" <${process.env.GMAIL_USER}>`,
+          from: `"Lal10 FashionOS" <${senderEmail}>`,
           to: 'alan@lal10.com',
           replyTo: String(email).trim(),
           subject: `⚡ New Discovery Enquiry – ${String(brandName).trim()} (${String(fullName).trim()})`,
@@ -459,7 +469,7 @@ export async function POST(req: NextRequest) {
 
         // Email 2: Send Confirmation Email to Customer / Founder
         await transporter.sendMail({
-          from: `"Lal10 FashionOS" <${process.env.GMAIL_USER}>`,
+          from: `"Lal10 FashionOS" <${senderEmail}>`,
           to: String(email).trim(),
           replyTo: 'hello@lal10.com',
           subject: `Your enquiry is with us – Lal10 FashionOS`,
