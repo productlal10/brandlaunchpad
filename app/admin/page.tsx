@@ -327,29 +327,53 @@ export default function AdminDashboardPage() {
   const [newBrand, setNewBrand] = useState({ name: '', website: '', contactName: '', contactEmail: '', stage: 'Pre-launch', category: 'Womenswear' });
   const [newCaseStudy, setNewCaseStudy] = useState({ title: '', brandName: '', industry: 'D2C Fashion', status: 'Published' as const });
 
-  // Check auth session from localStorage on mount
+  // Check auth session from server cookie / me endpoint on mount
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('lal10_auth_user');
-      if (stored) {
-        try {
+    const checkSession = async () => {
+      try {
+        const res = await fetch('/api/auth/me', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.user) {
+            setCurrentUser(data.user);
+            setIsAuthenticated(true);
+            setAuthChecked(true);
+            return;
+          }
+        }
+      } catch (err) {}
+
+      try {
+        const stored = localStorage.getItem('lal10_auth_user');
+        if (stored) {
           const parsed = JSON.parse(stored) as AuthUser;
           if (parsed && parsed.name) {
             setCurrentUser(parsed);
             setIsAuthenticated(true);
           }
-        } catch {
-          if (stored === 'buitlal10' || stored === 'admin') {
-            setIsAuthenticated(true);
-          }
         }
+      } catch (e) {
+        console.warn('localStorage access error', e);
+      } finally {
+        setAuthChecked(true);
       }
-    } catch (e) {
-      console.warn('localStorage access error', e);
-    } finally {
-      setAuthChecked(true);
-    }
+    };
+
+    checkSession();
   }, []);
+
+  // Fetch real users from DB
+  const fetchLiveUsers = async () => {
+    try {
+      const res = await fetch('/api/admin/users', { cache: 'no-store' });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.users)) {
+        setUsers(data.users);
+      }
+    } catch (err) {
+      console.warn('Failed to load users from DB:', err);
+    }
+  };
 
   // Fetch real leads dynamically from /api/discovery-call
   const fetchLiveLeads = async () => {
@@ -411,9 +435,10 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Load scheduled calls from localStorage or real leads
+  // Load scheduled calls and fetch live leads + users from DB
   useEffect(() => {
     fetchLiveLeads();
+    fetchLiveUsers();
 
     try {
       const savedCalls = localStorage.getItem('lal10_scheduled_calls');
@@ -423,52 +448,70 @@ export default function AdminDashboardPage() {
     } catch {}
   }, []);
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError(null);
     setIsLoggingIn(true);
 
-    const userKey = loginUsername.trim().toLowerCase();
-    const pass = loginPassword.trim();
-    const account = AUTHORIZED_ACCOUNTS[userKey];
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: loginUsername, password: loginPassword }),
+      });
+      const data = await res.json();
 
-    if (account && account.passwords.includes(pass)) {
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Invalid credentials. Please verify username & password.');
+      }
+
       try {
-        localStorage.setItem('lal10_auth_user', JSON.stringify(account.profile));
-      } catch (err) {}
-      setCurrentUser(account.profile);
+        localStorage.setItem('lal10_auth_user', JSON.stringify(data.user));
+      } catch {}
+
+      setCurrentUser(data.user);
       setIsAuthenticated(true);
+      fetchLiveUsers();
+    } catch (err: any) {
+      setLoginError(err.message || 'Login failed. Please check credentials.');
+    } finally {
       setIsLoggingIn(false);
-    } else {
-      setTimeout(() => {
-        setLoginError('Invalid credentials. Please verify your username & password.');
-        setIsLoggingIn(false);
-      }, 300);
     }
   };
 
-  const handleQuickLogin = (username: string, pass: string) => {
+  const handleQuickLogin = async (username: string, pass: string) => {
     setLoginUsername(username);
     setLoginPassword(pass);
     setLoginError(null);
     setIsLoggingIn(true);
 
-    const userKey = username.trim().toLowerCase();
-    const account = AUTHORIZED_ACCOUNTS[userKey];
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password: pass }),
+      });
+      const data = await res.json();
 
-    if (account) {
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Quick login failed');
+      }
+
       try {
-        localStorage.setItem('lal10_auth_user', JSON.stringify(account.profile));
-      } catch (err) {}
-      setTimeout(() => {
-        setCurrentUser(account.profile);
-        setIsAuthenticated(true);
-        setIsLoggingIn(false);
-      }, 200);
+        localStorage.setItem('lal10_auth_user', JSON.stringify(data.user));
+      } catch {}
+
+      setCurrentUser(data.user);
+      setIsAuthenticated(true);
+      fetchLiveUsers();
+    } catch (err: any) {
+      setLoginError(err.message || 'Quick access login failed.');
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
-  const handleSignupSubmit = (e: React.FormEvent) => {
+  const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSignupError(null);
 
@@ -484,42 +527,41 @@ export default function AdminDashboardPage() {
 
     setIsSigningUp(true);
 
-    const initials = signupName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U';
-    const profile: AuthUser = {
-      username: signupEmail.split('@')[0].toLowerCase(),
-      name: signupName.trim(),
-      email: signupEmail.trim(),
-      role: signupRole,
-      avatarInitials: initials,
-      avatarColor: '#5B1F28'
-    };
-
-    const newUserItem: UserItem = {
-      id: `usr-${Date.now()}`,
-      name: signupName.trim(),
-      email: signupEmail.trim(),
-      role: signupRole,
-      status: 'Active',
-      joinedOn: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      lastActive: 'Active now',
-      avatarInitials: initials,
-      avatarColor: '#5B1F28'
-    };
-
-    setUsers(prev => [newUserItem, ...prev]);
-
     try {
-      localStorage.setItem('lal10_auth_user', JSON.stringify(profile));
-    } catch {}
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: signupName,
+          email: signupEmail,
+          role: signupRole,
+          password: signupPassword,
+        }),
+      });
+      const data = await res.json();
 
-    setTimeout(() => {
-      setCurrentUser(profile);
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to create account.');
+      }
+
+      try {
+        localStorage.setItem('lal10_auth_user', JSON.stringify(data.user));
+      } catch {}
+
+      setCurrentUser(data.user);
       setIsAuthenticated(true);
+      fetchLiveUsers();
+    } catch (err: any) {
+      setSignupError(err.message || 'Sign up error.');
+    } finally {
       setIsSigningUp(false);
-    }, 300);
+    }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {}
     try {
       localStorage.removeItem('lal10_auth_user');
     } catch (err) {}
@@ -593,22 +635,22 @@ export default function AdminDashboardPage() {
     });
   };
 
-  // Add Custom User
-  const handleAddUser = (e: React.FormEvent) => {
+  // Add Custom User via API
+  const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    const initials = newUser.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U';
-    const newUserItem: UserItem = {
-      id: `usr-${Date.now()}`,
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
-      status: newUser.status,
-      joinedOn: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      lastActive: 'Just added',
-      avatarInitials: initials,
-      avatarColor: '#1E293B'
-    };
-    setUsers([newUserItem, ...users]);
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser),
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        setUsers(prev => [data.user, ...prev]);
+      }
+    } catch (err) {
+      console.warn('Failed to save user via API', err);
+    }
     setActiveModal(null);
     setNewUser({ name: '', email: '', role: 'Editor', status: 'Active' });
   };

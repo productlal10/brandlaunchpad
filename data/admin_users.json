@@ -1,0 +1,67 @@
+[
+  {
+    "id": "usr-super-admin",
+    "username": "buitlal10",
+    "name": "Super Admin",
+    "email": "admin@lal10.com",
+    "password": "founder@lal10@2026",
+    "role": "Super Administrator",
+    "status": "Active",
+    "avatarInitials": "SA",
+    "avatarColor": "#5B1F28",
+    "joinedOn": "Jan 01, 2024",
+    "lastActive": "Active now"
+  },
+  {
+    "id": "usr-maneet",
+    "username": "maneet",
+    "name": "Maneet Gohil",
+    "email": "maneet@lal10.com",
+    "password": "founder@lal10@2026",
+    "role": "Admin",
+    "status": "Active",
+    "avatarInitials": "MG",
+    "avatarColor": "#1E293B",
+    "joinedOn": "Jan 15, 2024",
+    "lastActive": "Active now"
+  },
+  {
+    "id": "usr-sanchit",
+    "username": "sanchit",
+    "name": "Sanchit",
+    "email": "sanchit@lal10.com",
+    "password": "founder@lal10@2026",
+    "role": "Admin",
+    "status": "Active",
+    "avatarInitials": "SC",
+    "avatarColor": "#0F766E",
+    "joinedOn": "Jan 15, 2024",
+    "lastActive": "10 mins ago"
+  },
+  {
+    "id": "usr-albin",
+    "username": "albin",
+    "name": "Albin",
+    "email": "albin@lal10.com",
+    "password": "founder@lal10@2026",
+    "role": "Manager",
+    "status": "Active",
+    "avatarInitials": "AL",
+    "avatarColor": "#1D4ED8",
+    "joinedOn": "Mar 01, 2024",
+    "lastActive": "25 mins ago"
+  },
+  {
+    "id": "usr-ghanshyam",
+    "username": "ghanshyam",
+    "name": "Ghanshyam",
+    "email": "ghanshyam@lal10.com",
+    "password": "founder@lal10@2026",
+    "role": "Manager",
+    "status": "Active",
+    "avatarInitials": "GS",
+    "avatarColor": "#7E22CE",
+    "joinedOn": "Feb 10, 2024",
+    "lastActive": "1 hour ago"
+  }
+]

@@ -57,3 +57,17 @@ export interface CategoryTrendData {
   avgDaysToSellThrough: number;
   returnRateBenchmark: string;
 }
+
+export interface AdminUser {
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  password?: string;
+  role: 'Super Administrator' | 'Admin' | 'Manager' | 'Editor';
+  status: 'Active' | 'Inactive';
+  avatarInitials: string;
+  avatarColor: string;
+  joinedOn: string;
+  lastActive: string;
+}

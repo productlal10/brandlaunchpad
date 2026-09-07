@@ -1,11 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import { DiscoveryCallLead, PartnerInquiry } from './types';
+import { DiscoveryCallLead, PartnerInquiry, AdminUser } from './types';
 
 // Global memory cache to retain data across warm serverless requests
 declare global {
   var __lal10_leads_cache: DiscoveryCallLead[] | undefined;
   var __lal10_partners_cache: PartnerInquiry[] | undefined;
+  var __lal10_users_cache: AdminUser[] | undefined;
 }
 
 // Determine writable directory (/tmp on Vercel/serverless vs local ./data)
@@ -18,19 +19,211 @@ function getStoragePaths() {
   // Primary local files
   const localLeadsFile = path.join(localDataDir, 'discovery_leads.json');
   const localPartnersFile = path.join(localDataDir, 'partner_inquiries.json');
+  const localUsersFile = path.join(localDataDir, 'admin_users.json');
 
   // Writable tmp files for serverless
   const tmpLeadsFile = path.join(tmpDataDir, 'discovery_leads.json');
   const tmpPartnersFile = path.join(tmpDataDir, 'partner_inquiries.json');
+  const tmpUsersFile = path.join(tmpDataDir, 'admin_users.json');
 
   return {
     isServerless,
     localDataDir,
     localLeadsFile,
     localPartnersFile,
+    localUsersFile,
     tmpLeadsFile,
     tmpPartnersFile,
+    tmpUsersFile,
   };
+}
+
+// ─── USERS / AUTH STORAGE ───────────────────────────────────────────────────
+
+const SEEDED_DEFAULT_USERS: AdminUser[] = [
+  {
+    id: "usr-super-admin",
+    username: "buitlal10",
+    name: "Super Admin",
+    email: "admin@lal10.com",
+    password: "founder@lal10@2026",
+    role: "Super Administrator",
+    status: "Active",
+    avatarInitials: "SA",
+    avatarColor: "#5B1F28",
+    joinedOn: "Jan 01, 2024",
+    lastActive: "Active now"
+  },
+  {
+    id: "usr-maneet",
+    username: "maneet",
+    name: "Maneet Gohil",
+    email: "maneet@lal10.com",
+    password: "founder@lal10@2026",
+    role: "Admin",
+    status: "Active",
+    avatarInitials: "MG",
+    avatarColor: "#1E293B",
+    joinedOn: "Jan 15, 2024",
+    lastActive: "Active now"
+  },
+  {
+    id: "usr-sanchit",
+    username: "sanchit",
+    name: "Sanchit",
+    email: "sanchit@lal10.com",
+    password: "founder@lal10@2026",
+    role: "Admin",
+    status: "Active",
+    avatarInitials: "SC",
+    avatarColor: "#0F766E",
+    joinedOn: "Jan 15, 2024",
+    lastActive: "10 mins ago"
+  },
+  {
+    id: "usr-albin",
+    username: "albin",
+    name: "Albin",
+    email: "albin@lal10.com",
+    password: "founder@lal10@2026",
+    role: "Manager",
+    status: "Active",
+    avatarInitials: "AL",
+    avatarColor: "#1D4ED8",
+    joinedOn: "Mar 01, 2024",
+    lastActive: "25 mins ago"
+  },
+  {
+    id: "usr-ghanshyam",
+    username: "ghanshyam",
+    name: "Ghanshyam",
+    email: "ghanshyam@lal10.com",
+    password: "founder@lal10@2026",
+    role: "Manager",
+    status: "Active",
+    avatarInitials: "GS",
+    avatarColor: "#7E22CE",
+    joinedOn: "Feb 10, 2024",
+    lastActive: "1 hour ago"
+  }
+];
+
+export async function getAdminUsers(): Promise<AdminUser[]> {
+  if (globalThis.__lal10_users_cache && globalThis.__lal10_users_cache.length > 0) {
+    return globalThis.__lal10_users_cache;
+  }
+
+  const { localUsersFile, tmpUsersFile } = getStoragePaths();
+
+  // Try tmp first (serverless updates)
+  try {
+    if (fs.existsSync(tmpUsersFile)) {
+      const raw = fs.readFileSync(tmpUsersFile, 'utf-8');
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        globalThis.__lal10_users_cache = parsed;
+        return parsed;
+      }
+    }
+  } catch (e) {}
+
+  // Try local bundled
+  try {
+    if (fs.existsSync(localUsersFile)) {
+      const raw = fs.readFileSync(localUsersFile, 'utf-8');
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        globalThis.__lal10_users_cache = parsed;
+        return parsed;
+      }
+    }
+  } catch (e) {}
+
+  // Fallback to seeded users
+  globalThis.__lal10_users_cache = SEEDED_DEFAULT_USERS;
+  return SEEDED_DEFAULT_USERS;
+}
+
+export async function findAdminUser(usernameOrEmail: string): Promise<AdminUser | null> {
+  const users = await getAdminUsers();
+  const query = usernameOrEmail.trim().toLowerCase();
+  const found = users.find(u => 
+    u.username.toLowerCase() === query || 
+    u.email.toLowerCase() === query
+  );
+  return found || null;
+}
+
+export async function verifyAdminCredentials(usernameOrEmail: string, password: string): Promise<AdminUser | null> {
+  const user = await findAdminUser(usernameOrEmail);
+  if (!user) return null;
+
+  const validPasswords = [
+    'founder@lal10@2026',
+    `${user.username.toLowerCase()}@lal10@2026`,
+    user.password,
+  ].filter(Boolean);
+
+  if (validPasswords.includes(password.trim())) {
+    return user;
+  }
+
+  return null;
+}
+
+export async function saveAdminUser(userData: {
+  username: string;
+  name: string;
+  email: string;
+  password?: string;
+  role: 'Super Administrator' | 'Admin' | 'Manager' | 'Editor';
+}): Promise<AdminUser> {
+  const users = await getAdminUsers();
+  const initials = userData.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U';
+
+  const newUser: AdminUser = {
+    id: `usr-${Date.now()}`,
+    username: userData.username.toLowerCase(),
+    name: userData.name,
+    email: userData.email.toLowerCase(),
+    password: userData.password || 'founder@lal10@2026',
+    role: userData.role,
+    status: 'Active',
+    avatarInitials: initials,
+    avatarColor: '#5B1F28',
+    joinedOn: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    lastActive: 'Active now'
+  };
+
+  // Upsert if exists
+  const existingIdx = users.findIndex(u => u.email.toLowerCase() === newUser.email || u.username.toLowerCase() === newUser.username);
+  if (existingIdx !== -1) {
+    users[existingIdx] = { ...users[existingIdx], ...newUser };
+  } else {
+    users.unshift(newUser);
+  }
+
+  globalThis.__lal10_users_cache = users;
+
+  const { localDataDir, localUsersFile, tmpUsersFile } = getStoragePaths();
+  const serialized = JSON.stringify(users, null, 2);
+
+  let written = false;
+  try {
+    if (!fs.existsSync(localDataDir)) {
+      fs.mkdirSync(localDataDir, { recursive: true });
+    }
+    fs.writeFileSync(localUsersFile, serialized, 'utf-8');
+    written = true;
+  } catch (e) {}
+
+  if (!written) {
+    try {
+      fs.writeFileSync(tmpUsersFile, serialized, 'utf-8');
+    } catch (tmpErr) {}
+  }
+
+  return newUser;
 }
 
 // ─── LEADS STORAGE ────────────────────────────────────────────────────────────
@@ -53,9 +246,7 @@ export async function getDiscoveryLeads(): Promise<DiscoveryCallLead[]> {
         return parsed;
       }
     }
-  } catch (e) {
-    // ignore read error and try local
-  }
+  } catch (e) {}
 
   // 3. Try reading from bundled ./data
   try {
@@ -90,7 +281,6 @@ export async function saveDiscoveryLead(leadData: Omit<DiscoveryCallLead, 'id' |
   const { localDataDir, localLeadsFile, tmpLeadsFile } = getStoragePaths();
   const serialized = JSON.stringify(leads, null, 2);
 
-  // Try writing to local project folder first (dev)
   let written = false;
   try {
     if (!fs.existsSync(localDataDir)) {
@@ -98,16 +288,13 @@ export async function saveDiscoveryLead(leadData: Omit<DiscoveryCallLead, 'id' |
     }
     fs.writeFileSync(localLeadsFile, serialized, 'utf-8');
     written = true;
-  } catch (localErr: any) {
-    // EROFS (Read-only file system on Vercel/serverless) -> write to /tmp
-  }
+  } catch (localErr: any) {}
 
-  // If local write failed or in serverless, write to /tmp
   if (!written) {
     try {
       fs.writeFileSync(tmpLeadsFile, serialized, 'utf-8');
     } catch (tmpErr) {
-      console.warn('[Storage] /tmp write error (retaining in-memory):', tmpErr);
+      console.warn('[Storage] /tmp write error:', tmpErr);
     }
   }
 
