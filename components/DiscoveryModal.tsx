@@ -17,6 +17,14 @@ const stageOptions = [
   'Looking for Market Intelligence',
 ];
 
+const categoryOptions = [
+  'Womenswear',
+  'Menswear',
+  'Kidswear',
+  'Footwear & Accessories',
+  'General / Multi-Category',
+];
+
 export const DiscoveryModal: React.FC<DiscoveryModalProps> = ({
   isOpen,
   onClose,
@@ -29,8 +37,10 @@ export const DiscoveryModal: React.FC<DiscoveryModalProps> = ({
   const [formData, setFormData] = useState({
     fullName: '',
     brandName: '',
+    category: 'Womenswear',
     stage: '',
     email: '',
+    phone: '',
     notes: '',
     trackInterest: defaultTrack,
   });
@@ -71,9 +81,9 @@ export const DiscoveryModal: React.FC<DiscoveryModalProps> = ({
         body: JSON.stringify({
           fullName: formData.fullName,
           email: formData.email,
-          phone: '',
+          phone: formData.phone || '',
           brandName: formData.brandName,
-          category: 'General',
+          category: formData.category || 'General',
           stage: formData.stage || 'Not specified',
           budget: 'Not specified',
           preferredDate: '',
@@ -95,7 +105,7 @@ export const DiscoveryModal: React.FC<DiscoveryModalProps> = ({
   const handleClose = () => {
     setSuccess(false);
     setErrorMessage('');
-    setFormData({ fullName: '', brandName: '', stage: '', email: '', notes: '', trackInterest: defaultTrack });
+    setFormData({ fullName: '', brandName: '', category: 'Womenswear', stage: '', email: '', phone: '', notes: '', trackInterest: defaultTrack });
     onClose();
   };
 
@@ -287,39 +297,74 @@ export const DiscoveryModal: React.FC<DiscoveryModalProps> = ({
                   </div>
                 </div>
 
-                {/* Stage */}
-                <div>
-                  <label style={labelStyle}>Stage</label>
-                  <div style={{ position: 'relative' }}>
-                    <select
-                      value={formData.stage}
-                      onChange={e => handleChange('stage', e.target.value)}
-                      onFocus={() => setFocusedField('stage')}
-                      onBlur={() => setFocusedField(null)}
-                      style={{ ...inputStyle('stage'), appearance: 'none', paddingRight: '40px', cursor: 'pointer', color: formData.stage ? '#1A1A1A' : '#AAAAAA' }}
-                    >
-                      <option value="" disabled>Select a stage</option>
-                      {stageOptions.map(s => <option key={s} value={s} style={{ color: '#1A1A1A' }}>{s}</option>)}
-                    </select>
-                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M2 4L6 8L10 4" stroke="#8C7B6E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
+                {/* Category & Stage Row */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                  <div>
+                    <label style={labelStyle}>Category <span style={{ color: '#6B1F2A' }}>*</span></label>
+                    <div style={{ position: 'relative' }}>
+                      <select
+                        value={formData.category}
+                        onChange={e => handleChange('category', e.target.value)}
+                        onFocus={() => setFocusedField('category')}
+                        onBlur={() => setFocusedField(null)}
+                        style={{ ...inputStyle('category'), appearance: 'none', paddingRight: '40px', cursor: 'pointer', color: formData.category ? '#1A1A1A' : '#AAAAAA' }}
+                      >
+                        {categoryOptions.map(c => <option key={c} value={c} style={{ color: '#1A1A1A' }}>{c}</option>)}
+                      </select>
+                      <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                          <path d="M2 4L6 8L10 4" stroke="#8C7B6E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={labelStyle}>Stage</label>
+                    <div style={{ position: 'relative' }}>
+                      <select
+                        value={formData.stage}
+                        onChange={e => handleChange('stage', e.target.value)}
+                        onFocus={() => setFocusedField('stage')}
+                        onBlur={() => setFocusedField(null)}
+                        style={{ ...inputStyle('stage'), appearance: 'none', paddingRight: '40px', cursor: 'pointer', color: formData.stage ? '#1A1A1A' : '#AAAAAA' }}
+                      >
+                        <option value="" disabled>Select a stage</option>
+                        {stageOptions.map(s => <option key={s} value={s} style={{ color: '#1A1A1A' }}>{s}</option>)}
+                      </select>
+                      <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                          <path d="M2 4L6 8L10 4" stroke="#8C7B6E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Email */}
-                <div>
-                  <label style={labelStyle}>Email <span style={{ color: '#6B1F2A' }}>*</span></label>
-                  <input
-                    type="email" required placeholder="you@brand.com"
-                    value={formData.email}
-                    onChange={e => handleChange('email', e.target.value)}
-                    onFocus={() => setFocusedField('email')}
-                    onBlur={() => setFocusedField(null)}
-                    style={inputStyle('email')}
-                  />
+                {/* Email + Phone Row */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                  <div>
+                    <label style={labelStyle}>Email <span style={{ color: '#6B1F2A' }}>*</span></label>
+                    <input
+                      type="email" required placeholder="you@brand.com"
+                      value={formData.email}
+                      onChange={e => handleChange('email', e.target.value)}
+                      onFocus={() => setFocusedField('email')}
+                      onBlur={() => setFocusedField(null)}
+                      style={inputStyle('email')}
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Phone (Optional)</label>
+                    <input
+                      type="tel" placeholder="+91 98765 43210"
+                      value={formData.phone}
+                      onChange={e => handleChange('phone', e.target.value)}
+                      onFocus={() => setFocusedField('phone')}
+                      onBlur={() => setFocusedField(null)}
+                      style={inputStyle('phone')}
+                    />
+                  </div>
                 </div>
 
                 {/* Challenge */}
