@@ -256,56 +256,36 @@ function buildCustomerConfirmationEmailHtml(data: {
 
           <!-- Header -->
           <tr>
-            <td style="padding:32px 40px 24px;border-bottom:1px solid #F0EAE1;">
+            <td style="padding:28px 40px 22px;border-bottom:1px solid #F0EAE1;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td>
-                    <div style="font-family:Georgia,serif;font-size:28px;font-weight:700;letter-spacing:5px;color:#171615;line-height:1;">LAL10</div>
+                    <div style="font-family:Georgia,serif;font-size:26px;font-weight:700;letter-spacing:5px;color:#171615;line-height:1;">LAL10</div>
                     <div style="font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:#8A8075;font-weight:600;margin-top:5px;">FASHION BRAND OPERATING SYSTEM</div>
                   </td>
-                  <td align="right" valign="top">
-                    <!-- Gold Monogram -->
-                    <table cellpadding="0" cellspacing="0" style="border-left:1px solid #EFE6D9;padding-left:14px;">
-                      <tr>
-                        <td style="text-align:center;">
-                          <span style="font-family:Georgia,serif;font-size:16px;font-weight:700;color:#A87944;line-height:1;display:block;">L</span>
-                          <span style="font-family:Georgia,serif;font-size:11px;font-weight:700;color:#A87944;line-height:1;display:block;">10</span>
-                        </td>
-                      </tr>
-                    </table>
+                  <td align="right" valign="middle">
+                    <img src="https://www.lal10.com/logo.png" alt="LAL10 Logo" width="95" style="display:block;max-width:105px;height:auto;border:0;" />
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- Hero Section: Text on Left + Abstract Gold Graphic on Right -->
+          <!-- Hero Section: Clean Full Width -->
           <tr>
             <td style="padding:36px 40px 28px;">
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td width="68%" valign="top" style="padding-right:16px;">
-                    <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:700;letter-spacing:0.5px;color:#171615;margin:0 0 16px 0;line-height:1.25;text-transform:uppercase;">
-                      YOUR ENQUIRY IS WITH US.
-                    </h1>
-                    <div style="font-size:16px;font-weight:600;color:#171615;margin-bottom:12px;">
-                      Thank you, ${firstName}.
-                    </div>
-                    <p style="font-size:14px;line-height:1.65;color:#57524B;margin:0 0 12px 0;">
-                      We&apos;ve received your request to connect with LAL10 regarding <strong>${data.brandName}</strong>.
-                    </p>
-                    <p style="font-size:13.5px;line-height:1.65;color:#7A7268;margin:0;">
-                      Our team will review your brand, current stage and the challenge you&apos;ve shared. We&apos;ll be in touch shortly to discuss the next step.
-                    </p>
-                  </td>
-                  <!-- Right Gold Texture Arc Graphic -->
-                  <td width="32%" valign="middle" align="center">
-                    <div style="width:130px;height:130px;border-radius:50%;background:linear-gradient(135deg, #D4AF37 0%, #E6C687 40%, #B8860B 100%);box-shadow:inset 0 0 20px rgba(0,0,0,0.15), 0 8px 20px rgba(184,134,11,0.15);position:relative;overflow:hidden;">
-                      <div style="position:absolute;inset:10px;border-radius:50%;border:1px solid rgba(255,255,255,0.4);"></div>
-                    </div>
-                  </td>
-                </tr>
-              </table>
+              <h1 style="font-family:Georgia,serif;font-size:24px;font-weight:700;letter-spacing:0.5px;color:#171615;margin:0 0 16px 0;line-height:1.25;text-transform:uppercase;">
+                YOUR ENQUIRY IS WITH US.
+              </h1>
+              <div style="font-size:16px;font-weight:600;color:#171615;margin-bottom:12px;">
+                Thank you, ${firstName}.
+              </div>
+              <p style="font-size:14px;line-height:1.65;color:#57524B;margin:0 0 12px 0;">
+                We&apos;ve received your request to connect with LAL10 regarding <strong>${data.brandName}</strong>.
+              </p>
+              <p style="font-size:13.5px;line-height:1.65;color:#7A7268;margin:0;">
+                Our team will review your brand, current stage and the challenge you&apos;ve shared. We&apos;ll be in touch shortly to discuss the next step.
+              </p>
             </td>
           </tr>
 

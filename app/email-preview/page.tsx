@@ -138,39 +138,30 @@ export default function EmailPreviewPage() {
         <div style="height:3px;background:#C4956A;"></div>
 
         <!-- Header -->
-        <div style="padding:28px 32px 20px;border-bottom:1px solid #F0EAE1;display:flex;justify-content:space-between;align-items:flex-start;">
+        <div style="padding:24px 32px 18px;border-bottom:1px solid #F0EAE1;display:flex;justify-content:space-between;align-items:center;">
           <div>
             <div style="font-family:Georgia,serif;font-size:26px;font-weight:700;letter-spacing:5px;color:#171615;line-height:1;">LAL10</div>
             <div style="font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:#8A8075;font-weight:600;margin-top:4px;">FASHION BRAND OPERATING SYSTEM</div>
           </div>
-          <div style="border-left:1px solid #EFE6D9;padding-left:12px;text-align:center;">
-            <div style="font-family:Georgia,serif;font-size:15px;font-weight:700;color:#A87944;line-height:1;">L</div>
-            <div style="font-family:Georgia,serif;font-size:10px;font-weight:700;color:#A87944;line-height:1;">10</div>
+          <div>
+            <img src="https://www.lal10.com/logo.png" alt="LAL10 Logo" width="90" style="display:block;max-width:100px;height:auto;border:0;" />
           </div>
         </div>
 
-        <!-- Hero: Text Left + Gold Texture Art Right -->
+        <!-- Hero: Clean Full Width -->
         <div style="padding:32px 32px 24px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:20px;">
-            <div style="flex:1;">
-              <h1 style="font-family:Georgia,serif;font-size:23px;font-weight:700;letter-spacing:0.5px;color:#171615;margin:0 0 14px 0;line-height:1.25;text-transform:uppercase;">
-                YOUR ENQUIRY IS WITH US.
-              </h1>
-              <div style="font-size:15px;font-weight:600;color:#171615;margin-bottom:10px;">
-                Thank you, ${testData.fullName.split(' ')[0]}.
-              </div>
-              <p style="font-size:13.5px;line-height:1.65;color:#57524B;margin:0 0 10px 0;">
-                We&apos;ve received your request to connect with LAL10 regarding <strong>${testData.brandName}</strong>.
-              </p>
-              <p style="font-size:13px;line-height:1.65;color:#7A7268;margin:0;">
-                Our team will review your brand, current stage and the challenge you&apos;ve shared. We&apos;ll be in touch shortly to discuss the next step.
-              </p>
-            </div>
-            <!-- Gold Circle Artwork -->
-            <div style="width:110px;height:110px;flex-shrink:0;border-radius:50%;background:linear-gradient(135deg, #D4AF37 0%, #E6C687 40%, #B8860B 100%);box-shadow:inset 0 0 16px rgba(0,0,0,0.15), 0 8px 20px rgba(184,134,11,0.15);position:relative;">
-              <div style="position:absolute;inset:8px;border-radius:50%;border:1px solid rgba(255,255,255,0.4);"></div>
-            </div>
+          <h1 style="font-family:Georgia,serif;font-size:23px;font-weight:700;letter-spacing:0.5px;color:#171615;margin:0 0 14px 0;line-height:1.25;text-transform:uppercase;">
+            YOUR ENQUIRY IS WITH US.
+          </h1>
+          <div style="font-size:15px;font-weight:600;color:#171615;margin-bottom:10px;">
+            Thank you, ${testData.fullName.split(' ')[0]}.
           </div>
+          <p style="font-size:13.5px;line-height:1.65;color:#57524B;margin:0 0 10px 0;">
+            We&apos;ve received your request to connect with LAL10 regarding <strong>${testData.brandName}</strong>.
+          </p>
+          <p style="font-size:13px;line-height:1.65;color:#7A7268;margin:0;">
+            Our team will review your brand, current stage and the challenge you&apos;ve shared. We&apos;ll be in touch shortly to discuss the next step.
+          </p>
         </div>
 
         <!-- Your Details Summary Box -->
