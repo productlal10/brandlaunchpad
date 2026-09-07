@@ -64,7 +64,7 @@ export interface AdminUser {
   name: string;
   email: string;
   password?: string;
-  role: 'Super Administrator' | 'Admin' | 'Manager' | 'Editor';
+  role: 'Super Administrator' | 'CEO' | 'COO' | 'CPO' | 'EIR' | 'Admin' | 'Manager' | 'Editor' | string;
   status: 'Active' | 'Inactive';
   avatarInitials: string;
   avatarColor: string;

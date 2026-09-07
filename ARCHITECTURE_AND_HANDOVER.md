@@ -105,10 +105,10 @@ graph TD
 | User / Role | Username | Passwords Accepted | Default Email |
 |---|---|---|---|
 | **Super Admin** | `buitlal10` / `admin` / `admin@lal10.com` | `founder@lal10@2026` / `admin@lal10@2026` | `admin@lal10.com` |
-| **Maneet Gohil** (Founder & CEO) | `maneet` / `maneeth` / `maneet@lal10.com` | `founder@lal10@2026` / `maneet@lal10@2026` | `maneet@lal10.com` |
-| **Sanchit** (Co-Founder & Director) | `sanchit` / `sanchit@lal10.com` | `founder@lal10@2026` / `sanchit@lal10@2026` | `sanchit@lal10.com` |
-| **Albin** (Growth & Brand Partnerships) | `albin` / `albin@lal10.com` | `founder@lal10@2026` / `albin@lal10@2026` | `albin@lal10.com` |
-| **Ghanshyam** (Technology & Operations) | `ghanshyam` / `ghanshyam@lal10.com` | `founder@lal10@2026` / `ghanshyam@lal10@2026` | `ghanshyam@lal10.com` |
+| **Maneet Gohil** (CEO) | `maneet` / `maneeth` / `maneet@lal10.com` | `founder@lal10@2026` / `maneet@lal10@2026` | `maneet@lal10.com` |
+| **Sanchit Govil** (COO) | `sanchit` / `sanchit@lal10.com` | `founder@lal10@2026` / `sanchit@lal10@2026` | `sanchit@lal10.com` |
+| **Albin Jose** (CPO) | `albin` / `albin@lal10.com` | `founder@lal10@2026` / `albin@lal10@2026` | `albin@lal10.com` |
+| **Ghanshyam Ramawat** (EIR) | `ghanshyam` / `ghanshyam@lal10.com` | `founder@lal10@2026` / `ghanshyam@lal10@2026` | `ghanshyam@lal10.com` |
 
 * **Security & Personalization Features**:
   - Personalized session storage with active user initials, role, and avatar branding in the sidebar.

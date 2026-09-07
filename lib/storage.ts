@@ -60,7 +60,7 @@ const SEEDED_DEFAULT_USERS: AdminUser[] = [
     name: "Maneet Gohil",
     email: "maneet@lal10.com",
     password: "founder@lal10@2026",
-    role: "Admin",
+    role: "CEO",
     status: "Active",
     avatarInitials: "MG",
     avatarColor: "#1E293B",
@@ -73,7 +73,7 @@ const SEEDED_DEFAULT_USERS: AdminUser[] = [
     name: "Sanchit",
     email: "sanchit@lal10.com",
     password: "founder@lal10@2026",
-    role: "Admin",
+    role: "COO",
     status: "Active",
     avatarInitials: "SC",
     avatarColor: "#0F766E",
@@ -86,7 +86,7 @@ const SEEDED_DEFAULT_USERS: AdminUser[] = [
     name: "Albin",
     email: "albin@lal10.com",
     password: "founder@lal10@2026",
-    role: "Manager",
+    role: "CPO",
     status: "Active",
     avatarInitials: "AL",
     avatarColor: "#1D4ED8",
@@ -99,7 +99,7 @@ const SEEDED_DEFAULT_USERS: AdminUser[] = [
     name: "Ghanshyam",
     email: "ghanshyam@lal10.com",
     password: "founder@lal10@2026",
-    role: "Manager",
+    role: "EIR",
     status: "Active",
     avatarInitials: "GS",
     avatarColor: "#7E22CE",
@@ -176,7 +176,7 @@ export async function saveAdminUser(userData: {
   name: string;
   email: string;
   password?: string;
-  role: 'Super Administrator' | 'Admin' | 'Manager' | 'Editor';
+  role: 'Super Administrator' | 'CEO' | 'COO' | 'CPO' | 'EIR' | 'Admin' | 'Manager' | 'Editor' | string;
 }): Promise<AdminUser> {
   const users = await getAdminUsers();
   const initials = userData.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U';

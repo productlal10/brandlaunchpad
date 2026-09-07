@@ -41,7 +41,7 @@ export interface UserItem {
   id: string;
   name: string;
   email: string;
-  role: 'Admin' | 'Editor' | 'Manager' | 'Viewer';
+  role: string;
   status: 'Active' | 'Inactive';
   joinedOn: string;
   lastActive: string;
@@ -123,62 +123,62 @@ const AUTHORIZED_ACCOUNTS: Record<string, { passwords: string[]; profile: AuthUs
   // User 1: Maneet Gohil
   'maneet': {
     passwords: ['founder@lal10@2026', 'maneet@lal10@2026'],
-    profile: { username: 'maneet', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'Founder & CEO', avatarInitials: 'MG', avatarColor: '#1E293B' }
+    profile: { username: 'maneet', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'CEO', avatarInitials: 'MG', avatarColor: '#1E293B' }
   },
   'maneeth': {
     passwords: ['founder@lal10@2026', 'maneet@lal10@2026'],
-    profile: { username: 'maneeth', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'Founder & CEO', avatarInitials: 'MG', avatarColor: '#1E293B' }
+    profile: { username: 'maneeth', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'CEO', avatarInitials: 'MG', avatarColor: '#1E293B' }
   },
   'maneet@lal10.com': {
     passwords: ['founder@lal10@2026', 'maneet@lal10@2026'],
-    profile: { username: 'maneet@lal10.com', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'Founder & CEO', avatarInitials: 'MG', avatarColor: '#1E293B' }
+    profile: { username: 'maneet@lal10.com', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'CEO', avatarInitials: 'MG', avatarColor: '#1E293B' }
   },
 
   // User 2: Sanchit
   'sanchit': {
     passwords: ['founder@lal10@2026', 'sanchit@lal10@2026'],
-    profile: { username: 'sanchit', name: 'Sanchit', email: 'sanchit@lal10.com', role: 'Co-Founder & Director', avatarInitials: 'SC', avatarColor: '#0F766E' }
+    profile: { username: 'sanchit', name: 'Sanchit', email: 'sanchit@lal10.com', role: 'COO', avatarInitials: 'SC', avatarColor: '#0F766E' }
   },
   'sanchit@lal10.com': {
     passwords: ['founder@lal10@2026', 'sanchit@lal10@2026'],
-    profile: { username: 'sanchit@lal10.com', name: 'Sanchit', email: 'sanchit@lal10.com', role: 'Co-Founder & Director', avatarInitials: 'SC', avatarColor: '#0F766E' }
+    profile: { username: 'sanchit@lal10.com', name: 'Sanchit', email: 'sanchit@lal10.com', role: 'COO', avatarInitials: 'SC', avatarColor: '#0F766E' }
   },
 
   // User 3: Albin
   'albin': {
     passwords: ['founder@lal10@2026', 'albin@lal10@2026'],
-    profile: { username: 'albin', name: 'Albin', email: 'albin@lal10.com', role: 'Growth & Brand Partnerships', avatarInitials: 'AL', avatarColor: '#1D4ED8' }
+    profile: { username: 'albin', name: 'Albin', email: 'albin@lal10.com', role: 'CPO', avatarInitials: 'AL', avatarColor: '#1D4ED8' }
   },
   'albin@lal10.com': {
     passwords: ['founder@lal10@2026', 'albin@lal10@2026'],
-    profile: { username: 'albin@lal10.com', name: 'Albin', email: 'albin@lal10.com', role: 'Growth & Brand Partnerships', avatarInitials: 'AL', avatarColor: '#1D4ED8' }
+    profile: { username: 'albin@lal10.com', name: 'Albin', email: 'albin@lal10.com', role: 'CPO', avatarInitials: 'AL', avatarColor: '#1D4ED8' }
   },
 
   // User 4: Ghanshyam
   'ghanshyam': {
     passwords: ['founder@lal10@2026', 'ghanshyam@lal10@2026'],
-    profile: { username: 'ghanshyam', name: 'Ghanshyam', email: 'ghanshyam@lal10.com', role: 'Technology & Operations', avatarInitials: 'GS', avatarColor: '#7E22CE' }
+    profile: { username: 'ghanshyam', name: 'Ghanshyam', email: 'ghanshyam@lal10.com', role: 'EIR', avatarInitials: 'GS', avatarColor: '#7E22CE' }
   },
   'ghanshyam@lal10.com': {
     passwords: ['founder@lal10@2026', 'ghanshyam@lal10@2026'],
-    profile: { username: 'ghanshyam@lal10.com', name: 'Ghanshyam', email: 'ghanshyam@lal10.com', role: 'Technology & Operations', avatarInitials: 'GS', avatarColor: '#7E22CE' }
+    profile: { username: 'ghanshyam@lal10.com', name: 'Ghanshyam', email: 'ghanshyam@lal10.com', role: 'EIR', avatarInitials: 'GS', avatarColor: '#7E22CE' }
   }
 };
 
 const REAL_HOSTS = [
-  'Maneet Gohil (Founder & CEO)',
-  'Sanchit (Co-Founder & Director)',
-  'Albin (Growth & Brand Partnerships)',
-  'Ghanshyam (Technology & Operations)',
+  'Maneet Gohil (CEO)',
+  'Sanchit Govil (COO)',
+  'Albin Jose (CPO)',
+  'Ghanshyam Ramawat (EIR)',
   'Super Admin (Team Lead)'
 ];
 
 const INITIAL_USERS: UserItem[] = [
-  { id: 'usr-1', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'Admin', status: 'Active', joinedOn: 'Jan 15, 2024', lastActive: 'Active now', avatarInitials: 'MG', avatarColor: '#1E293B' },
-  { id: 'usr-2', name: 'Sanchit', email: 'sanchit@lal10.com', role: 'Admin', status: 'Active', joinedOn: 'Jan 15, 2024', lastActive: '10 mins ago', avatarInitials: 'SC', avatarColor: '#0F766E' },
-  { id: 'usr-3', name: 'Albin', email: 'albin@lal10.com', role: 'Manager', status: 'Active', joinedOn: 'Mar 01, 2024', lastActive: '25 mins ago', avatarInitials: 'AL', avatarColor: '#1D4ED8' },
-  { id: 'usr-4', name: 'Ghanshyam', email: 'ghanshyam@lal10.com', role: 'Manager', status: 'Active', joinedOn: 'Feb 10, 2024', lastActive: '1 hour ago', avatarInitials: 'GS', avatarColor: '#7E22CE' },
-  { id: 'usr-5', name: 'Super Admin', email: 'admin@lal10.com', role: 'Admin', status: 'Active', joinedOn: 'Jan 01, 2024', lastActive: 'Active now', avatarInitials: 'SA', avatarColor: '#5B1F28' },
+  { id: 'usr-1', name: 'Maneet Gohil', email: 'maneet@lal10.com', role: 'CEO', status: 'Active', joinedOn: 'Jan 15, 2024', lastActive: 'Active now', avatarInitials: 'MG', avatarColor: '#1E293B' },
+  { id: 'usr-2', name: 'Sanchit', email: 'sanchit@lal10.com', role: 'COO', status: 'Active', joinedOn: 'Jan 15, 2024', lastActive: '10 mins ago', avatarInitials: 'SC', avatarColor: '#0F766E' },
+  { id: 'usr-3', name: 'Albin', email: 'albin@lal10.com', role: 'CPO', status: 'Active', joinedOn: 'Mar 01, 2024', lastActive: '25 mins ago', avatarInitials: 'AL', avatarColor: '#1D4ED8' },
+  { id: 'usr-4', name: 'Ghanshyam', email: 'ghanshyam@lal10.com', role: 'EIR', status: 'Active', joinedOn: 'Feb 10, 2024', lastActive: '1 hour ago', avatarInitials: 'GS', avatarColor: '#7E22CE' },
+  { id: 'usr-5', name: 'Super Admin', email: 'admin@lal10.com', role: 'Super Administrator', status: 'Active', joinedOn: 'Jan 01, 2024', lastActive: 'Active now', avatarInitials: 'SA', avatarColor: '#5B1F28' },
 ];
 
 const INITIAL_CASE_STUDIES: CaseStudyItem[] = [
@@ -797,17 +797,14 @@ export default function AdminDashboardPage() {
         }}>
           {/* Header Logo */}
           <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
               <img
                 src="https://www.lal10.com/logo.png"
-                alt="LAL10 Logo"
+                alt="LAL10"
                 style={{ height: '42px', width: 'auto', objectFit: 'contain' }}
               />
             </div>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '28px', fontWeight: 600, letterSpacing: '4px', color: '#1A1817' }}>
-              LAL10
-            </div>
-            <div style={{ fontSize: '10px', letterSpacing: '3px', color: '#9B9084', fontWeight: 700, marginTop: '4px', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '10.5px', letterSpacing: '3px', color: '#9B9084', fontWeight: 700, marginTop: '4px', textTransform: 'uppercase' }}>
               Operations &amp; Admin Portal
             </div>
           </div>
@@ -952,21 +949,11 @@ export default function AdminDashboardPage() {
           >
             <Menu size={22} />
           </button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img
-              src="https://www.lal10.com/logo.png"
-              alt="LAL10"
-              style={{ height: '24px', width: 'auto', objectFit: 'contain' }}
-            />
-            <div>
-              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '18px', fontWeight: 600, letterSpacing: '2px', color: '#1A1817', lineHeight: 1 }}>
-                LAL10
-              </div>
-              <div style={{ fontSize: '7.5px', letterSpacing: '1.5px', color: '#9B9084', fontWeight: 700 }}>
-                OPERATIONS
-              </div>
-            </div>
-          </div>
+          <img
+            src="https://www.lal10.com/logo.png"
+            alt="LAL10"
+            style={{ height: '24px', width: 'auto', objectFit: 'contain' }}
+          />
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1019,21 +1006,11 @@ export default function AdminDashboardPage() {
           }}>
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 8px 18px', borderBottom: '1px solid #F2ECE4' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <img
-                    src="https://www.lal10.com/logo.png"
-                    alt="LAL10"
-                    style={{ height: '28px', width: 'auto', objectFit: 'contain' }}
-                  />
-                  <div>
-                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', fontWeight: 600, letterSpacing: '3px', color: '#1A1817', lineHeight: 1 }}>
-                      LAL10
-                    </div>
-                    <div style={{ fontSize: '8.5px', letterSpacing: '2px', color: '#9B9084', fontWeight: 600, marginTop: '2px' }}>
-                      OPERATIONS
-                    </div>
-                  </div>
-                </div>
+                <img
+                  src="https://www.lal10.com/logo.png"
+                  alt="LAL10"
+                  style={{ height: '28px', width: 'auto', objectFit: 'contain' }}
+                />
                 <button onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
                   <X size={20} color="#666" />
                 </button>
@@ -1092,21 +1069,11 @@ export default function AdminDashboardPage() {
         }}>
           <div>
             <div style={{ padding: '0 8px 24px', borderBottom: '1px solid #F2ECE4' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <img
-                  src="https://www.lal10.com/logo.png"
-                  alt="LAL10"
-                  style={{ height: '32px', width: 'auto', objectFit: 'contain' }}
-                />
-                <div>
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', fontWeight: 600, letterSpacing: '3px', color: '#1A1817', lineHeight: 1 }}>
-                    LAL10
-                  </div>
-                  <div style={{ fontSize: '9px', letterSpacing: '2.5px', color: '#9B9084', fontWeight: 600, marginTop: '3px', textTransform: 'uppercase' }}>
-                    FASHIONS PORTAL
-                  </div>
-                </div>
-              </div>
+              <img
+                src="https://www.lal10.com/logo.png"
+                alt="LAL10"
+                style={{ height: '34px', width: 'auto', objectFit: 'contain', display: 'block' }}
+              />
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', margin: '16px 0 20px', background: '#FAF6F0', borderRadius: '10px', border: '1px solid #EFE7DC' }}>
