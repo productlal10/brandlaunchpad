@@ -93,7 +93,7 @@ graph TD
 
 ### 4.2 Fault-Tolerant Email Notification Pipeline
 * **Dual Notification Dispatch**:
-  1. **LAL10 Team Notification**: Sent directly to `alan@lal10.com` / `contact@lal10.com` with formatted brand qualification parameters (Budget, Stage, Track Interest, Notes).
+  1. **LAL10 Team Notification**: Sent directly to `alan@lal10.com` (CC: `ghanshyam@lal10.com`, `sanchit@lal10.com`, `maneet@lal10.com`, `albin@lal10.com`) with formatted brand qualification parameters (Budget, Stage, Track Interest, Notes).
   2. **Customer Confirmation**: Sends a luxury branded confirmation receipt back to the prospective brand founder.
 * **Fault Isolation**: Email dispatch is wrapped in non-blocking try-catch blocks. If SMTP services face rate-limits or momentary downtime, the lead is **still guaranteed to be safely captured and saved to the database/storage**, returning HTTP 200 to the user.
 * **Interactive Inspector**: Developers can verify, debug, and preview email layouts anytime at `/email-preview`.

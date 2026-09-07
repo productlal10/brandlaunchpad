@@ -417,10 +417,18 @@ export async function POST(req: NextRequest) {
     if (transporter) {
       const senderEmail = process.env.PROD_MAIL_USER || process.env.GMAIL_USER || 'erpadmin@lal10.com';
       try {
-        // Email 1: Send Internal Notification to LAL10 Team (alan@lal10.com)
+        // Email 1: Send Internal Notification to LAL10 Team with CC to leadership
+        const teamCcRecipients = [
+          'Ghanshyam Ramawat <ghanshyam@lal10.com>',
+          'Sanchit Govil <sanchit@lal10.com>',
+          'Maneet Gohil <maneet@lal10.com>',
+          'Albin Jose <albin@lal10.com>',
+        ];
+
         await transporter.sendMail({
           from: `"Lal10 FashionOS" <${senderEmail}>`,
           to: 'alan@lal10.com',
+          cc: teamCcRecipients,
           replyTo: String(email).trim(),
           subject: `⚡ New Discovery Enquiry – ${String(brandName).trim()} (${String(fullName).trim()})`,
           html: buildTeamNotificationEmailHtml({
@@ -437,7 +445,7 @@ export async function POST(req: NextRequest) {
             trackInterest: trackInterest || 'Launch Sprint',
           }),
         });
-        console.log(`[Discovery] Team email sent to alan@lal10.com for ${brandName}`);
+        console.log(`[Discovery] Team email sent to alan@lal10.com (CC: ${teamCcRecipients.join(', ')}) for ${brandName}`);
 
         // Email 2: Send Confirmation Email to Customer / Founder
         await transporter.sendMail({

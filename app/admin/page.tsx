@@ -1978,7 +1978,7 @@ export default function AdminDashboardPage() {
               {/* Nodemailer logs */}
               <div style={{ background: '#F0FDF4', padding: '12px', borderRadius: '8px', border: '1px solid #BBF7D0', fontSize: '11.5px', color: '#166534' }}>
                 <div style={{ fontWeight: 700, marginBottom: '4px' }}>✓ AUTOMATED EMAIL DELIVERY LOGS</div>
-                <div>• Team Notification: Dispatched to <code>alan@lal10.com</code></div>
+                <div>• Team Notification: Dispatched to <code>alan@lal10.com</code> (CC: <code>ghanshyam@lal10.com</code>, <code>sanchit@lal10.com</code>, <code>maneet@lal10.com</code>, <code>albin@lal10.com</code>)</div>
                 <div>• Client Receipt: Dispatched to <code>{selectedEnquiry.email}</code></div>
               </div>
 

@@ -414,7 +414,7 @@ export default function EmailPreviewPage() {
                   <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#C4956A', letterSpacing: '1px', textTransform: 'uppercase' }}>
                     EMAIL TO LAL10 TEAM
                   </h3>
-                  <div style={{ fontSize: '12px', color: '#8A8075' }}>New Enquiry Notification → To: alan@lal10.com</div>
+                  <div style={{ fontSize: '12px', color: '#8A8075' }}>New Enquiry Notification → To: alan@lal10.com (CC: ghanshyam, sanchit, maneet, albin)</div>
                 </div>
                 <span style={{ fontSize: '11px', background: '#24211E', padding: '4px 8px', borderRadius: '4px', border: '1px solid #3D3832', color: '#A09689' }}>
                   HTML / Nodemailer
