@@ -6,12 +6,99 @@ import { Menu, X, Linkedin, User, ShoppingBag, Globe, MessageSquare } from 'luci
 import { DiscoveryModal } from '@/components/DiscoveryModal';
 import { PartnerModal } from '@/components/PartnerModal';
 
+const BRAND_LOGOS = [
+  {
+    name: 'Pepe Jeans London',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Pepe-Jeans-Logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original',
+    height: 22,
+  },
+  {
+    name: 'Myntra',
+    logo: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/65c5da9f878952603e370d03_Myntra-Logo_1.svg/1280px-65c5da9f878952603e370d03_Myntra-Logo_1.svg.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail',
+    height: 24,
+  },
+  {
+    name: 'Flipkart',
+    logo: 'https://1000logos.net/wp-content/uploads/2021/02/Flipkart-logo.png',
+    height: 24,
+  },
+  {
+    name: 'Landmark Styli',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Landmark_Group_Logo.svg/1280px-Landmark_Group_Logo.svg.png',
+    height: 20,
+  },
+  {
+    name: 'Amazon',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
+    height: 20,
+  },
+  {
+    name: 'Nordstrom',
+    logo: 'https://1000logos.net/wp-content/uploads/2022/08/Nordstrom-logo.png',
+    height: 20,
+  },
+  {
+    name: 'Wildfang',
+    logo: 'https://s3-us-west-2.amazonaws.com/cbi-image-service-prd/modified/acd0a1e6-1c5e-4584-a3d3-dcadb2a3d9c0.png',
+    height: 20,
+  },
+  {
+    name: 'Gant',
+    logo: 'https://download.logo.wine/logo/Gant_(retailer)/Gant_(retailer)-Logo.wine.png',
+    height: 24,
+  },
+  {
+    name: 'Bloomingwear',
+    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUVvrpt0g2OqzElAeBzyDAIN5u7YuwtzkKtI7ag7XC48p7GlPKNMxZEiXw&s=10',
+    height: 22,
+  },
+  {
+    name: 'Iconic',
+    logo: 'https://www.iconicindia.com/cdn/shop/files/iconic-logo.png?v=1698047257&width=200',
+    height: 22,
+  },
+  {
+    name: 'True Religion',
+    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/9/9c/True_Religion_logo.svg/1280px-True_Religion_logo.svg.png',
+    height: 26,
+  },
+  {
+    name: 'The Souled Store',
+    logo: 'https://mir-s3-cdn-cf.behance.net/projects/404/1d635d200302101.Y3JvcCwxMjQyLDk3MSwwLDEzNQ.jpg',
+    height: 24,
+  },
+  {
+    name: 'Wrogn',
+    logo: 'https://wrogn.com/cdn/shop/files/logo_icon_1_bd4a99ba-1c20-43de-81ff-1f5fb0685b8e.svg?v=1736489168&width=100',
+    height: 24,
+  },
+  {
+    name: 'Kidbea',
+    logo: 'https://cdn.shopify.com/s/files/1/0606/1785/1119/files/kidbea_logo-05_1.webp?v=1773731230&width=270',
+    height: 24,
+  },
+];
+
 export default function Home1Page() {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [bookingTrack, setBookingTrack] = useState<string>('Launch Sprint');
   const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
   const [selectedPartnerService, setSelectedPartnerService] = useState<string>('Photography & Shoots');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Assortment Math Interactive State
+  const [budget, setBudget] = useState<number>(12); // ₹ Lakhs (1 - 50)
+  const [landedCost, setLandedCost] = useState<number>(600); // ₹ (100 - 2000)
+  const [depth, setDepth] = useState<number>(110); // units per option (10 - 500)
+
+  const optionsCount = Math.max(1, Math.floor((budget * 100000) / (landedCost * depth)));
+  const totalUnits = optionsCount * depth;
+  const indicativeMrp = Math.round(landedCost * 3.4);
+
+  const sizeS = Math.round(depth * 0.15);
+  const sizeM = Math.round(depth * 0.30);
+  const sizeL = Math.round(depth * 0.35);
+  const sizeXL = Math.max(0, depth - (sizeS + sizeM + sizeL));
 
   const openBooking = (track: string = 'General', e?: React.MouseEvent) => {
     if (e) e.preventDefault();
@@ -36,15 +123,18 @@ export default function Home1Page() {
               src="https://www.lal10.com/logo.png" 
               alt="Lal10 Logo" 
               className="desktop-logo-img"
-              style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
+              style={{ height: '46px', width: 'auto', objectFit: 'contain' }}
+            />
+            <div className="desktop-logo-divider" style={{ width: '1px', height: '32px', background: '#E4DED3' }} />
+            <img 
+              src="https://thefashionos.com/assets/logo-Dl4_z_fN.png" 
+              alt="TheFashionOS Logo" 
+              className="desktop-second-logo-img"
+              style={{ height: '45px', width: 'auto', objectFit: 'contain' }}
             />
             <div className="mobile-text-logo" style={{ display: 'none', flexDirection: 'column' }}>
               <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '26px', fontWeight: 600, letterSpacing: '2px', color: '#171615', lineHeight: 1 }}>LAL10</div>
               <div style={{ fontSize: '9px', letterSpacing: '2px', color: '#8A837A', fontWeight: 600, marginTop: '2px' }}>FASHIONOS</div>
-            </div>
-            <div className="desktop-logo-subtext" style={{ borderLeft: '1px solid #E4DED3', paddingLeft: '14px' }}>
-              <div style={{ fontSize: '10.5px', letterSpacing: '2.5px', color: '#8A837A', fontWeight: 600 }}>FASHIONOS</div>
-              <div style={{ fontSize: '8.5px', letterSpacing: '1px', color: '#A39C93', fontWeight: 500 }}>FASHION BRAND OPERATING SYSTEM</div>
             </div>
           </a>
 
@@ -171,7 +261,7 @@ export default function Home1Page() {
               marginBottom: '26px',
               color: '#171615'
             }}>
-              We build<br className="mobile-only-break" /> fashion brands<br className="mobile-only-break" /> that lead,<br className="mobile-only-break" /> <em style={{ fontStyle: 'italic', color: '#171615' }}>not follow.</em>
+              Your fashion brand,<br className="mobile-only-break" /> <em style={{ fontStyle: 'italic', color: '#171615' }}>built on supply-chain intelligence.</em>
             </h1>
 
             {/* Subtitle */}
@@ -246,14 +336,9 @@ export default function Home1Page() {
                 <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>25+</div>
                 <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>Markets Worldwide</div>
               </div>
-              <div style={{ width: '1px', background: '#EAE4D9' }} />
-              <div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '42px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>EnF</div>
-                <div style={{ fontSize: '11.5px', color: '#6B655E', fontWeight: 500, lineHeight: 1.4 }}>End-to-End FashionOS</div>
-              </div>
             </div>
 
-            {/* Mobile 2x2 Floating Stats Card (Hidden on desktop) */}
+            {/* Mobile 3-item Floating Stats Card (Hidden on desktop) */}
             <div className="mobile-stats-card stats-card-container">
               <div className="stats-grid-responsive">
                 <div className="stats-item stats-item-0">
@@ -273,12 +358,6 @@ export default function Home1Page() {
                   <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '38px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>25+</div>
                   <div style={{ fontSize: '11px', color: '#6B655E', fontWeight: 500, lineHeight: 1.35 }}>Markets Worldwide</div>
                 </div>
-
-                <div className="stats-item stats-item-3">
-                  <div style={{ height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px', fontSize: '15px', fontWeight: 700, color: '#57524B', letterSpacing: '0.5px' }}>EnF</div>
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '38px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>EnF</div>
-                  <div style={{ fontSize: '11px', color: '#6B655E', fontWeight: 500, lineHeight: 1.35 }}>End-to-End FashionOS</div>
-                </div>
               </div>
             </div>
 
@@ -286,30 +365,54 @@ export default function Home1Page() {
         </div>
       </header>
 
-      {/* TRUSTED BY AMBITIOUS BRANDS (LIGHT STRIP) */}
-      <section style={{ background: '#FAF8F5', borderBottom: '1px solid #EAE4D9', padding: '36px 0 40px' }}>
-        <div style={{ textAlign: 'center', fontSize: '10.5px', letterSpacing: '3px', textTransform: 'uppercase', color: '#7A7369', fontWeight: 600, marginBottom: '28px' }}>
-          TRUSTED BY AMBITIOUS BRANDS
+      {/* TRUSTED BY AMBITIOUS BRANDS (LIGHT STRIP WITH CONTINUOUS LOGO MARQUEE) */}
+      <section style={{ background: '#FAF8F5', borderBottom: '1px solid #EAE4D9', padding: '32px 0 36px', overflow: 'hidden', position: 'relative' }}>
+        <div style={{ textAlign: 'center', fontSize: '10.5px', letterSpacing: '3px', textTransform: 'uppercase', color: '#7A7369', fontWeight: 600, marginBottom: '22px' }}>
+          DESIGNED, PRODUCED &amp; SHIPPED FOR
         </div>
-        <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 40px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '32px' }} className="trusted-brands-row">
-            <img src="https://logos-world.net/wp-content/uploads/2022/12/Myntra-Logo.png" alt="Myntra" style={{ height: '22px', objectFit: 'contain', filter: 'grayscale(100%)', opacity: 0.8 }} />
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '18px', fontWeight: 600, letterSpacing: '1px', color: '#2B2723' }}>LANDMARK GROUP</span>
-            <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/960px-Amazon_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="Amazon" style={{ height: '20px', objectFit: 'contain', filter: 'grayscale(100%)', opacity: 0.8 }} />
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '19px', letterSpacing: '2px', fontWeight: 500, color: '#2B2723' }}>NORDSTROM</span>
-            <span style={{ fontWeight: 700, letterSpacing: '1px', fontSize: '17px', color: '#2B2723' }}>TATA <span style={{ fontWeight: 400 }}>CLiQ</span></span>
-            <span style={{ fontFamily: "sans-serif", fontWeight: 700, fontStyle: 'italic', fontSize: '19px', color: '#2B2723' }}>lifestyle</span>
-            <span style={{ fontWeight: 800, letterSpacing: '3px', fontSize: '19px', color: '#2B2723' }}>AJIO</span>
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontWeight: 700, fontSize: '20px', color: '#2B2723' }}>NYKAA <span style={{ fontSize: '11px', fontStyle: 'normal', letterSpacing: '1px' }}>FASHION</span></span>
+        
+        {/* Infinite Scrolling Marquee Track */}
+        <div className="brandscroll-anim" style={{ display: 'flex', width: 'max-content', alignItems: 'center' }}>
+          {/* First loop of 12 logos */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '64px', paddingRight: '64px' }}>
+            {BRAND_LOGOS.map((brand, idx) => (
+              <div key={`logo-1-${idx}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '110px' }}>
+                <img 
+                  src={brand.logo} 
+                  alt={brand.name}
+                  style={{ 
+                    height: `${brand.height}px`, 
+                    maxWidth: '130px', 
+                    objectFit: 'contain', 
+                    filter: 'grayscale(100%) contrast(140%) brightness(0.2)', 
+                    opacity: 0.85,
+                    transition: 'opacity 0.2s ease, transform 0.2s ease'
+                  }}
+                  className="hover:opacity-100 hover:scale-105"
+                />
+              </div>
+            ))}
           </div>
 
-          {/* Dots Indicator for Mobile */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }} className="mobile-dots-indicator">
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#5B1F28' }}></span>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D8CDBF' }}></span>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D8CDBF' }}></span>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D8CDBF' }}></span>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#D8CDBF' }}></span>
+          {/* Duplicate loop for seamless infinite animation */}
+          <div aria-hidden="true" style={{ display: 'flex', alignItems: 'center', gap: '64px', paddingRight: '64px' }}>
+            {BRAND_LOGOS.map((brand, idx) => (
+              <div key={`logo-2-${idx}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '110px' }}>
+                <img 
+                  src={brand.logo} 
+                  alt={brand.name}
+                  style={{ 
+                    height: `${brand.height}px`, 
+                    maxWidth: '130px', 
+                    objectFit: 'contain', 
+                    filter: 'grayscale(100%) contrast(140%) brightness(0.2)', 
+                    opacity: 0.85,
+                    transition: 'opacity 0.2s ease, transform 0.2s ease'
+                  }}
+                  className="hover:opacity-100 hover:scale-105"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -453,6 +556,269 @@ export default function Home1Page() {
             <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '23px', fontWeight: 500, marginBottom: '10px' }}>Growth Advisory</h4>
             <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#6B655E' }}>Sell-through review, next-collection planning, category expansion.</p>
           </div>
+        </div>
+      </section>
+
+      {/* ASSORTMENT MATH — LIVE CALCULATOR SECTION */}
+      <section style={{ background: '#FAF8F5', borderTop: '1px solid #EAE4D9', borderBottom: '1px solid #EAE4D9', padding: '100px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
+          
+          {/* Section Eyebrow */}
+          <div style={{ fontSize: '11px', letterSpacing: '2.5px', textTransform: 'uppercase', color: '#5B1F28', fontWeight: 700, marginBottom: '18px' }}>
+            — ASSORTMENT MATH — LIVE
+          </div>
+
+          {/* Section Header Row */}
+          <div className="assortment-header-grid" style={{ display: 'grid', gridTemplateColumns: '1.3fr 0.7fr', gap: '48px', alignItems: 'start', paddingBottom: '36px', borderBottom: '1px solid #EAE4D9', marginBottom: '50px' }}>
+            <div>
+              <h2 className="section-headline-responsive" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: '52px', lineHeight: 1.05, letterSpacing: '-0.5px', color: '#171615', margin: '0 0 16px' }}>
+                Move the sliders.<br />
+                <em style={{ fontStyle: 'italic', color: '#171615' }}>Watch your collection appear.</em>
+              </h2>
+              <p style={{ fontSize: '15px', lineHeight: 1.65, color: '#57524B', maxWidth: '580px', margin: 0 }}>
+                This is the first model we build in every engagement: a budget, a landed cost, a depth per option — and the collection that math allows. Real plans add category mix, size curves and sell-through assumptions.
+              </p>
+            </div>
+
+            <div className="assortment-header-right" style={{ borderLeft: '1px solid #EAE4D9', paddingLeft: '36px' }}>
+              <div style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 600, marginBottom: '8px' }}>
+                FROM IDEAS TO ICONIC BRANDS
+              </div>
+              <div style={{ width: '24px', height: '1px', background: '#D8CDBF', marginBottom: '12px' }} />
+              <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#6B655E', margin: 0 }}>
+                Smarter assortment planning for a stronger tomorrow.
+              </p>
+            </div>
+          </div>
+
+          {/* 2-Column Calculator Body */}
+          <div className="assortment-calc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px', alignItems: 'start' }}>
+            
+            {/* Left Controls Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
+              
+              {/* Slider 1: Budget */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px' }}>
+                  <span style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#171615', fontWeight: 700 }}>
+                    COLLECTION BUDGET
+                  </span>
+                  <span style={{ fontSize: '22px', fontWeight: 700, color: '#171615', letterSpacing: '-0.5px' }}>
+                    ₹{budget}L
+                  </span>
+                </div>
+                <input 
+                  type="range"
+                  min={1}
+                  max={50}
+                  step={1}
+                  value={budget}
+                  onChange={(e) => setBudget(Number(e.target.value))}
+                  className="assortment-slider"
+                  style={{
+                    background: `linear-gradient(to right, #5B1F28 0%, #5B1F28 ${((budget - 1) / (50 - 1)) * 100}%, #EAE4D9 ${((budget - 1) / (50 - 1)) * 100}%, #EAE4D9 100%)`
+                  }}
+                />
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#8A837A', marginTop: '8px', fontWeight: 500 }}>
+                  <span>₹1L</span>
+                  <span>₹50L</span>
+                </div>
+              </div>
+
+              {/* Slider 2: Landed Cost */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px' }}>
+                  <span style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#171615', fontWeight: 700 }}>
+                    LANDED COST PER UNIT
+                  </span>
+                  <span style={{ fontSize: '22px', fontWeight: 700, color: '#171615', letterSpacing: '-0.5px' }}>
+                    ₹{landedCost.toLocaleString()}
+                  </span>
+                </div>
+                <input 
+                  type="range"
+                  min={100}
+                  max={2000}
+                  step={50}
+                  value={landedCost}
+                  onChange={(e) => setLandedCost(Number(e.target.value))}
+                  className="assortment-slider"
+                  style={{
+                    background: `linear-gradient(to right, #5B1F28 0%, #5B1F28 ${((landedCost - 100) / (2000 - 100)) * 100}%, #EAE4D9 ${((landedCost - 100) / (2000 - 100)) * 100}%, #EAE4D9 100%)`
+                  }}
+                />
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#8A837A', marginTop: '8px', fontWeight: 500 }}>
+                  <span>₹100</span>
+                  <span>₹2,000</span>
+                </div>
+              </div>
+
+              {/* Slider 3: Depth per Option */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px' }}>
+                  <span style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#171615', fontWeight: 700 }}>
+                    DEPTH PER OPTION
+                  </span>
+                  <span style={{ fontSize: '22px', fontWeight: 700, color: '#171615', letterSpacing: '-0.5px' }}>
+                    {depth} units
+                  </span>
+                </div>
+                <input 
+                  type="range"
+                  min={10}
+                  max={500}
+                  step={10}
+                  value={depth}
+                  onChange={(e) => setDepth(Number(e.target.value))}
+                  className="assortment-slider"
+                  style={{
+                    background: `linear-gradient(to right, #5B1F28 0%, #5B1F28 ${((depth - 10) / (500 - 10)) * 100}%, #EAE4D9 ${((depth - 10) / (500 - 10)) * 100}%, #EAE4D9 100%)`
+                  }}
+                />
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#8A837A', marginTop: '8px', fontWeight: 500 }}>
+                  <span>10</span>
+                  <span>500</span>
+                </div>
+              </div>
+
+              {/* Read on it box */}
+              <div 
+                onClick={(e) => openBooking('Launch Sprint', e)}
+                style={{ 
+                  background: '#F3EEE4', 
+                  border: '1px solid #E4DED3', 
+                  padding: '24px 26px', 
+                  cursor: 'pointer',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: '20px',
+                  transition: 'all 0.2s ease'
+                }}
+                className="hover:border-[#5B1F28] transition-all"
+              >
+                <div>
+                  <div style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: '#5B1F28', fontWeight: 700, marginBottom: '6px' }}>
+                    READ ON IT
+                  </div>
+                  <p style={{ fontSize: '13px', lineHeight: 1.6, color: '#57524B', margin: 0 }}>
+                    A balanced first buy: enough width to test the range, enough depth to survive a bestseller. This is the shape we aim for in a launch sprint.
+                  </p>
+                </div>
+                <span style={{ fontSize: '18px', color: '#171615', fontWeight: 600 }}>→</span>
+              </div>
+
+            </div>
+
+            {/* Right Results Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+              
+              {/* 3 Metric Summary Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', borderBottom: '1px solid #EAE4D9', paddingBottom: '28px' }}>
+                <div>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '46px', fontWeight: 500, color: '#5B1F28', lineHeight: 1, marginBottom: '6px' }}>
+                    {optionsCount}
+                  </div>
+                  <div style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 600 }}>
+                    OPTIONS
+                  </div>
+                </div>
+
+                <div style={{ borderLeft: '1px solid #EAE4D9', paddingLeft: '18px' }}>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '46px', fontWeight: 400, color: '#171615', lineHeight: 1, marginBottom: '6px' }}>
+                    {totalUnits.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 600 }}>
+                    UNITS
+                  </div>
+                </div>
+
+                <div style={{ borderLeft: '1px solid #EAE4D9', paddingLeft: '18px' }}>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '46px', fontWeight: 400, color: '#5B1F28', lineHeight: 1, marginBottom: '6px' }}>
+                    ₹{indicativeMrp.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 600 }}>
+                    INDICATIVE MRP
+                  </div>
+                </div>
+              </div>
+
+              {/* The Buy: Visual Squares Matrix */}
+              <div>
+                <div style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#57524B', fontWeight: 700, marginBottom: '14px' }}>
+                  THE BUY, ONE SQUARE PER OPTION
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '10px' }}>
+                  {Array.from({ length: 24 }).map((_, i) => (
+                    <div 
+                      key={i}
+                      style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '2px',
+                        background: i < optionsCount ? '#5B1F28' : '#EAE4D9',
+                        transition: 'background-color 0.2s ease'
+                      }}
+                    />
+                  ))}
+                </div>
+                <div style={{ fontSize: '12px', color: '#8A837A', fontWeight: 500 }}>
+                  {optionsCount} options at {depth} units each
+                </div>
+              </div>
+
+              {/* Size Curve Distribution */}
+              <div style={{ borderTop: '1px solid #EAE4D9', paddingTop: '24px' }}>
+                <div style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#57524B', fontWeight: 700, marginBottom: '16px' }}>
+                  SIZE CURVE, UNITS PER OPTION
+                </div>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {[
+                    { label: 'S', count: sizeS, pct: 15 },
+                    { label: 'M', count: sizeM, pct: 30 },
+                    { label: 'L', count: sizeL, pct: 35 },
+                    { label: 'XL', count: sizeXL, pct: 20 },
+                  ].map((sizeItem) => (
+                    <div key={sizeItem.label} style={{ display: 'grid', gridTemplateColumns: '24px 1fr 32px', alignItems: 'center', gap: '14px' }}>
+                      <span style={{ fontSize: '12px', fontWeight: 700, color: '#171615' }}>{sizeItem.label}</span>
+                      <div style={{ width: '100%', height: '10px', background: '#EAE4D9', borderRadius: '1px', overflow: 'hidden' }}>
+                        <div 
+                          style={{ 
+                            width: `${sizeItem.pct * 2.5}%`, 
+                            height: '100%', 
+                            background: '#5B1F28', 
+                            borderRadius: '1px',
+                            transition: 'width 0.25s ease'
+                          }} 
+                        />
+                      </div>
+                      <span style={{ fontSize: '12px', color: '#57524B', fontWeight: 600, textAlign: 'right' }}>{sizeItem.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom Branding Tagline */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #EAE4D9', paddingTop: '24px', flexWrap: 'wrap', gap: '14px' }}>
+                <div style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 600 }}>
+                  DATA-DRIVEN ASSORTMENTS.<br />REAL BUSINESS OUTCOMES.
+                </div>
+                <div style={{ width: '1px', height: '28px', background: '#EAE4D9' }} />
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '17px', fontWeight: 700, letterSpacing: '4px', color: '#171615', lineHeight: 1 }}>
+                    L A L 1 0
+                  </div>
+                  <div style={{ fontSize: '8.5px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 600, marginTop: '3px' }}>
+                    BUILD · SCALE · REPEAT
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
       </section>
 
@@ -613,6 +979,200 @@ export default function Home1Page() {
         >
           Book a Discovery Call <span style={{ fontSize: '16px' }}>→</span>
         </button>
+      </section>
+
+      {/* INSTITUTIONAL CAPITAL / INVESTORS SECTION */}
+      <section style={{ background: '#FAF8F5', borderTop: '1px solid #EAE4D9', borderBottom: '1px solid #EAE4D9', padding: '100px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
+          
+          {/* Header Row */}
+          <div className="investors-header-responsive" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '48px', alignItems: 'start', marginBottom: '64px' }}>
+            <div>
+              <h2 className="section-headline-responsive" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: '52px', lineHeight: 1.08, letterSpacing: '-0.5px', color: '#171615', margin: '0 0 18px' }}>
+                Institutional capital<br />behind the platform.
+              </h2>
+              <p style={{ fontSize: '15px', lineHeight: 1.65, color: '#57524B', maxWidth: '540px', margin: 0 }}>
+                Lal10 has raised across seven rounds from a mix of funds and operators — the pre-Series A was led by Yuj Ventures (Xander Group) and Beyond Capital Ventures.
+              </p>
+            </div>
+
+            <div className="investors-header-right" style={{ borderLeft: '1px solid #EAE4D9', paddingLeft: '40px' }}>
+              <div style={{ fontSize: '11px', letterSpacing: '2.5px', textTransform: 'uppercase', color: '#5B1F28', fontWeight: 700, marginBottom: '16px' }}>
+                BACKED BY BELIEVERS
+              </div>
+              <p style={{ fontSize: '15px', lineHeight: 1.65, color: '#6B655E', margin: 0 }}>
+                A community of institutional investors and industry operators who believe in a more efficient, transparent and modern fashion ecosystem.
+              </p>
+            </div>
+          </div>
+
+          {/* 2-Column Grid */}
+          <div className="investors-grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '56px' }}>
+            
+            {/* 01 Institutional Investors */}
+            <div>
+              <div style={{ borderTop: '1px solid #171615', paddingTop: '20px', marginBottom: '16px' }}>
+                <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 600, marginBottom: '6px' }}>01</div>
+                <h3 style={{ fontSize: '13px', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 700, color: '#171615', margin: '0 0 6px' }}>
+                  INSTITUTIONAL INVESTORS
+                </h3>
+                <div style={{ fontSize: '10.5px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 500 }}>
+                  LONG-TERM PARTNERS BACKING A LARGER VISION.
+                </div>
+              </div>
+
+              <div>
+                {[
+                  { id: '01', name: 'Yuj Ventures (Xander Group)' },
+                  { id: '02', name: 'Beyond Capital Ventures' },
+                  { id: '03', name: 'Spiral Ventures' },
+                  { id: '04', name: 'Singularity Ventures' },
+                  { id: '05', name: 'Asymmetry Ventures' },
+                  { id: '06', name: 'BlackSoil' },
+                  { id: '07', name: 'Panthera Peak' },
+                  { id: '08', name: 'Pegasus FinInvest' },
+                  { id: '09', name: 'Suprajit Group' },
+                ].map((inv, idx) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 0', borderBottom: '1px solid #EAE4D9' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+                      <span style={{ fontSize: '12px', color: '#8A837A', fontWeight: 500, width: '20px' }}>{inv.id}</span>
+                      <span style={{ fontSize: '15px', color: '#171615', fontWeight: 500 }}>{inv.name}</span>
+                    </div>
+                    <span style={{ fontSize: '15px', color: '#8A837A' }}>→</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 02 Operator Angels */}
+            <div>
+              <div style={{ borderTop: '1px solid #171615', paddingTop: '20px', marginBottom: '16px' }}>
+                <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 600, marginBottom: '6px' }}>02</div>
+                <h3 style={{ fontSize: '13px', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 700, color: '#171615', margin: '0 0 6px' }}>
+                  OPERATOR ANGELS
+                </h3>
+                <div style={{ fontSize: '10.5px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 500 }}>
+                  BUILDERS WHO HAVE BEEN THERE.
+                </div>
+              </div>
+
+              <div>
+                {[
+                  { name: 'Nitish Mittersain', company: 'NAZARA TECHNOLOGIES' },
+                  { name: 'Bikky Khosla', company: 'TRADEINDIA' },
+                  { name: 'Ashok Gudibandla', company: 'NOTION' },
+                  { name: 'Kishore Ganji', company: 'ASTIR VENTURES' },
+                  { name: 'Partners at McKinsey', company: '' },
+                  { name: 'Insaan Group', company: 'REASONED VENTURES' },
+                ].map((ang, idx) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 0', borderBottom: '1px solid #EAE4D9' }}>
+                    <span style={{ fontSize: '15px', color: '#171615', fontWeight: 500 }}>{ang.name}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                      {ang.company && (
+                        <span style={{ fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 600 }}>{ang.company}</span>
+                      )}
+                      <span style={{ fontSize: '15px', color: '#8A837A' }}>→</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* PRESS & MEDIA MENTIONS SECTION */}
+      <section style={{ background: '#FAF7F2', borderTop: '1px solid #EAE4D9', padding: '100px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
+          
+          {/* Eyebrow & Title */}
+          <div style={{ maxWidth: '780px', marginBottom: '56px' }}>
+            <div style={{ fontSize: '11px', letterSpacing: '2.5px', textTransform: 'uppercase', color: '#5B1F28', fontWeight: 700, marginBottom: '14px' }}>
+              IN THE NEWS
+            </div>
+            <h2 className="section-headline-responsive" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: '50px', lineHeight: 1.1, letterSpacing: '-0.5px', color: '#171615', margin: 0 }}>
+              Everybody has got something to say about us
+            </h2>
+          </div>
+
+          {/* 4 Press Cards */}
+          <div className="press-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+            {[
+              {
+                source: 'THE ECONOMIC TIMES',
+                title: 'MSME focussed startup Lal10 raises $5.5M in funding',
+                url: 'https://economictimes.indiatimes.com/tech/funding/exclusive-msme-focussed-startup-lal10-raises-5-5-million-in-funding-led-by-yuj-ventures-others/articleshow/92959055.cms',
+                image: 'https://d2fgyp2oqmihhv.cloudfront.net/images/NewsSectionImages/Desktop/three-standing-founders.webp'
+              },
+              {
+                source: 'INC42',
+                title: 'Lal10 Bags $5.5 Mn To Help Rural SMBs Sell Globally',
+                url: 'https://inc42.com/buzz/b2b-marketplace-lal10-bags-5-5-mn-to-help-rural-smbs-sell-globally/?itm_source=inc42-popular-read&itm_medium=website&itm_campaign=popular-read-widget',
+                image: 'https://d2fgyp2oqmihhv.cloudfront.net/images/NewsSectionImages/Desktop/Aunty.webp'
+              },
+              {
+                source: 'FINANCIAL EXPRESS',
+                title: 'Lal10 is building the Alibaba of Indian crafts industry',
+                url: 'https://www.financialexpress.com/industry/sme/lal10-this-startup-is-building-the-alibaba-of-indian-crafts-industry/2401283/',
+                image: 'https://d2fgyp2oqmihhv.cloudfront.net/images/NewsSectionImages/Desktop/three-sitting-founders.webp'
+              },
+              {
+                source: 'THE HINDU BUSINESSLINE',
+                title: 'Cross-border trading platform expands operations to Japan',
+                url: 'https://www.thehindubusinessline.com/info-tech/cross-border-trading-platform-lal10-expands-operations-to-japan/article65783052.ece',
+                image: 'https://d2fgyp2oqmihhv.cloudfront.net/images/NewsSectionImages/Desktop/two-founders.webp'
+              }
+            ].map((article, idx) => (
+              <a
+                key={idx}
+                href={article.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  background: '#FFFFFF',
+                  border: '1px solid #EAE4D9',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  textDecoration: 'none',
+                  boxShadow: '0 2px 12px rgba(0,0,0,0.02)',
+                  transition: 'all 0.25s ease'
+                }}
+                className="hover:translate-y-[-4px] hover:shadow-lg transition-all group"
+              >
+                <div>
+                  <div style={{ position: 'relative', width: '100%', height: '175px', background: '#EAE4D9', overflow: 'hidden' }}>
+                    <img 
+                      src={article.image} 
+                      alt={article.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', transition: 'transform 0.4s ease' }}
+                    />
+                  </div>
+                  
+                  <div style={{ padding: '22px 22px 10px' }}>
+                    <div style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 700, marginBottom: '10px' }}>
+                      {article.source}
+                    </div>
+                    <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '20px', fontWeight: 500, color: '#171615', lineHeight: 1.35, margin: '0 0 14px' }}>
+                      {article.title}
+                    </h3>
+                  </div>
+                </div>
+
+                <div style={{ padding: '0 22px 20px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 700, color: '#5B1F28', borderTop: '1px solid #F0EBE4', paddingTop: '14px', width: '100%' }}>
+                    Read more <span style={{ fontSize: '14px' }}>→</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+
+        </div>
       </section>
 
       {/* FOOTER */}

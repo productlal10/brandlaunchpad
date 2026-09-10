@@ -75,6 +75,76 @@ a:hover {
   .team-grid-responsive {
     grid-template-columns: 1fr !important;
   }
+  .investors-grid-responsive {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .investors-header-responsive {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .investors-header-right {
+    border-left: none !important;
+    padding-left: 0 !important;
+    border-top: 1px solid #EAE4D9 !important;
+    padding-top: 24px !important;
+  }
+  .assortment-calc-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .assortment-header-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .assortment-header-right {
+    border-left: none !important;
+    padding-left: 0 !important;
+    border-top: 1px solid #EAE4D9 !important;
+    padding-top: 20px !important;
+  }
+  .press-grid-responsive {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .press-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Assortment Slider Custom Styles */
+input[type=range].assortment-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type=range].assortment-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #5B1F28;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(91,31,40,0.35);
+  transition: transform 0.15s ease;
+}
+input[type=range].assortment-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+input[type=range].assortment-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #5B1F28;
+  border: none;
+  cursor: pointer;
 }
 
 /* Desktop stats card styles */
@@ -189,9 +259,9 @@ a:hover {
   .mobile-stats-card {
     display: block !important;
   }
-  .desktop-logo-img {
-    display: none !important;
-  }
+  .desktop-logo-img,
+  .desktop-second-logo-img,
+  .desktop-logo-divider,
   .desktop-logo-subtext {
     display: none !important;
   }
@@ -292,23 +362,21 @@ a:hover {
   }
   .stats-grid-responsive {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: repeat(3, 1fr) !important;
     gap: 0 !important;
   }
   .stats-item {
-    padding: 22px 14px !important;
+    padding: 20px 8px !important;
     border-left: none !important;
     text-align: center !important;
   }
-  .stats-item-0 {
+  .stats-item-0, .stats-item-1 {
     border-right: 1px solid #EAE4D9 !important;
-    border-bottom: 1px solid #EAE4D9 !important;
-  }
-  .stats-item-1 {
-    border-bottom: 1px solid #EAE4D9 !important;
+    border-bottom: none !important;
   }
   .stats-item-2 {
-    border-right: 1px solid #EAE4D9 !important;
+    border-right: none !important;
+    border-bottom: none !important;
   }
   .trusted-brands-row {
     justify-content: space-around !important;
