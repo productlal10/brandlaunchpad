@@ -206,7 +206,7 @@ export default function Home1Page() {
         <div className="hero-fullwidth-bg" style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: `url('/images/hero-fullwidth.png')`,
+          backgroundImage: `url('/images/hero-fullwidth.webp')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center top',
           backgroundRepeat: 'no-repeat',
@@ -885,21 +885,21 @@ export default function Home1Page() {
                 role: 'CO-FOUNDER, LAL10 & THEFASHIONOS',
                 bio: "Co-founder of Lal10 and TheFashionOS, and a TEDx speaker. Over the past decade he's turned raw ideas into operating companies, with deep expertise in exports and go-to-market. At Lal10 he's built a full-stack fashion ecosystem connecting global D2C and B2B brands with certified MSME factories. Forbes 30 Under 30 and Entrepreneur 35 Under 35.",
                 linkedin: 'https://www.linkedin.com/in/maneetgohil/',
-                image: '/images/team/Maneet.png'
+                image: '/images/team/Maneet.webp'
               },
               {
                 name: 'Sanchit Govil',
                 role: 'CO-FOUNDER, LAL10',
                 bio: "Co-founder of Lal10, where he's built partnerships with Indian and global brands. A Forbes India 30 Under 30 honoree, he believes business is built on the relationships and financial systems most founders overlook — a philosophy that shapes how Lal10 operates behind the scenes.",
                 linkedin: 'https://www.linkedin.com/in/sanchitgovil/',
-                image: '/images/team/Sanchit.png'
+                image: '/images/team/Sanchit.webp'
               },
               {
                 name: 'Albin Jose',
                 role: 'CO-FOUNDER & CPO / AI',
                 bio: "Owns product and the technology layer — the tooling that keeps 50 factories, their capacity and their quality data in one connected system.",
                 linkedin: 'https://www.linkedin.com/in/albin-anto-jose-26670532/',
-                image: '/images/team/Albin.png'
+                image: '/images/team/Albin.webp'
               }
             ].map((member, idx) => (
               <div 
