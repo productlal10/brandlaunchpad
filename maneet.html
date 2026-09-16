@@ -751,8 +751,9 @@
     <!-- 1. Background Video Layer -->
     <div class="video-wrap" id="videoWrap">
       <video class="bg-video" id="heroVideo" autoplay loop muted playsinline preload="auto">
-        <source src="https://d3dy0btw2pidvw.cloudfront.net/wp-content/uploads/2025/06/ICH-CREATIVE-website-video-1.mp4" type="video/mp4" />
         <source src="/images/Generate_a_second_ultra_pre.mp4" type="video/mp4" />
+        <source src="./images/Generate_a_second_ultra_pre.mp4" type="video/mp4" />
+        <source src="./public/images/Generate_a_second_ultra_pre.mp4" type="video/mp4" />
       </video>
     </div>
 
@@ -956,7 +957,7 @@
   <script>
     let mainTimeline = null;
     let isPlaying = true;
-    const TOTAL_DURATION = 26; // 26 seconds complete loop
+    const TOTAL_DURATION = 20; // 20 seconds loop matching the video
 
     function initCinematicFilm() {
       lucide.createIcons();
@@ -964,7 +965,6 @@
       const video = document.getElementById('heroVideo');
       if (video) {
         video.play().catch(() => {
-          // Autoplay policy fallback
           console.log("Autoplay was prevented, muted video playing.");
         });
       }
@@ -976,13 +976,13 @@
       });
 
       // ==========================================
-      // ACT 1: THE PILLARS (0s - 7.5s)
+      // ACT 1: THE PILLARS (0s - 5.4s)
       // ==========================================
       mainTimeline
         .addLabel("act1", 0)
         .set("#act1", { autoAlpha: 1 })
         .set("#act2, #act3, #act4, #act5", { autoAlpha: 0 })
-        .to("#act1Subtitle", { autoAlpha: 1, duration: 0.6 }, 0.2);
+        .to("#act1Subtitle", { autoAlpha: 1, duration: 0.4 }, 0.2);
 
       const pillars = [
         "#wordProduct",
@@ -994,28 +994,28 @@
       ];
 
       pillars.forEach((selector, idx) => {
-        const startTime = 0.5 + idx * 1.1;
+        const startTime = 0.4 + idx * 0.8;
         mainTimeline
           .fromTo(selector, 
-            { autoAlpha: 0, y: 40, scale: 0.94, filter: "blur(14px)" },
-            { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.55, ease: "power3.out" },
+            { autoAlpha: 0, y: 35, scale: 0.94, filter: "blur(14px)" },
+            { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.42, ease: "power3.out" },
             startTime
           )
           .to(selector,
-            { autoAlpha: 0, y: -30, scale: 1.05, filter: "blur(10px)", duration: 0.45, ease: "power2.in" },
-            startTime + 0.75
+            { autoAlpha: 0, y: -25, scale: 1.04, filter: "blur(10px)", duration: 0.35, ease: "power2.in" },
+            startTime + 0.55
           );
       });
 
-      mainTimeline.to("#act1", { autoAlpha: 0, duration: 0.5 }, 7.3);
+      mainTimeline.to("#act1", { autoAlpha: 0, duration: 0.4 }, 5.2);
 
       // ==========================================
-      // ACT 2: THE PIPELINE (7.5s - 12.5s)
+      // ACT 2: THE PIPELINE (5.5s - 9.2s)
       // ==========================================
       mainTimeline
-        .addLabel("act2", 7.5)
-        .set("#act2", { autoAlpha: 1 }, 7.5)
-        .fromTo("#act2", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 7.5);
+        .addLabel("act2", 5.5)
+        .set("#act2", { autoAlpha: 1 }, 5.5)
+        .fromTo("#act2", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35 }, 5.5);
 
       const pipeSteps = [
         "#pipeDesign",
@@ -1027,66 +1027,66 @@
       ];
 
       pipeSteps.forEach((selector, idx) => {
-        const stepTime = 8.0 + idx * 0.65;
+        const stepTime = 5.9 + idx * 0.5;
         mainTimeline
           .fromTo(selector,
             { opacity: 0.25, scale: 0.95 },
-            { opacity: 1, scale: 1.1, color: "#fff", duration: 0.35, ease: "back.out(2)" },
+            { opacity: 1, scale: 1.1, color: "#fff", duration: 0.3, ease: "back.out(2)" },
             stepTime
           )
           .to(selector,
-            { scale: 1, color: "rgba(255,255,255,0.7)", duration: 0.25 },
-            stepTime + 0.35
+            { scale: 1, color: "rgba(255,255,255,0.7)", duration: 0.2 },
+            stepTime + 0.28
           );
       });
 
-      mainTimeline.to("#act2", { autoAlpha: 0, duration: 0.5 }, 12.2);
+      mainTimeline.to("#act2", { autoAlpha: 0, duration: 0.4 }, 9.0);
 
       // ==========================================
-      // ACT 3: PROVEN METRICS (12.5s - 16.5s)
+      // ACT 3: PROVEN METRICS (9.3s - 12.3s)
       // ==========================================
       mainTimeline
-        .addLabel("act3", 12.5)
-        .set("#act3", { autoAlpha: 1 }, 12.5)
-        .fromTo("#act3", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4 }, 12.5)
+        .addLabel("act3", 9.3)
+        .set("#act3", { autoAlpha: 1 }, 9.3)
+        .fromTo("#act3", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 9.3)
         .fromTo(["#metricCard1", "#metricCard2", "#metricCard3"],
-          { autoAlpha: 0, y: 50, scale: 0.9 },
-          { autoAlpha: 1, y: 0, scale: 1, duration: 0.8, stagger: 0.2, ease: "power3.out" },
-          12.8
+          { autoAlpha: 0, y: 40, scale: 0.9 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.15, ease: "power3.out" },
+          9.5
         )
-        .to("#act3", { autoAlpha: 0, duration: 0.5 }, 16.2);
+        .to("#act3", { autoAlpha: 0, duration: 0.4 }, 12.1);
 
       // ==========================================
-      // ACT 4: CORE CONVICTION (16.5s - 20.5s)
+      // ACT 4: CORE CONVICTION (12.4s - 15.6s)
       // ==========================================
       mainTimeline
-        .addLabel("act4", 16.5)
-        .set("#act4", { autoAlpha: 1 }, 16.5)
+        .addLabel("act4", 12.4)
+        .set("#act4", { autoAlpha: 1 }, 12.4)
         .fromTo("#act4Eyebrow",
           { autoAlpha: 0, y: 15 },
-          { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" },
-          16.7
+          { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out" },
+          12.6
         )
         .fromTo("#act4Heading",
-          { autoAlpha: 0, y: 35, scale: 0.96, filter: "blur(10px)" },
-          { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 1.0, ease: "power3.out" },
-          16.9
+          { autoAlpha: 0, y: 30, scale: 0.96, filter: "blur(10px)" },
+          { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.8, ease: "power3.out" },
+          12.8
         )
-        .to("#act4", { autoAlpha: 0, duration: 0.5 }, 20.2);
+        .to("#act4", { autoAlpha: 0, duration: 0.4 }, 15.4);
 
       // ==========================================
-      // ACT 5: FINALE RESOLUTION (20.5s - 26.0s)
+      // ACT 5: FINALE RESOLUTION (15.7s - 20.0s)
       // ==========================================
       mainTimeline
-        .addLabel("act5", 20.5)
-        .set("#act5", { autoAlpha: 1 }, 20.5)
+        .addLabel("act5", 15.7)
+        .set("#act5", { autoAlpha: 1 }, 15.7)
         .fromTo("#finaleBox",
-          { autoAlpha: 0, y: 40, scale: 0.96 },
-          { autoAlpha: 1, y: 0, scale: 1, duration: 0.9, ease: "power3.out" },
-          20.7
+          { autoAlpha: 0, y: 35, scale: 0.96 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.75, ease: "power3.out" },
+          15.9
         )
-        // Hold until 25.5s, then crossfade seamlessly to loop
-        .to("#act5", { autoAlpha: 0, duration: 0.6 }, 25.4);
+        // Hold until 19.4s, then crossfade seamlessly to loop at 20.0s
+        .to("#act5", { autoAlpha: 0, duration: 0.5 }, 19.4);
     }
 
     // Update Bottom Timeline Scrubber & HUD
@@ -1110,10 +1110,10 @@
       // Current Chapter Pill & Title
       let currentAct = 1;
       let chapterName = "ACT 01 // CORE PILLARS";
-      if (curTime >= 20.5) { currentAct = 5; chapterName = "ACT 05 // FINALE RESOLUTION"; }
-      else if (curTime >= 16.5) { currentAct = 4; chapterName = "ACT 04 // CORE CONVICTION"; }
-      else if (curTime >= 12.5) { currentAct = 3; chapterName = "ACT 03 // PROVEN METRICS"; }
-      else if (curTime >= 7.5) { currentAct = 2; chapterName = "ACT 02 // PRODUCTION PIPELINE"; }
+      if (curTime >= 15.7) { currentAct = 5; chapterName = "ACT 05 // FINALE RESOLUTION"; }
+      else if (curTime >= 12.4) { currentAct = 4; chapterName = "ACT 04 // CORE CONVICTION"; }
+      else if (curTime >= 9.3) { currentAct = 3; chapterName = "ACT 03 // PROVEN METRICS"; }
+      else if (curTime >= 5.5) { currentAct = 2; chapterName = "ACT 02 // PRODUCTION PIPELINE"; }
 
       const titleEl = document.getElementById('chapterTitle');
       if (titleEl) titleEl.textContent = chapterName;
@@ -1132,6 +1132,8 @@
       const clickX = e.clientX - rect.left;
       const ratio = Math.max(0, Math.min(1, clickX / rect.width));
       mainTimeline.progress(ratio);
+      const video = document.getElementById('heroVideo');
+      if (video && video.duration) video.currentTime = ratio * video.duration;
     }
 
     // Jump to specific act
@@ -1141,12 +1143,14 @@
       const label = actLabels[actNum - 1];
       if (label) {
         mainTimeline.seek(label);
+        const video = document.getElementById('heroVideo');
+        if (video && video.duration) video.currentTime = mainTimeline.time();
         if (!isPlaying) {
           mainTimeline.play();
+          if (video) video.play();
           isPlaying = true;
           updatePlayIcon();
         }
-      }
     }
 
     // Play/Pause
