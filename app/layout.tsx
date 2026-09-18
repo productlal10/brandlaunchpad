@@ -18,7 +18,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://thefashionos.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://launchpad.lal10.com'),
   title: 'LAL10 FashionOS · Fashion Brand Operating System & Advisory',
   description:
     'An operating system for founders entering fashion — from market intelligence, product strategy and assortment planning to sourcing advisory and marketplace readiness.',
