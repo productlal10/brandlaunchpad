@@ -115,10 +115,10 @@ export async function getAdminUsers(): Promise<AdminUser[]> {
 
   const { localUsersFile, tmpUsersFile } = getStoragePaths();
 
-  // Try tmp first (serverless updates)
+  // Try local bundled first
   try {
-    if (fs.existsSync(tmpUsersFile)) {
-      const raw = fs.readFileSync(tmpUsersFile, 'utf-8');
+    if (fs.existsSync(localUsersFile)) {
+      const raw = fs.readFileSync(localUsersFile, 'utf-8');
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
         globalThis.__lal10_users_cache = parsed;
@@ -127,10 +127,10 @@ export async function getAdminUsers(): Promise<AdminUser[]> {
     }
   } catch (e) {}
 
-  // Try local bundled
+  // Try tmp fallback (serverless updates)
   try {
-    if (fs.existsSync(localUsersFile)) {
-      const raw = fs.readFileSync(localUsersFile, 'utf-8');
+    if (fs.existsSync(tmpUsersFile)) {
+      const raw = fs.readFileSync(tmpUsersFile, 'utf-8');
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
         globalThis.__lal10_users_cache = parsed;
@@ -208,20 +208,16 @@ export async function saveAdminUser(userData: {
   const { localDataDir, localUsersFile, tmpUsersFile } = getStoragePaths();
   const serialized = JSON.stringify(users, null, 2);
 
-  let written = false;
   try {
     if (!fs.existsSync(localDataDir)) {
       fs.mkdirSync(localDataDir, { recursive: true });
     }
     fs.writeFileSync(localUsersFile, serialized, 'utf-8');
-    written = true;
   } catch (e) {}
 
-  if (!written) {
-    try {
-      fs.writeFileSync(tmpUsersFile, serialized, 'utf-8');
-    } catch (tmpErr) {}
-  }
+  try {
+    fs.writeFileSync(tmpUsersFile, serialized, 'utf-8');
+  } catch (tmpErr) {}
 
   return newUser;
 }
@@ -230,25 +226,13 @@ export async function saveAdminUser(userData: {
 
 export async function getDiscoveryLeads(): Promise<DiscoveryCallLead[]> {
   // 1. Return in-memory cache if present
-  if (globalThis.__lal10_leads_cache && globalThis.__lal10_leads_cache.length > 0) {
+  if (globalThis.__lal10_leads_cache) {
     return globalThis.__lal10_leads_cache;
   }
 
   const { localLeadsFile, tmpLeadsFile } = getStoragePaths();
 
-  // 2. Try reading from /tmp if it exists
-  try {
-    if (fs.existsSync(tmpLeadsFile)) {
-      const raw = fs.readFileSync(tmpLeadsFile, 'utf-8');
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        globalThis.__lal10_leads_cache = parsed;
-        return parsed;
-      }
-    }
-  } catch (e) {}
-
-  // 3. Try reading from bundled ./data
+  // 2. Try reading from bundled ./data first
   try {
     if (fs.existsSync(localLeadsFile)) {
       const raw = fs.readFileSync(localLeadsFile, 'utf-8');
@@ -261,6 +245,18 @@ export async function getDiscoveryLeads(): Promise<DiscoveryCallLead[]> {
   } catch (e) {
     console.warn('[Storage] Could not read local leads file:', e);
   }
+
+  // 3. Try reading from /tmp if local missing
+  try {
+    if (fs.existsSync(tmpLeadsFile)) {
+      const raw = fs.readFileSync(tmpLeadsFile, 'utf-8');
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        globalThis.__lal10_leads_cache = parsed;
+        return parsed;
+      }
+    }
+  } catch (e) {}
 
   globalThis.__lal10_leads_cache = [];
   return [];
@@ -281,22 +277,16 @@ export async function saveDiscoveryLead(leadData: Omit<DiscoveryCallLead, 'id' |
   const { localDataDir, localLeadsFile, tmpLeadsFile } = getStoragePaths();
   const serialized = JSON.stringify(leads, null, 2);
 
-  let written = false;
   try {
     if (!fs.existsSync(localDataDir)) {
       fs.mkdirSync(localDataDir, { recursive: true });
     }
     fs.writeFileSync(localLeadsFile, serialized, 'utf-8');
-    written = true;
   } catch (localErr: any) {}
 
-  if (!written) {
-    try {
-      fs.writeFileSync(tmpLeadsFile, serialized, 'utf-8');
-    } catch (tmpErr) {
-      console.warn('[Storage] /tmp write error:', tmpErr);
-    }
-  }
+  try {
+    fs.writeFileSync(tmpLeadsFile, serialized, 'utf-8');
+  } catch (tmpErr) {}
 
   return newLead;
 }
@@ -309,18 +299,19 @@ export async function updateLeadStatus(id: string, status: DiscoveryCallLead['st
   leads[index].status = status;
   globalThis.__lal10_leads_cache = leads;
 
-  const { localLeadsFile, tmpLeadsFile } = getStoragePaths();
+  const { localDataDir, localLeadsFile, tmpLeadsFile } = getStoragePaths();
   const serialized = JSON.stringify(leads, null, 2);
 
   try {
-    fs.writeFileSync(localLeadsFile, serialized, 'utf-8');
-  } catch (e) {
-    try {
-      fs.writeFileSync(tmpLeadsFile, serialized, 'utf-8');
-    } catch (tmpErr) {
-      console.warn('[Storage] Status update write error:', tmpErr);
+    if (!fs.existsSync(localDataDir)) {
+      fs.mkdirSync(localDataDir, { recursive: true });
     }
-  }
+    fs.writeFileSync(localLeadsFile, serialized, 'utf-8');
+  } catch (e) {}
+
+  try {
+    fs.writeFileSync(tmpLeadsFile, serialized, 'utf-8');
+  } catch (tmpErr) {}
 
   return leads[index];
 }
@@ -328,15 +319,15 @@ export async function updateLeadStatus(id: string, status: DiscoveryCallLead['st
 // ─── PARTNER INQUIRIES STORAGE ────────────────────────────────────────────────
 
 export async function getPartnerInquiries(): Promise<PartnerInquiry[]> {
-  if (globalThis.__lal10_partners_cache && globalThis.__lal10_partners_cache.length > 0) {
+  if (globalThis.__lal10_partners_cache) {
     return globalThis.__lal10_partners_cache;
   }
 
   const { localPartnersFile, tmpPartnersFile } = getStoragePaths();
 
   try {
-    if (fs.existsSync(tmpPartnersFile)) {
-      const raw = fs.readFileSync(tmpPartnersFile, 'utf-8');
+    if (fs.existsSync(localPartnersFile)) {
+      const raw = fs.readFileSync(localPartnersFile, 'utf-8');
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
         globalThis.__lal10_partners_cache = parsed;
@@ -346,8 +337,8 @@ export async function getPartnerInquiries(): Promise<PartnerInquiry[]> {
   } catch (e) {}
 
   try {
-    if (fs.existsSync(localPartnersFile)) {
-      const raw = fs.readFileSync(localPartnersFile, 'utf-8');
+    if (fs.existsSync(tmpPartnersFile)) {
+      const raw = fs.readFileSync(tmpPartnersFile, 'utf-8');
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
         globalThis.__lal10_partners_cache = parsed;
@@ -374,20 +365,16 @@ export async function savePartnerInquiry(data: Omit<PartnerInquiry, 'id' | 'crea
   const { localDataDir, localPartnersFile, tmpPartnersFile } = getStoragePaths();
   const serialized = JSON.stringify(inquiries, null, 2);
 
-  let written = false;
   try {
     if (!fs.existsSync(localDataDir)) {
       fs.mkdirSync(localDataDir, { recursive: true });
     }
     fs.writeFileSync(localPartnersFile, serialized, 'utf-8');
-    written = true;
   } catch (e) {}
 
-  if (!written) {
-    try {
-      fs.writeFileSync(tmpPartnersFile, serialized, 'utf-8');
-    } catch (tmpErr) {}
-  }
+  try {
+    fs.writeFileSync(tmpPartnersFile, serialized, 'utf-8');
+  } catch (tmpErr) {}
 
   return newInquiry;
 }

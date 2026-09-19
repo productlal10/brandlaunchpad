@@ -86,6 +86,22 @@ export default function HomePage() {
   const [selectedPartnerService, setSelectedPartnerService] = useState<string>('Photography & Shoots');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  React.useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => e.preventDefault();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'F12') e.preventDefault();
+      if ((e.metaKey || e.ctrlKey) && ['u', 'U', 's', 'S', 'i', 'I', 'j', 'J', 'c', 'C'].includes(e.key)) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   const openBooking = (track: string = 'General', e?: React.MouseEvent) => {
     if (e) e.preventDefault();
     setBookingTrack(track);
@@ -460,17 +476,17 @@ export default function HomePage() {
             <div style={{ border: '1px solid rgba(245,241,234,0.14)', padding: '38px 32px' }}>
               <div style={{ width: '60px', height: '60px', border: '1px solid #C9A16B', color: '#C9A16B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', marginBottom: '22px' }}>SG</div>
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', fontWeight: 500, color: '#F5F1EA', marginBottom: '4px' }}>Sanchit Govil</h3>
-              <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#C9A16B', fontWeight: 600, marginBottom: '18px' }}>Co-founder, Lal10</div>
+              <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#C9A16B', fontWeight: 600, marginBottom: '18px' }}>Co-founder, Lal10 &amp; Brand Launchpad</div>
               <p style={{ fontSize: '14.5px', lineHeight: 1.7, color: 'rgba(245,241,234,0.75)' }}>
-                Co-founder of Lal10, where he&apos;s built partnerships with Indian and global brands. A Forbes India 30 Under 30 honoree, he believes business is built on the relationships and financial systems most founders overlook — a philosophy that shapes how Lal10 operates behind the scenes.
+                Co-founder of Lal10 and Brand Launchpad, where he&apos;s built the brand and manufacturer partnerships behind the platform. His background spans supply chain leadership at Flipkart and an engineering-to-IIM path (DCE, IIM Mumbai) that shapes his operator&apos;s view of fashion. Forbes India 30 Under 30 and Entrepreneur 35 Under 35 honoree.
               </p>
             </div>
             <div style={{ border: '1px solid rgba(245,241,234,0.14)', padding: '38px 32px' }}>
               <div style={{ width: '60px', height: '60px', border: '1px solid #C9A16B', color: '#C9A16B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', marginBottom: '22px' }}>AJ</div>
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', fontWeight: 500, color: '#F5F1EA', marginBottom: '4px' }}>Albin Jose</h3>
-              <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#C9A16B', fontWeight: 600, marginBottom: '18px' }}>Co-founder &amp; CPO / AI</div>
+              <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#C9A16B', fontWeight: 600, marginBottom: '18px' }}>Co-Founder and CPO, Lal10 &amp; TheFashionOS</div>
               <p style={{ fontSize: '14.5px', lineHeight: 1.7, color: 'rgba(245,241,234,0.75)' }}>
-                Owns product and the technology layer — the tooling that keeps 50 factories, their capacity and their quality data in one connected system.
+                Co-founder of Lal10 and TheFashionOS, leading product and technology across the ecosystem. He has built LAL10’s ERP and data infrastructure, connecting 50+ factories with their capacity, production, quality, and operational data. His work spans fashion intelligence, trend analysis, dashboards, and technology systems that turn manufacturing and market data into faster, smarter decisions.
               </p>
             </div>
           </div>

@@ -13,14 +13,14 @@ export const TeamSection: React.FC = () => {
     {
       initials: 'SG',
       name: 'Sanchit Govil',
-      role: 'Co-founder, Lal10',
-      bio: 'Co-founder of Lal10, where he has built partnerships with Indian and global brands. A Forbes India 30 Under 30 honoree, he believes business is built on the relationships and financial systems most founders overlook — a philosophy that shapes how Lal10 operates behind the scenes.',
+      role: 'Co-founder, Lal10 & Brand Launchpad',
+      bio: "Co-founder of Lal10 and Brand Launchpad, where he's built the brand and manufacturer partnerships behind the platform. His background spans supply chain leadership at Flipkart and an engineering-to-IIM path (DCE, IIM Mumbai) that shapes his operator's view of fashion. Forbes India 30 Under 30 and Entrepreneur 35 Under 35 honoree.",
     },
     {
       initials: 'AJ',
       name: 'Albin Jose',
-      role: 'Co-founder & CPO / AI',
-      bio: 'Owns product and the technology layer — the tooling that keeps 50 factories, their capacity and their quality data in one connected system.',
+      role: 'Co-Founder and CPO, Lal10 & TheFashionOS',
+      bio: 'Co-founder of Lal10 and TheFashionOS, leading product and technology across the ecosystem. He has built LAL10’s ERP and data infrastructure, connecting 50+ factories with their capacity, production, quality, and operational data. His work spans fashion intelligence, trend analysis, dashboards, and technology systems that turn manufacturing and market data into faster, smarter decisions.',
     },
   ];
 
