@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
+const LEGACY_EXTERNAL_API_BASE_URL = 'https://api.lal10.com';
+const CURRENT_EXTERNAL_API_BASE_URL = 'https://api.erp.lal10.com';
+
+function normalizeExternalApiUrl(value: string | null | undefined) {
+  if (!value) {
+    return value ?? null;
+  }
+
+  return value.startsWith(LEGACY_EXTERNAL_API_BASE_URL)
+    ? `${CURRENT_EXTERNAL_API_BASE_URL}${value.slice(LEGACY_EXTERNAL_API_BASE_URL.length)}`
+    : value;
+}
 
 export function joinUrl(base: string, path: string) {
   const normalizedBase = base.replace(/\/+$/, '');
@@ -9,12 +21,12 @@ export function joinUrl(base: string, path: string) {
 }
 
 export function resolveExternalApiUrl(explicitEnvKey: string, fallbackPath: string) {
-  const explicitUrl = process.env[explicitEnvKey];
+  const explicitUrl = normalizeExternalApiUrl(process.env[explicitEnvKey]);
   if (explicitUrl) {
     return explicitUrl;
   }
 
-  const baseUrl = process.env.EXTERNAL_API_BASE_URL;
+  const baseUrl = normalizeExternalApiUrl(process.env.EXTERNAL_API_BASE_URL);
   if (!baseUrl) {
     return null;
   }
@@ -23,8 +35,8 @@ export function resolveExternalApiUrl(explicitEnvKey: string, fallbackPath: stri
 }
 
 async function resolveExternalCsrfToken(req: NextRequest) {
-  const explicitUrl = process.env.EXTERNAL_AUTH_CSRF_URL;
-  const baseUrl = process.env.EXTERNAL_API_BASE_URL;
+  const explicitUrl = normalizeExternalApiUrl(process.env.EXTERNAL_AUTH_CSRF_URL);
+  const baseUrl = normalizeExternalApiUrl(process.env.EXTERNAL_API_BASE_URL);
   const targetUrl = explicitUrl || (baseUrl ? joinUrl(baseUrl, '/api/launchpad/auth/csrf-token') : null);
 
   if (!targetUrl) {
