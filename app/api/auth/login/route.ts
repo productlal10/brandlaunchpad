@@ -50,7 +50,13 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error('Auth Login API Error:', error);
     return NextResponse.json(
-      { success: false, error: error.message || 'Server login error.' },
+      {
+        success: false,
+        error:
+          error?.cause?.message ||
+          error?.message ||
+          'Server login error.',
+      },
       { status: 500 }
     );
   }

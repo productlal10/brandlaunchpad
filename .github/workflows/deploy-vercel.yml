@@ -43,6 +43,15 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
+      - name: Pin Launchpad production proxy env
+        run: |
+          cat <<'EOF' >> .vercel/.env.production.local
+          EXTERNAL_API_BASE_URL=https://api.erp.lal10.com
+          EXTERNAL_AUTH_CSRF_URL=https://api.erp.lal10.com/api/launchpad/auth/csrf-token
+          DISABLE_OUTBOUND_EMAIL=true
+          LAUNCHPAD_MANUAL_USER_PROVISIONING=true
+          EOF
+
       - name: Build Vercel artifact
         run: vercel build --prod --token="${{ secrets.VERCEL_TOKEN }}"
         env:
