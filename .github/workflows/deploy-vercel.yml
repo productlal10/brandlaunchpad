@@ -48,6 +48,15 @@ jobs:
           cat <<'EOF' >> .vercel/.env.production.local
           EXTERNAL_API_BASE_URL=https://api.erp.lal10.com
           EXTERNAL_AUTH_CSRF_URL=https://api.erp.lal10.com/api/launchpad/auth/csrf-token
+          EXTERNAL_AUTH_LOGIN_URL=https://api.erp.lal10.com/api/launchpad/auth/login
+          EXTERNAL_AUTH_ME_URL=https://api.erp.lal10.com/api/launchpad/auth/session
+          EXTERNAL_AUTH_LOGOUT_URL=https://api.erp.lal10.com/api/launchpad/auth/logout
+          EXTERNAL_AUTH_SIGNUP_URL=https://api.erp.lal10.com/api/launchpad/auth/signup
+          EXTERNAL_ADMIN_USERS_URL=https://api.erp.lal10.com/api/launchpad/users
+          EXTERNAL_INSIGHTS_URL=https://api.erp.lal10.com/api/launchpad/insights
+          EXTERNAL_DISCOVERY_CALL_URL=https://api.erp.lal10.com/api/launchpad/discovery-call
+          EXTERNAL_PARTNER_INQUIRY_URL=https://api.erp.lal10.com/api/launchpad/partner-inquiry
+          EXTERNAL_TRENDS_URL=https://api.erp.lal10.com/api/launchpad/trends
           DISABLE_OUTBOUND_EMAIL=true
           LAUNCHPAD_MANUAL_USER_PROVISIONING=true
           EOF
