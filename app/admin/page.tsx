@@ -14,6 +14,7 @@ import {
   Lock, Key, Send, Inbox, MessageSquare
 } from 'lucide-react';
 import { DiscoveryCallLead } from '@/lib/types';
+import InsightsManager from '@/components/admin/InsightsManager';
 
 // ── TYPES & INTERFACES ───────────────────────────────────────────────────────
 type TabType = 'dashboard' | 'enquiries' | 'brands' | 'calls' | 'users' | 'casestudies' | 'insights' | 'settings' | 'integrations';
@@ -303,6 +304,8 @@ export default function AdminDashboardPage() {
 
   // New Item Form States
   const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Editor' as const, status: 'Active' as const });
+  const [launchpadUserProvisioningManual, setLaunchpadUserProvisioningManual] = useState<boolean>(false);
+  const [userAdminMessage, setUserAdminMessage] = useState<string | null>(null);
   const [newCall, setNewCall] = useState({
     selectedEnquiryId: 'custom',
     brand: '',
@@ -350,6 +353,24 @@ export default function AdminDashboardPage() {
     };
 
     checkSession();
+  }, []);
+
+  useEffect(() => {
+    const loadLaunchpadConfig = async () => {
+      try {
+        const res = await fetch('/api/config/launchpad-access', { cache: 'no-store' });
+        const data = await res.json();
+        const manualMode = Boolean(data?.success && data?.manualUserProvisioning);
+        setLaunchpadUserProvisioningManual(manualMode);
+        if (manualMode) {
+          setUserAdminMessage('Launchpad access is managed manually in ERP right now to avoid accidental credential changes.');
+        }
+      } catch {
+        setLaunchpadUserProvisioningManual(false);
+      }
+    };
+
+    loadLaunchpadConfig();
   }, []);
 
   // Fetch real users from DB
@@ -548,6 +569,11 @@ export default function AdminDashboardPage() {
   // Add Custom User via API
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (launchpadUserProvisioningManual) {
+      setUserAdminMessage('Launchpad access is managed manually in ERP right now to avoid accidental credential changes.');
+      setActiveModal(null);
+      return;
+    }
     try {
       const res = await fetch('/api/admin/users', {
         method: 'POST',
@@ -557,9 +583,13 @@ export default function AdminDashboardPage() {
       const data = await res.json();
       if (data.success && data.user) {
         setUsers(prev => [data.user, ...prev]);
+        setUserAdminMessage(`Added ${data.user.name} successfully.`);
+      } else {
+        setUserAdminMessage(data.error || 'Failed to save user.');
       }
     } catch (err) {
       console.warn('Failed to save user via API', err);
+      setUserAdminMessage('Failed to save user.');
     }
     setActiveModal(null);
     setNewUser({ name: '', email: '', role: 'Editor', status: 'Active' });
@@ -1197,8 +1227,13 @@ export default function AdminDashboardPage() {
               </div>
 
               {activeTab === 'users' && (
-                <button onClick={() => setActiveModal('add-user')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#3D1219', color: '#FFFFFF', padding: '9px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
-                  <Plus size={14} /><span>Add User</span>
+                <button
+                  onClick={() => !launchpadUserProvisioningManual && setActiveModal('add-user')}
+                  disabled={launchpadUserProvisioningManual}
+                  title={launchpadUserProvisioningManual ? 'Launchpad access is managed manually in ERP.' : 'Add User'}
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px', background: launchpadUserProvisioningManual ? '#B8AEA4' : '#3D1219', color: '#FFFFFF', padding: '9px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, border: 'none', cursor: launchpadUserProvisioningManual ? 'not-allowed' : 'pointer' }}
+                >
+                  <Plus size={14} /><span>{launchpadUserProvisioningManual ? 'Manual Access' : 'Add User'}</span>
                 </button>
               )}
               {activeTab === 'calls' && (
@@ -1576,10 +1611,21 @@ export default function AdminDashboardPage() {
                       <option>All Roles</option><option>Admin</option><option>Editor</option><option>Manager</option><option>Viewer</option>
                     </select>
                   </div>
-                  <button onClick={() => setActiveModal('add-user')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#3D1219', color: '#FFFFFF', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
-                    <UserPlus size={13} /><span>Add User</span>
+                  <button
+                    onClick={() => !launchpadUserProvisioningManual && setActiveModal('add-user')}
+                    disabled={launchpadUserProvisioningManual}
+                    title={launchpadUserProvisioningManual ? 'Launchpad access is managed manually in ERP.' : 'Add User'}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', background: launchpadUserProvisioningManual ? '#B8AEA4' : '#3D1219', color: '#FFFFFF', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, border: 'none', cursor: launchpadUserProvisioningManual ? 'not-allowed' : 'pointer' }}
+                  >
+                    <UserPlus size={13} /><span>{launchpadUserProvisioningManual ? 'Manual Access' : 'Add User'}</span>
                   </button>
                 </div>
+
+                {userAdminMessage && (
+                  <div style={{ marginBottom: '14px', padding: '12px 14px', borderRadius: '10px', background: '#FAF6F0', color: '#5B1F28', border: '1px solid #E7D9CA', fontSize: '12.5px' }}>
+                    {userAdminMessage}
+                  </div>
+                )}
 
                 <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
                   <table style={{ width: '100%', minWidth: '600px', borderCollapse: 'collapse', fontSize: '12.5px' }}>
@@ -1894,7 +1940,11 @@ export default function AdminDashboardPage() {
           {/* ══════════════════════════════════════════════════════════════════════
               TAB 7, 8, 9: INSIGHTS, SETTINGS, INTEGRATIONS
           ══════════════════════════════════════════════════════════════════════ */}
-          {(activeTab === 'insights' || activeTab === 'settings' || activeTab === 'integrations') && (
+          {activeTab === 'insights' && (
+            <InsightsManager />
+          )}
+
+          {(activeTab === 'settings' || activeTab === 'integrations') && (
             <div style={{ background: '#FFFFFF', padding: '36px 20px', borderRadius: '12px', border: '1px solid #EFEAE3', textAlign: 'center' }}>
               <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#F8EDE5', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
                 <Settings size={24} color="#5B1F28" />
@@ -1982,29 +2032,40 @@ export default function AdminDashboardPage() {
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
           <form onSubmit={handleAddUser} style={{ background: '#FFFFFF', width: '100%', maxWidth: '440px', borderRadius: '16px', padding: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
-              <h3 style={{ fontSize: '17px', fontWeight: 700, margin: 0 }}>Add New Team User</h3>
+              <h3 style={{ fontSize: '17px', fontWeight: 700, margin: 0 }}>{launchpadUserProvisioningManual ? 'Manual Launchpad Access' : 'Add New Team User'}</h3>
               <button type="button" onClick={() => setActiveModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Full Name *</label>
-                <input required type="text" placeholder="e.g. Vikram Singhania" value={newUser.name} onChange={e => setNewUser({ ...newUser, name: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
+            {launchpadUserProvisioningManual ? (
+              <div style={{ display: 'grid', gap: '14px' }}>
+                <div style={{ padding: '12px 14px', borderRadius: '10px', background: '#FAF6F0', color: '#5B1F28', border: '1px solid #E7D9CA', fontSize: '12.5px', lineHeight: 1.6 }}>
+                  Launchpad admin access is intentionally managed manually in ERP for now, so no credentials are created from this screen.
+                </div>
+                <button type="button" onClick={() => setActiveModal(null)} style={{ justifySelf: 'end', padding: '9px 16px', borderRadius: '8px', border: '1px solid #DDD', background: '#FFF', cursor: 'pointer', fontSize: '12px' }}>Close</button>
               </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Email Address *</label>
-                <input required type="email" placeholder="vikram@brand.com" value={newUser.email} onChange={e => setNewUser({ ...newUser, email: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Role</label>
-                <select value={newUser.role} onChange={e => setNewUser({ ...newUser, role: e.target.value as any })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }}>
-                  <option>Admin</option><option>Editor</option><option>Manager</option><option>Viewer</option>
-                </select>
-              </div>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '20px' }}>
-              <button type="button" onClick={() => setActiveModal(null)} style={{ padding: '9px 16px', borderRadius: '8px', border: '1px solid #DDD', background: '#FFF', cursor: 'pointer', fontSize: '12px' }}>Cancel</button>
-              <button type="submit" style={{ padding: '9px 18px', borderRadius: '8px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 600, cursor: 'pointer', fontSize: '12px' }}>Save User</button>
-            </div>
+            ) : (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Full Name *</label>
+                    <input required type="text" placeholder="e.g. Vikram Singhania" value={newUser.name} onChange={e => setNewUser({ ...newUser, name: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Email Address *</label>
+                    <input required type="email" placeholder="vikram@brand.com" value={newUser.email} onChange={e => setNewUser({ ...newUser, email: e.target.value })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, marginBottom: '4px' }}>Role</label>
+                    <select value={newUser.role} onChange={e => setNewUser({ ...newUser, role: e.target.value as any })} style={{ width: '100%', padding: '9px', borderRadius: '6px', border: '1px solid #DDD', fontSize: '12.5px' }}>
+                      <option>Admin</option><option>Editor</option><option>Manager</option><option>Viewer</option>
+                    </select>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '20px' }}>
+                  <button type="button" onClick={() => setActiveModal(null)} style={{ padding: '9px 16px', borderRadius: '8px', border: '1px solid #DDD', background: '#FFF', cursor: 'pointer', fontSize: '12px' }}>Cancel</button>
+                  <button type="submit" style={{ padding: '9px 18px', borderRadius: '8px', border: 'none', background: '#5B1F28', color: '#FFF', fontWeight: 600, cursor: 'pointer', fontSize: '12px' }}>Save User</button>
+                </div>
+              </>
+            )}
           </form>
         </div>
       )}

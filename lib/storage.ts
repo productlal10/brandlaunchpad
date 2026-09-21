@@ -1,12 +1,13 @@
 import fs from 'fs';
 import path from 'path';
-import { DiscoveryCallLead, PartnerInquiry, AdminUser } from './types';
+import { DiscoveryCallLead, PartnerInquiry, AdminUser, InsightArticle } from './types';
 
 // Global memory cache to retain data across warm serverless requests
 declare global {
   var __lal10_leads_cache: DiscoveryCallLead[] | undefined;
   var __lal10_partners_cache: PartnerInquiry[] | undefined;
   var __lal10_users_cache: AdminUser[] | undefined;
+  var __lal10_insights_cache: InsightArticle[] | undefined;
 }
 
 // Determine writable directory (/tmp on Vercel/serverless vs local ./data)
@@ -20,11 +21,13 @@ function getStoragePaths() {
   const localLeadsFile = path.join(localDataDir, 'discovery_leads.json');
   const localPartnersFile = path.join(localDataDir, 'partner_inquiries.json');
   const localUsersFile = path.join(localDataDir, 'admin_users.json');
+  const localInsightsFile = path.join(localDataDir, 'insights.json');
 
   // Writable tmp files for serverless
   const tmpLeadsFile = path.join(tmpDataDir, 'discovery_leads.json');
   const tmpPartnersFile = path.join(tmpDataDir, 'partner_inquiries.json');
   const tmpUsersFile = path.join(tmpDataDir, 'admin_users.json');
+  const tmpInsightsFile = path.join(tmpDataDir, 'insights.json');
 
   return {
     isServerless,
@@ -32,10 +35,49 @@ function getStoragePaths() {
     localLeadsFile,
     localPartnersFile,
     localUsersFile,
+    localInsightsFile,
     tmpLeadsFile,
     tmpPartnersFile,
     tmpUsersFile,
+    tmpInsightsFile,
   };
+}
+
+function resolveExternalInsightsUrl(includeDrafts = false) {
+  const explicitUrl = process.env.EXTERNAL_INSIGHTS_URL;
+  const baseUrl = process.env.EXTERNAL_API_BASE_URL;
+  const base = explicitUrl || (baseUrl ? `${baseUrl.replace(/\/+$/, '')}/api/launchpad/insights` : null);
+
+  if (!base) {
+    return null;
+  }
+
+  const separator = base.includes('?') ? '&' : '?';
+  return includeDrafts ? `${base}${separator}includeDrafts=1` : base;
+}
+
+async function fetchExternalInsights(includeDrafts = false): Promise<InsightArticle[] | null> {
+  const targetUrl = resolveExternalInsightsUrl(includeDrafts);
+  if (!targetUrl) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(targetUrl, { cache: 'no-store' });
+    if (!response.ok) {
+      return null;
+    }
+
+    const payload = await response.json().catch(() => null);
+    if (!payload?.success || !Array.isArray(payload.insights)) {
+      return null;
+    }
+
+    return payload.insights as InsightArticle[];
+  } catch (error) {
+    console.warn('[Storage] Failed to read external insights:', error);
+    return null;
+  }
 }
 
 // ─── USERS / AUTH STORAGE ───────────────────────────────────────────────────
@@ -147,9 +189,15 @@ export async function getAdminUsers(): Promise<AdminUser[]> {
 export async function findAdminUser(usernameOrEmail: string): Promise<AdminUser | null> {
   const users = await getAdminUsers();
   const query = usernameOrEmail.trim().toLowerCase();
+  const aliases: Record<string, string> = {
+    admin: 'admin@lal10.com',
+    builtlal10: 'admin@lal10.com',
+    buitlal10: 'admin@lal10.com',
+  };
+  const normalizedQuery = aliases[query] || query;
   const found = users.find(u => 
-    u.username.toLowerCase() === query || 
-    u.email.toLowerCase() === query
+    u.username.toLowerCase() === normalizedQuery || 
+    u.email.toLowerCase() === normalizedQuery
   );
   return found || null;
 }
@@ -158,9 +206,13 @@ export async function verifyAdminCredentials(usernameOrEmail: string, password: 
   const user = await findAdminUser(usernameOrEmail);
   if (!user) return null;
 
+  const query = usernameOrEmail.trim().toLowerCase();
   const validPasswords = [
     'founder@lal10@2026',
     `${user.username.toLowerCase()}@lal10@2026`,
+    query === 'admin' || query === 'admin@lal10.com' || query === 'builtlal10' || query === 'buitlal10'
+      ? 'admin@lal10@2026'
+      : '',
     user.password,
   ].filter(Boolean);
 
@@ -220,6 +272,115 @@ export async function saveAdminUser(userData: {
   } catch (tmpErr) {}
 
   return newUser;
+}
+
+// ─── INSIGHTS STORAGE ────────────────────────────────────────────────────────
+
+export async function getInsights(): Promise<InsightArticle[]> {
+  const externalInsights = await fetchExternalInsights(true);
+  if (externalInsights) {
+    globalThis.__lal10_insights_cache = externalInsights;
+    return externalInsights;
+  }
+
+  if (globalThis.__lal10_insights_cache && globalThis.__lal10_insights_cache.length > 0) {
+    return globalThis.__lal10_insights_cache;
+  }
+
+  const { localInsightsFile, tmpInsightsFile } = getStoragePaths();
+
+  try {
+    if (fs.existsSync(localInsightsFile)) {
+      const raw = fs.readFileSync(localInsightsFile, 'utf-8');
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        globalThis.__lal10_insights_cache = parsed;
+        return parsed;
+      }
+    }
+  } catch (e) {}
+
+  try {
+    if (fs.existsSync(tmpInsightsFile)) {
+      const raw = fs.readFileSync(tmpInsightsFile, 'utf-8');
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        globalThis.__lal10_insights_cache = parsed;
+        return parsed;
+      }
+    }
+  } catch (e) {}
+
+  globalThis.__lal10_insights_cache = [];
+  return [];
+}
+
+export async function getPublishedInsights(): Promise<InsightArticle[]> {
+  const insights = await getInsights();
+  return insights
+    .filter((item) => item.status === 'Published')
+    .sort((a, b) => new Date(b.publishedOn).getTime() - new Date(a.publishedOn).getTime());
+}
+
+export async function getInsightBySlug(slug: string, includeDrafts = false): Promise<InsightArticle | null> {
+  const insights = await getInsights();
+  const found = insights.find((item) => item.slug === slug && (includeDrafts || item.status === 'Published'));
+  return found || null;
+}
+
+function slugifyInsightTitle(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80) || `insight-${Date.now()}`;
+}
+
+export async function saveInsightArticle(input: Omit<InsightArticle, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }) {
+  const insights = await getInsights();
+  const now = new Date().toISOString();
+  const requestedSlug = input.slug || input.title;
+  const baseSlug = slugifyInsightTitle(requestedSlug);
+
+  const duplicate = insights.find((item) => item.slug === baseSlug && item.id !== input.id);
+  const slug = duplicate ? `${baseSlug}-${Date.now().toString().slice(-6)}` : baseSlug;
+
+  const existingIndex = input.id ? insights.findIndex((item) => item.id === input.id) : -1;
+  const existing = existingIndex >= 0 ? insights[existingIndex] : null;
+
+  const normalized: InsightArticle = {
+    ...input,
+    id: existing?.id || input.id || `ins-${Date.now()}`,
+    slug,
+    createdAt: existing?.createdAt || now,
+    updatedAt: now,
+  };
+
+  if (existingIndex >= 0) {
+    insights[existingIndex] = normalized;
+  } else {
+    insights.unshift(normalized);
+  }
+
+  globalThis.__lal10_insights_cache = insights;
+
+  const { localDataDir, localInsightsFile, tmpInsightsFile } = getStoragePaths();
+  const serialized = JSON.stringify(insights, null, 2);
+
+  try {
+    if (!fs.existsSync(localDataDir)) {
+      fs.mkdirSync(localDataDir, { recursive: true });
+    }
+    fs.writeFileSync(localInsightsFile, serialized, 'utf-8');
+  } catch (e) {}
+
+  try {
+    fs.writeFileSync(tmpInsightsFile, serialized, 'utf-8');
+  } catch (e) {}
+
+  return normalized;
 }
 
 // ─── LEADS STORAGE ────────────────────────────────────────────────────────────

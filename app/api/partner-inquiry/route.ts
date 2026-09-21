@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { savePartnerInquiry, getPartnerInquiries } from '@/lib/storage';
+import { proxyToExternalApi } from '@/lib/externalApi';
 
 export async function POST(req: NextRequest) {
   try {
+    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_PARTNER_INQUIRY_URL', '/api/launchpad/partner-inquiry');
+    if (proxiedResponse) {
+      return proxiedResponse;
+    }
+
     const body = await req.json();
     const { partnerService, fullName, email, phone, brandName, projectBrief } = body;
 
@@ -36,8 +42,13 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_PARTNER_INQUIRY_URL', '/api/launchpad/partner-inquiry');
+    if (proxiedResponse) {
+      return proxiedResponse;
+    }
+
     const inquiries = await getPartnerInquiries();
     return NextResponse.json({ success: true, count: inquiries.length, inquiries });
   } catch (error: any) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveDiscoveryLead, getDiscoveryLeads, updateLeadStatus } from '@/lib/storage';
 import nodemailer from 'nodemailer';
+import { proxyToExternalApi } from '@/lib/externalApi';
 
 // ─── Email Transport ─────────────────────────────────────────────────────────
 // Reads PROD_MAIL_* or GMAIL_* SMTP configuration from environment variables
@@ -378,6 +379,11 @@ function buildCustomerConfirmationEmailHtml(data: {
 // ─── API ROUTE HANDLERS ──────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
+    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_DISCOVERY_CALL_URL', '/api/launchpad/discovery-call');
+    if (proxiedResponse) {
+      return proxiedResponse;
+    }
+
     const body = await req.json();
     const { fullName, email, phone, brandName, category, stage, budget, preferredDate, preferredTimeSlot, notes, trackInterest } = body;
 
@@ -412,61 +418,65 @@ export async function POST(req: NextRequest) {
       trackInterest: trackInterest || 'Launch Sprint',
     });
 
-    // 2. Send emails via Nodemailer
-    const transporter = createTransport();
-    if (transporter) {
-      const senderEmail = process.env.PROD_MAIL_USER || process.env.GMAIL_USER || 'erpadmin@lal10.com';
-      try {
-        // Email 1: Send Internal Notification to LAL10 Team with CC to leadership
-        const teamCcRecipients = [
-          'Ghanshyam Ramawat <ghanshyam@lal10.com>',
-          'Sanchit Govil <sanchit@lal10.com>',
-          'Maneet Gohil <maneet@lal10.com>',
-          'Albin Jose <albin@lal10.com>',
-        ];
-
-        await transporter.sendMail({
-          from: `"Lal10 FashionOS" <${senderEmail}>`,
-          to: 'alan@lal10.com',
-          cc: teamCcRecipients,
-          replyTo: String(email).trim(),
-          subject: `⚡ New Discovery Enquiry – ${String(brandName).trim()} (${String(fullName).trim()})`,
-          html: buildTeamNotificationEmailHtml({
-            id: newLead.id,
-            fullName: String(fullName).trim(),
-            email: String(email).trim(),
-            phone: String(phone || '').trim(),
-            brandName: String(brandName).trim(),
-            category: category || 'General',
-            stage: stage || 'Not specified',
-            budget: budget || 'Not specified',
-            preferredTimeSlot: preferredTimeSlot || 'To be confirmed',
-            notes: notes || '',
-            trackInterest: trackInterest || 'Launch Sprint',
-          }),
-        });
-        console.log(`[Discovery] Team email sent to alan@lal10.com (CC: ${teamCcRecipients.join(', ')}) for ${brandName}`);
-
-        // Email 2: Send Confirmation Email to Customer / Founder
-        await transporter.sendMail({
-          from: `"Lal10 FashionOS" <${senderEmail}>`,
-          to: String(email).trim(),
-          replyTo: 'hello@lal10.com',
-          subject: `Your enquiry is with us – Lal10 FashionOS`,
-          html: buildCustomerConfirmationEmailHtml({
-            fullName: String(fullName).trim(),
-            email: String(email).trim(),
-            brandName: String(brandName).trim(),
-            stage: stage || 'Pre-launch',
-            notes: notes || '',
-          }),
-        });
-        console.log(`[Discovery] Customer confirmation email sent to ${email}`);
-      } catch (emailErr) {
-        console.error('[Discovery] Email send error (non-fatal):', emailErr);
-      }
+    // Outbound email is intentionally disabled for now so discovery calls do not
+    // notify Maneet, Albin, Sanchit, or customers while we finish the EC2-backed integration.
+    const emailDeliveryDisabled = (process.env.DISABLE_OUTBOUND_EMAIL ?? 'true') === 'true';
+    if (emailDeliveryDisabled) {
+      console.warn('[Discovery] Outbound email disabled by DISABLE_OUTBOUND_EMAIL=true. Skipping all mail sends.');
     } else {
-      console.warn('[Discovery] GMAIL_USER / GMAIL_APP_PASS not configured in .env.local – email dispatch skipped.');
+      const transporter = createTransport();
+      if (transporter) {
+        const senderEmail = process.env.PROD_MAIL_USER || process.env.GMAIL_USER || 'erpadmin@lal10.com';
+        try {
+          const teamCcRecipients = [
+            'Ghanshyam Ramawat <ghanshyam@lal10.com>',
+            'Sanchit Govil <sanchit@lal10.com>',
+            'Maneet Gohil <maneet@lal10.com>',
+            'Albin Jose <albin@lal10.com>',
+          ];
+
+          await transporter.sendMail({
+            from: `"Lal10 FashionOS" <${senderEmail}>`,
+            to: 'alan@lal10.com',
+            cc: teamCcRecipients,
+            replyTo: String(email).trim(),
+            subject: `⚡ New Discovery Enquiry – ${String(brandName).trim()} (${String(fullName).trim()})`,
+            html: buildTeamNotificationEmailHtml({
+              id: newLead.id,
+              fullName: String(fullName).trim(),
+              email: String(email).trim(),
+              phone: String(phone || '').trim(),
+              brandName: String(brandName).trim(),
+              category: category || 'General',
+              stage: stage || 'Not specified',
+              budget: budget || 'Not specified',
+              preferredTimeSlot: preferredTimeSlot || 'To be confirmed',
+              notes: notes || '',
+              trackInterest: trackInterest || 'Launch Sprint',
+            }),
+          });
+          console.log(`[Discovery] Team email sent to alan@lal10.com (CC: ${teamCcRecipients.join(', ')}) for ${brandName}`);
+
+          await transporter.sendMail({
+            from: `"Lal10 FashionOS" <${senderEmail}>`,
+            to: String(email).trim(),
+            replyTo: 'hello@lal10.com',
+            subject: `Your enquiry is with us – Lal10 FashionOS`,
+            html: buildCustomerConfirmationEmailHtml({
+              fullName: String(fullName).trim(),
+              email: String(email).trim(),
+              brandName: String(brandName).trim(),
+              stage: stage || 'Pre-launch',
+              notes: notes || '',
+            }),
+          });
+          console.log(`[Discovery] Customer confirmation email sent to ${email}`);
+        } catch (emailErr) {
+          console.error('[Discovery] Email send error (non-fatal):', emailErr);
+        }
+      } else {
+        console.warn('[Discovery] GMAIL_USER / GMAIL_APP_PASS not configured in .env.local – email dispatch skipped.');
+      }
     }
 
     return NextResponse.json({
@@ -485,6 +495,11 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
+    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_DISCOVERY_CALL_URL', '/api/launchpad/discovery-call');
+    if (proxiedResponse) {
+      return proxiedResponse;
+    }
+
     const leads = await getDiscoveryLeads();
     return NextResponse.json({ success: true, count: leads.length, leads });
   } catch (error: any) {
@@ -498,6 +513,11 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
+    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_DISCOVERY_CALL_URL', '/api/launchpad/discovery-call');
+    if (proxiedResponse) {
+      return proxiedResponse;
+    }
+
     const body = await req.json();
     const { id, status } = body;
     if (!id || !status) {

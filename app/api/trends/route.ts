@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { CategoryTrendData } from '@/lib/types';
+import { proxyToExternalApi } from '@/lib/externalApi';
 
 const TREND_BENCHMARKS: CategoryTrendData[] = [
   {
@@ -52,7 +53,12 @@ const TREND_BENCHMARKS: CategoryTrendData[] = [
   },
 ];
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_TRENDS_URL', '/api/trends');
+  if (proxiedResponse) {
+    return proxiedResponse;
+  }
+
   return NextResponse.json({
     success: true,
     engine: 'Lal10 FashionOS Market Intelligence v2.4',

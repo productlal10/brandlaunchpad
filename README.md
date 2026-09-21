@@ -43,3 +43,9 @@
 
 - **Target Domain**: `brandlaunchpad.lal10.com`
 - **DNS Record**: `CNAME` pointing `brandlaunchpad` $\rightarrow$ `cname.vercel-dns.com`
+- **Recommended Runtime Split**:
+  - Vercel hosts this Next.js frontend
+  - `api.lal10.com` hosts the persistent backend + database on EC2
+  - Set `EXTERNAL_API_BASE_URL=https://api.lal10.com` so local `/api/*` routes proxy to the EC2 backend under the isolated `/api/launchpad/*` namespace
+  - If you want to override the CSRF helper explicitly, set `EXTERNAL_AUTH_CSRF_URL=https://api.lal10.com/api/launchpad/auth/csrf-token`
+  - Keep `DISABLE_OUTBOUND_EMAIL=true` until mail delivery is intentionally enabled

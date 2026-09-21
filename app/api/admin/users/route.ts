@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminUsers, saveAdminUser } from '@/lib/storage';
+import { proxyToExternalApi } from '@/lib/externalApi';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_ADMIN_USERS_URL', '/api/launchpad/users');
+    if (proxiedResponse) {
+      return proxiedResponse;
+    }
+
     const users = await getAdminUsers();
     const safeUsers = users.map(({ password, ...u }) => u);
     return NextResponse.json({ success: true, count: safeUsers.length, users: safeUsers });
@@ -13,6 +19,11 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_ADMIN_USERS_URL', '/api/launchpad/users');
+    if (proxiedResponse) {
+      return proxiedResponse;
+    }
+
     const body = await req.json();
     const { name, email, role } = body;
 

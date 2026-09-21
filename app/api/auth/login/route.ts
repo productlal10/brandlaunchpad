@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdminCredentials } from '@/lib/storage';
+import { proxyToExternalApi } from '@/lib/externalApi';
 
 export async function POST(req: NextRequest) {
   try {
+    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_AUTH_LOGIN_URL', '/api/launchpad/auth/login');
+    if (proxiedResponse) {
+      return proxiedResponse;
+    }
+
     const body = await req.json();
     const { username, password } = body;
 

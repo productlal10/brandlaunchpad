@@ -71,3 +71,46 @@ export interface AdminUser {
   joinedOn: string;
   lastActive: string;
 }
+
+export interface InsightAuthor {
+  name: string;
+  role: string;
+  bio: string;
+  avatarUrl: string;
+  linkedinUrl: string;
+}
+
+export interface InsightSection {
+  heading: string;
+  body: string;
+}
+
+export interface InsightRelatedArticle {
+  title: string;
+  href: string;
+  readTime: string;
+  imageUrl: string;
+}
+
+export interface InsightArticle {
+  id: string;
+  slug: string;
+  status: 'Published' | 'Draft';
+  category: string;
+  title: string;
+  subtitle: string;
+  quote: string;
+  publishedOn: string;
+  readTime: string;
+  heroImageUrl: string;
+  heroImageAlt?: string;
+  sourceUrl?: string;
+  author: InsightAuthor;
+  sections: InsightSection[];
+  takeaways: string[];
+  relatedArticles: InsightRelatedArticle[];
+  ctaTitle?: string;
+  ctaBody?: string;
+  createdAt: string;
+  updatedAt: string;
+}

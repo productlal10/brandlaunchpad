@@ -1,0 +1,73 @@
+[
+  {
+    "id": "ins-raymond-sanchit",
+    "slug": "sanchit-raymond-blog",
+    "status": "Published",
+    "category": "Brand Stories",
+    "title": "A 100-year-old Indian brand, ₹7,000+ crore in revenue.",
+    "subtitle": "And this is how it became one of India’s most powerful fashion supply chains.",
+    "quote": "Great brands aren't just built by products, but by the infrastructure behind them.",
+    "publishedOn": "2025-05-28",
+    "readTime": "6 min read",
+    "heroImageUrl": "https://media.licdn.com/dms/image/v2/D4D22AQExPZG67R1yoQ/feedshare-shrink_1280/B4DaBrBD_9KcAM-/0/1788501836306?e=1790812800&v=beta&t=_YqyJ27vhHXXOyN0ytS21gbHiCG-IkTVOf4WfS7R-Mw",
+    "heroImageAlt": "How Raymond Went From a Small Woollen Mill to a 7000 Crore Brand",
+    "sourceUrl": "https://www.linkedin.com/in/sanchitgovil/",
+    "author": {
+      "name": "Sanchit Govil",
+      "role": "Co-Founder, LAL10",
+      "bio": "Operator at the intersection of fashion, supply chains and brand building.",
+      "avatarUrl": "https://media.licdn.com/dms/image/v2/D5603AQFbZ-R-fvvEMQ/profile-displayphoto-shrink_800_800/B56ZeciCF4GQAc-/0/1750677857171?e=1790812800&v=beta&t=bX8yY9ud5Q0q7xqYUaz8tailRY5Wrv_7t2YnSlrgPJw",
+      "linkedinUrl": "https://www.linkedin.com/in/sanchitgovil/"
+    },
+    "sections": [
+      {
+        "heading": "In 1925, Raymond Lifestyle Limited started as a small woollen mill near Thane Creek,",
+        "body": "making coarse blankets and low-priced wool fabric. Nothing about it suggested what it would become."
+      },
+      {
+        "heading": "The Singhania family took it over in 1944.",
+        "body": "They didn't outsource their way to scale. They went the other direction, building their own fibre processing, their own fabric mills, their own garmenting units, and their own retail stores."
+      },
+      {
+        "heading": "Today, Raymond is one of the largest vertically and horizontally integrated manufacturers",
+        "body": "of worsted suiting fabric in the world, and a market leader in the domestic worsted suiting industry in India."
+      },
+      {
+        "heading": "Here's what's worth noticing:",
+        "body": "Raymond didn't fail because it owned everything. Raymond succeeded despite owning everything, because from 1944 to 1990, that was the only way to guarantee quality and speed."
+      },
+      {
+        "heading": "But owning is capital-intensive and rigid.",
+        "body": "It made sense when supply was scarce, and you needed control. It's a liability when supply is abundant, and you need flexibility."
+      },
+      {
+        "heading": "The brands winning today aren't winning because they rejected Raymond's logic.",
+        "body": "They're winning because the conditions that made Raymond's logic necessary have changed. And they're building different infrastructure for a different world. Raymond built a moat by owning the chain. But there is another moat where fashion brands are building one by orchestrating a chain nobody owns."
+      }
+    ],
+    "takeaways": [
+      "Vertical integration can create unmatched quality and scale.",
+      "The right strategy depends on supply chain conditions.",
+      "Modern brands are winning through orchestration, not ownership.",
+      "Infrastructure is a strategic advantage, not just an operational necessity."
+    ],
+    "relatedArticles": [
+      {
+        "title": "Why Supply Chain Thinking Is a Brand Advantage",
+        "href": "/home1#offerings",
+        "readTime": "5 min read",
+        "imageUrl": "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=300&auto=format&fit=crop"
+      },
+      {
+        "title": "From India to the World: The Next Chapter for D2C Fashion Brands",
+        "href": "/home1#engagement",
+        "readTime": "7 min read",
+        "imageUrl": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=300&auto=format&fit=crop"
+      }
+    ],
+    "ctaTitle": "Building a fashion brand? Let's talk.",
+    "ctaBody": "From sourcing to scale — we help fashion brands build what's next.",
+    "createdAt": "2025-05-28T00:00:00.000Z",
+    "updatedAt": "2025-05-28T00:00:00.000Z"
+  }
+]
