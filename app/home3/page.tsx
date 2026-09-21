@@ -321,7 +321,7 @@ export default function HomePage() {
             <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '44px', color: '#C9A16B', fontWeight: 400 }}>03</div>
             <div style={{ maxWidth: '760px' }}>
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '30px', fontWeight: 500, marginBottom: '12px' }}>Sourcing</h3>
-              <p style={{ fontSize: '16px', lineHeight: 1.7, color: '#57524B' }}>Vendor introductions from our network, fabric library access, supplier shortlisting guidance and production-readiness assessment.</p>
+              <p style={{ fontSize: '16px', lineHeight: 1.7, color: '#57524B' }}>Vendor introductions from our network, fabric library access, supplier shortlisting guidance and production-readiness assessment. Low-MOQ production across factories vetted at the product level: shirts, t-shirts, dresses, polos, kids so you start small with confidence.</p>
             </div>
           </div>
         </div>

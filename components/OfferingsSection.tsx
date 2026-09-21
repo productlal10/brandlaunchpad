@@ -83,6 +83,7 @@ export const OfferingsSection: React.FC<OfferingsSectionProps> = ({ onOpenBookin
             </h3>
             <p className="text-[15.5px] md:text-[16px] leading-[1.7] text-[#57524B] mb-4">
               Vendor introductions from our network, fabric library access, supplier shortlisting guidance and production-readiness assessment.
+              Low-MOQ production across factories vetted at the product level: shirts, t-shirts, dresses, polos, kids so you start small with confidence.
             </p>
             <button
               onClick={() => onOpenBooking('Launch Sprint')}
