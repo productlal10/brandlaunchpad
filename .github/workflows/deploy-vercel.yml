@@ -16,8 +16,8 @@ jobs:
     timeout-minutes: 20
     environment: production
     env:
-      EXTERNAL_API_BASE_URL: https://api.lal10.com
-      EXTERNAL_AUTH_CSRF_URL: https://api.lal10.com/api/launchpad/auth/csrf-token
+      EXTERNAL_API_BASE_URL: https://api.erp.lal10.com
+      EXTERNAL_AUTH_CSRF_URL: https://api.erp.lal10.com/api/launchpad/auth/csrf-token
       DISABLE_OUTBOUND_EMAIL: "true"
       LAUNCHPAD_MANUAL_USER_PROVISIONING: "true"
 
