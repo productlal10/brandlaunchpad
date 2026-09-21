@@ -4,7 +4,16 @@ import { proxyToExternalApi } from '@/lib/externalApi';
 
 export async function POST(req: NextRequest) {
   try {
-    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_AUTH_LOGIN_URL', '/api/launchpad/auth/login');
+    const proxiedResponse = await proxyToExternalApi(
+      req,
+      'EXTERNAL_AUTH_LOGIN_URL',
+      '/api/launchpad/auth/login',
+      {
+        fallbackOnNetworkError: true,
+        fallbackOnStatuses: [500, 502, 503, 504],
+        timeoutMs: 2500,
+      }
+    );
     if (proxiedResponse) {
       return proxiedResponse;
     }

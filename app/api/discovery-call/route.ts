@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuthenticatedAdmin } from '@/lib/adminAuth';
 import { saveDiscoveryLead, getDiscoveryLeads, updateLeadStatus } from '@/lib/storage';
 import nodemailer from 'nodemailer';
 import { proxyToExternalApi } from '@/lib/externalApi';
@@ -379,7 +380,14 @@ function buildCustomerConfirmationEmailHtml(data: {
 // ─── API ROUTE HANDLERS ──────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
-    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_DISCOVERY_CALL_URL', '/api/launchpad/discovery-call');
+    const proxiedResponse = await proxyToExternalApi(
+      req,
+      'EXTERNAL_DISCOVERY_CALL_URL',
+      '/api/launchpad/discovery-call',
+      {
+        timeoutMs: 2500,
+      }
+    );
     if (proxiedResponse) {
       return proxiedResponse;
     }
@@ -495,9 +503,23 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_DISCOVERY_CALL_URL', '/api/launchpad/discovery-call');
+    const proxiedResponse = await proxyToExternalApi(
+      req,
+      'EXTERNAL_DISCOVERY_CALL_URL',
+      '/api/launchpad/discovery-call',
+      {
+        fallbackOnNetworkError: true,
+        fallbackOnStatuses: [500, 502, 503, 504],
+        timeoutMs: 2500,
+      }
+    );
     if (proxiedResponse) {
       return proxiedResponse;
+    }
+
+    const auth = await requireAuthenticatedAdmin(req);
+    if (auth.response) {
+      return auth.response;
     }
 
     const leads = await getDiscoveryLeads();
@@ -513,9 +535,23 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_DISCOVERY_CALL_URL', '/api/launchpad/discovery-call');
+    const proxiedResponse = await proxyToExternalApi(
+      req,
+      'EXTERNAL_DISCOVERY_CALL_URL',
+      '/api/launchpad/discovery-call',
+      {
+        fallbackOnNetworkError: true,
+        fallbackOnStatuses: [500, 502, 503, 504],
+        timeoutMs: 2500,
+      }
+    );
     if (proxiedResponse) {
       return proxiedResponse;
+    }
+
+    const auth = await requireAuthenticatedAdmin(req);
+    if (auth.response) {
+      return auth.response;
     }
 
     const body = await req.json();

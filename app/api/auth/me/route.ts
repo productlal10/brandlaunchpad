@@ -1,26 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findAdminUser } from '@/lib/storage';
+import { getAuthenticatedAdmin } from '@/lib/adminAuth';
 import { proxyToExternalApi } from '@/lib/externalApi';
 
 export async function GET(req: NextRequest) {
   try {
-    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_AUTH_ME_URL', '/api/launchpad/auth/session');
+    const proxiedResponse = await proxyToExternalApi(
+      req,
+      'EXTERNAL_AUTH_ME_URL',
+      '/api/launchpad/auth/session',
+      {
+        fallbackOnNetworkError: true,
+        fallbackOnStatuses: [500, 502, 503, 504],
+        timeoutMs: 2000,
+      }
+    );
     if (proxiedResponse) {
       return proxiedResponse;
     }
 
-    const sessionCookie = req.cookies.get('lal10_auth_session')?.value;
-
-    if (!sessionCookie) {
-      return NextResponse.json({ success: false, user: null }, { status: 401 });
-    }
-
-    const parsed = JSON.parse(sessionCookie);
-    if (!parsed || !parsed.username) {
-      return NextResponse.json({ success: false, user: null }, { status: 401 });
-    }
-
-    const liveUser = await findAdminUser(parsed.username);
+    const liveUser = await getAuthenticatedAdmin(req);
     if (!liveUser) {
       return NextResponse.json({ success: false, user: null }, { status: 401 });
     }

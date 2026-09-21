@@ -1,16 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuthenticatedAdmin } from '@/lib/adminAuth';
 import { getInsights, saveInsightArticle } from '@/lib/storage';
 import { InsightArticle } from '@/lib/types';
 import { proxyToExternalApi } from '@/lib/externalApi';
 
 export async function GET(req: NextRequest) {
   try {
-    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_INSIGHTS_URL', '/api/launchpad/insights');
+    const proxiedResponse = await proxyToExternalApi(
+      req,
+      'EXTERNAL_INSIGHTS_URL',
+      '/api/launchpad/insights',
+      {
+        fallbackOnNetworkError: true,
+        fallbackOnStatuses: [401, 404, 500, 502, 503, 504],
+        timeoutMs: 2500,
+      }
+    );
     if (proxiedResponse) {
       return proxiedResponse;
     }
 
     const includeDrafts = req.nextUrl.searchParams.get('includeDrafts') === '1';
+    if (includeDrafts) {
+      const auth = await requireAuthenticatedAdmin(req);
+      if (auth.response) {
+        return auth.response;
+      }
+    }
+
     const insights = await getInsights();
     const filtered = includeDrafts ? insights : insights.filter((item) => item.status === 'Published');
     const sorted = filtered.sort((a, b) => new Date(b.publishedOn).getTime() - new Date(a.publishedOn).getTime());
@@ -22,9 +39,23 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_INSIGHTS_URL', '/api/launchpad/insights');
+    const proxiedResponse = await proxyToExternalApi(
+      req,
+      'EXTERNAL_INSIGHTS_URL',
+      '/api/launchpad/insights',
+      {
+        fallbackOnNetworkError: true,
+        fallbackOnStatuses: [401, 404, 500, 502, 503, 504],
+        timeoutMs: 2500,
+      }
+    );
     if (proxiedResponse) {
       return proxiedResponse;
+    }
+
+    const auth = await requireAuthenticatedAdmin(req);
+    if (auth.response) {
+      return auth.response;
     }
 
     const body = await req.json();

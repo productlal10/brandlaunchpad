@@ -4,6 +4,12 @@ const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 const LEGACY_EXTERNAL_API_BASE_URL = 'https://api.lal10.com';
 const CURRENT_EXTERNAL_API_BASE_URL = 'https://api.erp.lal10.com';
 
+type ProxyOptions = {
+  fallbackOnNetworkError?: boolean;
+  fallbackOnStatuses?: number[] | ((status: number) => boolean);
+  timeoutMs?: number;
+};
+
 function normalizeExternalApiUrl(value: string | null | undefined) {
   if (!value) {
     return value ?? null;
@@ -34,7 +40,49 @@ export function resolveExternalApiUrl(explicitEnvKey: string, fallbackPath: stri
   return joinUrl(baseUrl, fallbackPath);
 }
 
-async function resolveExternalCsrfToken(req: NextRequest) {
+function getExternalApiTimeoutMs(override?: number) {
+  const parsed = Number.parseInt(process.env.EXTERNAL_API_TIMEOUT_MS || '', 10);
+  if (Number.isFinite(parsed) && parsed > 0) {
+    return parsed;
+  }
+
+  return override ?? 2500;
+}
+
+function shouldFallbackFromStatus(
+  status: number,
+  matcher: ProxyOptions['fallbackOnStatuses']
+) {
+  if (!matcher) {
+    return false;
+  }
+
+  if (typeof matcher === 'function') {
+    return matcher(status);
+  }
+
+  return matcher.includes(status);
+}
+
+async function fetchWithTimeout(
+  input: string,
+  init: RequestInit,
+  timeoutMs: number
+) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(input, {
+      ...init,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function resolveExternalCsrfToken(req: NextRequest, timeoutMs: number) {
   const explicitUrl = normalizeExternalApiUrl(process.env.EXTERNAL_AUTH_CSRF_URL);
   const baseUrl = normalizeExternalApiUrl(process.env.EXTERNAL_API_BASE_URL);
   const targetUrl = explicitUrl || (baseUrl ? joinUrl(baseUrl, '/api/launchpad/auth/csrf-token') : null);
@@ -60,11 +108,11 @@ async function resolveExternalCsrfToken(req: NextRequest) {
   if (userAgent) headers.set('user-agent', userAgent);
 
   try {
-    const response = await fetch(targetUrl, {
+    const response = await fetchWithTimeout(targetUrl, {
       method: 'GET',
       headers,
       cache: 'no-store',
-    });
+    }, Math.min(timeoutMs, 1500));
 
     if (!response.ok) {
       return null;
@@ -82,7 +130,12 @@ async function resolveExternalCsrfToken(req: NextRequest) {
   }
 }
 
-export async function proxyToExternalApi(req: NextRequest, explicitEnvKey: string, fallbackPath: string) {
+export async function proxyToExternalApi(
+  req: NextRequest,
+  explicitEnvKey: string,
+  fallbackPath: string,
+  options: ProxyOptions = {}
+) {
   const resolvedBaseUrl = resolveExternalApiUrl(explicitEnvKey, fallbackPath);
   if (!resolvedBaseUrl) {
     return null;
@@ -99,22 +152,38 @@ export async function proxyToExternalApi(req: NextRequest, explicitEnvKey: strin
   headers.delete('content-length');
 
   const method = req.method.toUpperCase();
-  const body = method === 'GET' || method === 'HEAD' ? undefined : await req.text();
+  const timeoutMs = getExternalApiTimeoutMs(options.timeoutMs);
+  const body = method === 'GET' || method === 'HEAD' ? undefined : await req.clone().text();
 
   if (!SAFE_METHODS.has(method)) {
-    const csrfToken = await resolveExternalCsrfToken(req);
+    const csrfToken = await resolveExternalCsrfToken(req, timeoutMs);
     if (csrfToken) {
       headers.set('x-csrf-token', csrfToken);
     }
   }
 
-  const response = await fetch(targetUrl, {
-    method,
-    headers,
-    body,
-    redirect: 'manual',
-    cache: 'no-store',
-  });
+  let response: Response;
+  try {
+    response = await fetchWithTimeout(targetUrl, {
+      method,
+      headers,
+      body,
+      redirect: 'manual',
+      cache: 'no-store',
+    }, timeoutMs);
+  } catch (error: any) {
+    if (options.fallbackOnNetworkError) {
+      console.warn(`[External API] Falling back locally for ${method} ${fallbackPath}:`, error?.name || error?.message || error);
+      return null;
+    }
+
+    throw error;
+  }
+
+  if (shouldFallbackFromStatus(response.status, options.fallbackOnStatuses)) {
+    console.warn(`[External API] Upstream ${fallbackPath} returned ${response.status}. Falling back locally.`);
+    return null;
+  }
 
   const responseHeaders = new Headers();
   response.headers.forEach((value, key) => {

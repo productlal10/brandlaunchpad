@@ -334,19 +334,7 @@ export default function AdminDashboardPage() {
             return;
           }
         }
-      } catch (err) {}
-
-      try {
-        const stored = localStorage.getItem('lal10_auth_user');
-        if (stored) {
-          const parsed = JSON.parse(stored) as AuthUser;
-          if (parsed && parsed.name) {
-            setCurrentUser(parsed);
-            setIsAuthenticated(true);
-          }
-        }
-      } catch (e) {
-        console.warn('localStorage access error', e);
+      } catch (err) {
       } finally {
         setAuthChecked(true);
       }
@@ -448,9 +436,6 @@ export default function AdminDashboardPage() {
 
   // Load scheduled calls and fetch live leads + users from DB
   useEffect(() => {
-    fetchLiveLeads();
-    fetchLiveUsers();
-
     try {
       const savedCalls = localStorage.getItem('lal10_scheduled_calls');
       if (savedCalls) {
@@ -458,6 +443,15 @@ export default function AdminDashboardPage() {
       }
     } catch {}
   }, []);
+
+  useEffect(() => {
+    if (!authChecked || !isAuthenticated) {
+      return;
+    }
+
+    fetchLiveLeads();
+    fetchLiveUsers();
+  }, [authChecked, isAuthenticated]);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -482,6 +476,7 @@ export default function AdminDashboardPage() {
 
       setCurrentUser(data.user);
       setIsAuthenticated(true);
+      fetchLiveLeads();
       fetchLiveUsers();
     } catch (err: any) {
       setLoginError(err.message || 'Login failed. Please check credentials.');

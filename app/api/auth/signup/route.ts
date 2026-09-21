@@ -1,12 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuthenticatedAdmin } from '@/lib/adminAuth';
 import { saveAdminUser, findAdminUser } from '@/lib/storage';
 import { proxyToExternalApi } from '@/lib/externalApi';
 
 export async function POST(req: NextRequest) {
   try {
+    if (process.env.LAUNCHPAD_MANUAL_USER_PROVISIONING === 'true') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Launchpad user provisioning is managed manually in ERP right now.',
+        },
+        { status: 403 }
+      );
+    }
+
     const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_AUTH_SIGNUP_URL', '/api/launchpad/auth/signup');
     if (proxiedResponse) {
       return proxiedResponse;
+    }
+
+    const auth = await requireAuthenticatedAdmin(req);
+    if (auth.response) {
+      return auth.response;
     }
 
     const body = await req.json();

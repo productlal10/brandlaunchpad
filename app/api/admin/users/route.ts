@@ -1,12 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuthenticatedAdmin } from '@/lib/adminAuth';
 import { getAdminUsers, saveAdminUser } from '@/lib/storage';
 import { proxyToExternalApi } from '@/lib/externalApi';
 
 export async function GET(req: NextRequest) {
   try {
-    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_ADMIN_USERS_URL', '/api/launchpad/users');
+    const proxiedResponse = await proxyToExternalApi(
+      req,
+      'EXTERNAL_ADMIN_USERS_URL',
+      '/api/launchpad/users',
+      {
+        fallbackOnNetworkError: true,
+        fallbackOnStatuses: [500, 502, 503, 504],
+        timeoutMs: 2500,
+      }
+    );
     if (proxiedResponse) {
       return proxiedResponse;
+    }
+
+    const auth = await requireAuthenticatedAdmin(req);
+    if (auth.response) {
+      return auth.response;
     }
 
     const users = await getAdminUsers();
@@ -19,9 +34,33 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const proxiedResponse = await proxyToExternalApi(req, 'EXTERNAL_ADMIN_USERS_URL', '/api/launchpad/users');
+    if (process.env.LAUNCHPAD_MANUAL_USER_PROVISIONING === 'true') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Launchpad user provisioning is managed manually in ERP right now.',
+        },
+        { status: 403 }
+      );
+    }
+
+    const proxiedResponse = await proxyToExternalApi(
+      req,
+      'EXTERNAL_ADMIN_USERS_URL',
+      '/api/launchpad/users',
+      {
+        fallbackOnNetworkError: true,
+        fallbackOnStatuses: [500, 502, 503, 504],
+        timeoutMs: 2500,
+      }
+    );
     if (proxiedResponse) {
       return proxiedResponse;
+    }
+
+    const auth = await requireAuthenticatedAdmin(req);
+    if (auth.response) {
+      return auth.response;
     }
 
     const body = await req.json();
