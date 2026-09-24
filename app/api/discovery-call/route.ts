@@ -161,10 +161,10 @@ function buildTeamNotificationEmailHtml(data: {
                 NEXT STEP
               </div>
               <p style="font-size:13.5px;color:#57524B;margin:0 0 16px 0;">
-                Please review the enquiry and follow up with the founder.
+                Please review the enquiry in the Lal10 ERP portal.
               </p>
-              <a href="https://brandlaunchpad.lal10.com/admin" style="display:inline-block;width:100%;box-sizing:border-box;background:linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #A87944 100%);color:#171615;text-align:center;padding:15px 24px;border-radius:4px;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;text-decoration:none;box-shadow:0 3px 12px rgba(184,134,11,0.25);">
-                VIEW IN ADMIN PANEL &nbsp; →
+              <a href="https://erp.lal10.com" style="display:inline-block;width:100%;box-sizing:border-box;background:linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #A87944 100%);color:#171615;text-align:center;padding:15px 24px;border-radius:4px;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;text-decoration:none;box-shadow:0 3px 12px rgba(184,134,11,0.25);">
+                OPEN LAL10 ERP &nbsp; →
               </a>
             </td>
           </tr>
@@ -361,8 +361,8 @@ function buildCustomerConfirmationEmailHtml(data: {
                     Building fashion brands<br/>that lead, not follow.
                   </td>
                   <td width="30%" align="right" style="font-size:11px;color:#57524B;">
-                    <div>✉️ <a href="mailto:hello@lal10.com" style="color:#57524B;text-decoration:none;">hello@lal10.com</a></div>
-                    <div style="margin-top:3px;">🌐 <a href="https://www.lal10.com" style="color:#57524B;text-decoration:none;">www.lal10.com</a></div>
+                    <div>✉️ <a href="mailto:launchpad@lal10.com" style="color:#57524B;text-decoration:none;">launchpad@lal10.com</a></div>
+                    <div style="margin-top:3px;">🌐 <a href="https://launchpad.lal10.com" style="color:#57524B;text-decoration:none;">launchpad.lal10.com</a></div>
                   </td>
                 </tr>
               </table>
@@ -468,7 +468,7 @@ export async function POST(req: NextRequest) {
           await transporter.sendMail({
             from: `"Lal10 FashionOS" <${senderEmail}>`,
             to: String(email).trim(),
-            replyTo: 'hello@lal10.com',
+            replyTo: 'launchpad@lal10.com',
             subject: `Your enquiry is with us – Lal10 FashionOS`,
             html: buildCustomerConfirmationEmailHtml({
               fullName: String(fullName).trim(),

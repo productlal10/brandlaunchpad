@@ -57,18 +57,18 @@ export default function InsightArticlePage({ insight }: { insight: InsightArticl
     <div style={{ maxWidth: '100%', overflowX: 'clip', fontFamily: "'Manrope', sans-serif", color: '#171615', background: '#FBFAF7', minHeight: '100vh', position: 'relative' }}>
       <nav style={{ position: 'sticky', top: 0, left: 0, right: 0, width: '100%', zIndex: 1000, background: 'rgba(251,250,247,0.95)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '1px solid #E4DED3' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '14px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
-          <Link href="/home1" style={{ display: 'flex', alignItems: 'center', gap: '14px', textDecoration: 'none' }}>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '14px', textDecoration: 'none' }}>
             <img src="https://www.lal10.com/logo.png" alt="Lal10 Logo" style={{ height: '46px', width: 'auto', objectFit: 'contain' }} />
             <div style={{ width: '1px', height: '32px', background: '#E4DED3' }} className="hidden sm:block" />
             <img src="https://thefashionos.com/assets/logo-Dl4_z_fN.png" alt="TheFashionOS Logo" style={{ height: '45px', width: 'auto', objectFit: 'contain' }} className="hidden sm:block" />
           </Link>
 
           <div className="hidden lg:flex" style={{ gap: '36px', alignItems: 'center' }}>
-            <Link href="/home1#offerings" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>Brands</Link>
-            <Link href="/home1#offerings" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>Services</Link>
-            <Link href="/home1#process" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>Case Studies</Link>
+            <Link href="/#offerings" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>Brands</Link>
+            <Link href="/#offerings" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>Services</Link>
+            <Link href="/#process" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>Case Studies</Link>
             <span style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 700, color: '#171615', textTransform: 'uppercase', borderBottom: '2px solid #5B1F28', paddingBottom: '4px' }}>Insights</span>
-            <Link href="/home1#team" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>About</Link>
+            <Link href="/#team" style={{ fontSize: '12px', letterSpacing: '1.5px', fontWeight: 600, color: '#57524B', textTransform: 'uppercase' }}>About</Link>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -93,20 +93,20 @@ export default function InsightArticlePage({ insight }: { insight: InsightArticl
 
         {mobileMenuOpen && (
           <div style={{ background: '#FBFAF7', borderBottom: '1px solid #E4DED3', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <Link href="/home1#offerings" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', fontWeight: 600, textTransform: 'uppercase' }}>Brands</Link>
-            <Link href="/home1#offerings" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', fontWeight: 600, textTransform: 'uppercase' }}>Services</Link>
-            <Link href="/home1#process" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', fontWeight: 600, textTransform: 'uppercase' }}>Case Studies</Link>
-            <Link href={`/insights/${insight.slug}`} onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', fontWeight: 700, color: '#5B1F28', textTransform: 'uppercase' }}>Insights</Link>
-            <Link href="/home1#team" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', fontWeight: 600, textTransform: 'uppercase' }}>About</Link>
+            <Link href="/#offerings" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', fontWeight: 600, textTransform: 'uppercase' }}>Brands</Link>
+            <Link href="/#offerings" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', fontWeight: 600, textTransform: 'uppercase' }}>Services</Link>
+            <Link href="/#process" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', fontWeight: 600, textTransform: 'uppercase' }}>Case Studies</Link>
+            <Link href="/raymond" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', fontWeight: 700, color: '#5B1F28', textTransform: 'uppercase' }}>Insights</Link>
+            <Link href="/#team" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '13px', fontWeight: 600, textTransform: 'uppercase' }}>About</Link>
           </div>
         )}
       </nav>
 
       <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px 100px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#8A837A', marginBottom: '28px', flexWrap: 'wrap' }}>
-          <Link href="/home1" style={{ color: '#8A837A' }}>Home</Link>
+          <Link href="/" style={{ color: '#8A837A' }}>Home</Link>
           <span>›</span>
-          <Link href="/home1#engagement" style={{ color: '#8A837A' }}>Insights</Link>
+          <Link href="/#engagement" style={{ color: '#8A837A' }}>Insights</Link>
           <span>›</span>
           <span style={{ color: '#171615', fontWeight: 500 }}>{insight.title}</span>
         </div>
@@ -245,7 +245,7 @@ export default function InsightArticlePage({ insight }: { insight: InsightArticl
                   <span style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: '#8A837A', fontWeight: 700 }}>
                     RELATED ARTICLES
                   </span>
-                  <Link href="/home1#engagement" style={{ fontSize: '11px', color: '#5B1F28', fontWeight: 700 }}>
+                  <Link href="/#engagement" style={{ fontSize: '11px', color: '#5B1F28', fontWeight: 700 }}>
                     View all →
                   </Link>
                 </div>
@@ -281,21 +281,21 @@ export default function InsightArticlePage({ insight }: { insight: InsightArticl
             <div style={{ display: 'flex', gap: '64px', flexWrap: 'wrap' }}>
               <div>
                 <h5 style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(245,241,234,0.45)', fontWeight: 600, marginBottom: '16px' }}>Services</h5>
-                <Link href="/home1#offerings" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>Product</Link>
-                <Link href="/home1#offerings" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>Trend Intelligence</Link>
-                <Link href="/home1#offerings" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>Sourcing</Link>
-                <Link href="/home1#engagement" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px' }}>Market Intelligence</Link>
+                <Link href="/#offerings" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>Product</Link>
+                <Link href="/#offerings" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>Trend Intelligence</Link>
+                <Link href="/#offerings" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>Sourcing</Link>
+                <Link href="/#engagement" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px' }}>Market Intelligence</Link>
               </div>
               <div>
                 <h5 style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(245,241,234,0.45)', fontWeight: 600, marginBottom: '16px' }}>Company</h5>
-                <Link href="/home1#team" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>Team</Link>
-                <Link href="/home1#process" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>How It Works</Link>
-                <Link href="/home1#engagement" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px' }}>Engagement</Link>
+                <Link href="/#team" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>Team</Link>
+                <Link href="/#process" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px' }}>How It Works</Link>
+                <Link href="/#engagement" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px' }}>Engagement</Link>
               </div>
               <div>
                 <h5 style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(245,241,234,0.45)', fontWeight: 600, marginBottom: '16px' }}>Get in Touch</h5>
                 <button onClick={openBooking} style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px', marginBottom: '10px', background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}>Book a Call</button>
-                <a href="mailto:hello@lal10.com" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px' }}>hello@lal10.com</a>
+                <a href="mailto:launchpad@lal10.com" style={{ display: 'block', color: 'rgba(245,241,234,0.75)', fontSize: '14px' }}>launchpad@lal10.com</a>
               </div>
             </div>
           </div>

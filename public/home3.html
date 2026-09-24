@@ -3,8 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brand Launchpad — LAL10 FashionOS — Fashion Brand Advisory &amp; Operating System</title>
+  <title>LAL10 FashionOS · Brand Launchpad</title>
   <meta name="description" content="We partner with founders to build iconic fashion brands that win in the real world. From market intelligence to brand launch and scale." />
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo.png" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
+  <meta name="theme-color" content="#FFFFFF" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -200,8 +205,7 @@
       border: none; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;
     }
 
-    /* ── HERO — pinned chaos→order system ─────────────────────── */
-    .hero { position: relative; width: 100%; height: 560vh; background: var(--bg-main); }
+    .hero { position: relative; width: 100%; height: 300vh; background: var(--bg-main); }
     html.rm .hero { height: auto; }
 
     .hs-stage {
@@ -239,7 +243,60 @@
       max-width: 46ch; margin-bottom: 28px;
     }
     .hs-body strong { color: var(--text-main); font-weight: 700; }
-    .hs-cta { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; margin-bottom: 30px; }
+    .hs-cta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 30px; }
+
+    .btn-primary-lg {
+      position: relative; overflow: hidden;
+      display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+      background: var(--brand-maroon); color: #FFFFFF;
+      border: 1.5px solid var(--brand-maroon);
+      padding: 16px 32px; font-size: 11.5px; letter-spacing: 2px;
+      font-weight: 700; text-transform: uppercase; cursor: pointer;
+      text-decoration: none; font-family: var(--font-sans);
+      box-shadow: 0 4px 18px rgba(11, 58, 83, 0.22);
+      transition: box-shadow .35s var(--ease-out), transform .35s var(--ease-out);
+    }
+    .btn-primary-lg > * {
+      position: relative; z-index: 1;
+      transition: color .45s var(--ease-out), transform .45s var(--ease-out);
+    }
+    .btn-primary-lg::before {
+      content: ""; position: absolute; inset: 0; background: #062436;
+      transform: translateY(101%); transition: transform .5s var(--ease-out); z-index: 0;
+    }
+    .btn-primary-lg:hover {
+      box-shadow: 0 8px 26px rgba(6, 36, 54, 0.35);
+      transform: translateY(-2px);
+    }
+    .btn-primary-lg:hover::before { transform: translateY(0); }
+    .btn-primary-lg:hover .arw { transform: translate(3px, -3px); }
+
+    .btn-secondary-lg {
+      position: relative; overflow: hidden;
+      display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+      background: #FFFFFF; color: var(--text-main);
+      border: 1.5px solid var(--text-main);
+      padding: 16px 30px; font-size: 11.5px; letter-spacing: 2px;
+      font-weight: 700; text-transform: uppercase; cursor: pointer;
+      text-decoration: none; font-family: var(--font-sans);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+      transition: color .45s var(--ease-out), border-color .45s var(--ease-out), box-shadow .35s var(--ease-out), transform .35s var(--ease-out);
+    }
+    .btn-secondary-lg > * {
+      position: relative; z-index: 1;
+      transition: color .45s var(--ease-out), transform .45s var(--ease-out);
+    }
+    .btn-secondary-lg::before {
+      content: ""; position: absolute; inset: 0; background: var(--text-main);
+      transform: translateY(101%); transition: transform .5s var(--ease-out); z-index: 0;
+    }
+    .btn-secondary-lg:hover {
+      color: #FFFFFF;
+      box-shadow: 0 8px 24px rgba(10, 12, 13, 0.15);
+      transform: translateY(-2px);
+    }
+    .btn-secondary-lg:hover::before { transform: translateY(0); }
+    .btn-secondary-lg:hover .arw { transform: translateX(5px); }
 
     .hs-stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); border-top: 2px solid var(--text-main); }
     .hs-stats > div { padding: 18px 14px 0 0; }
@@ -845,8 +902,92 @@
     }
     .form-input:focus { border-color: var(--brand-maroon); box-shadow: 0 0 0 3px rgba(11,58,83,0.08); }
     .form-select-wrap { position: relative; }
-    .form-select { appearance: none; -webkit-appearance: none; padding-right: 40px; cursor: pointer; }
-    .form-select-arrow { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+    .form-select {
+      appearance: none; -webkit-appearance: none; -moz-appearance: none;
+      padding-right: 42px; cursor: pointer;
+      color-scheme: light !important;
+      background-color: #FFFFFF !important;
+      color: #0A0C0D !important;
+      font-size: 13.5px; font-weight: 500;
+      border: 1px solid #D8DEE2; border-radius: 4px;
+      transition: all .25s ease;
+    }
+    .form-select:hover { border-color: #9FB3BE; }
+    .form-select:focus {
+      border-color: var(--brand-maroon);
+      box-shadow: 0 0 0 3px rgba(11,58,83,0.08);
+      background-color: #FFFFFF !important;
+    }
+    .form-select option {
+      color-scheme: light !important;
+      background: #FFFFFF !important;
+      background-color: #FFFFFF !important;
+      color: #0A0C0D !important;
+      padding: 12px 14px;
+      font-size: 13.5px;
+    }
+    .form-select-arrow {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      pointer-events: none; display: flex; align-items: center; justify-content: center;
+      transition: transform .2s ease;
+    }
+
+    /* Custom Luxury Dropdowns (Pure White, Broader, Elevating) */
+    .custom-dropdown-wrap { position: relative; width: 100%; }
+    .custom-dropdown-trigger {
+      width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 13px 18px; font-size: 14px; font-weight: 500; font-family: inherit;
+      background: #FFFFFF !important; color: #0A0C0D; border: 1px solid #D8DEE2; border-radius: 6px;
+      cursor: pointer; text-align: left; outline: none; box-sizing: border-box;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .custom-dropdown-trigger:hover { border-color: #9FB3BE; }
+    .custom-dropdown-trigger:focus,
+    .custom-dropdown-trigger.open {
+      border-color: var(--brand-maroon);
+      box-shadow: 0 0 0 3px rgba(11,58,83,0.08);
+    }
+    .custom-dropdown-label {
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; font-size: 14px;
+    }
+    .custom-dropdown-label.placeholder { color: #8A9296; }
+    .custom-dropdown-chevron {
+      transition: transform .25s var(--ease-out); flex-shrink: 0;
+    }
+    .custom-dropdown-trigger.open .custom-dropdown-chevron {
+      transform: rotate(180deg);
+    }
+    .custom-dropdown-menu {
+      position: absolute; top: calc(100% + 6px); left: 0; right: 0; width: 100%; min-width: 100%;
+      z-index: 1050; background: #FFFFFF !important; border: 1px solid #DDE3E6; border-radius: 8px;
+      box-shadow: 0 20px 48px -4px rgba(10, 12, 13, 0.16), 0 6px 18px rgba(10, 12, 13, 0.06);
+      padding: 6px; display: none; flex-direction: column; gap: 2px;
+      max-height: 260px; overflow-y: auto; box-sizing: border-box;
+    }
+    .custom-dropdown-menu.open {
+      display: flex; animation: dropdownFade .18s ease-out;
+    }
+    @keyframes dropdownFade {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .custom-dropdown-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 12px 16px; font-size: 14px; color: #171615; border-radius: 6px;
+      cursor: pointer; transition: background .15s, color .15s; background: #FFFFFF;
+    }
+    .custom-dropdown-item:hover {
+      background: #F2F6F8 !important; color: var(--brand-maroon) !important; font-weight: 600;
+    }
+    .custom-dropdown-item.selected {
+      background: #E8F0F4 !important; color: var(--brand-maroon) !important; font-weight: 600;
+    }
+    .custom-dropdown-item .check-icon {
+      font-size: 14px; font-weight: 700; color: var(--brand-maroon); opacity: 0;
+    }
+    .custom-dropdown-item.selected .check-icon {
+      opacity: 1;
+    }
     .form-btn-submit {
       width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
       padding: 17px 20px; font-size: 11px; letter-spacing: 2.4px; text-transform: uppercase;
@@ -888,7 +1029,7 @@
       .mobile-text-logo { display: flex !important; }
       .cursor-dot, .cursor-ring { display: none !important; }
 
-      .hero { height: 420vh; }
+      .hero { height: 240vh; }
       .hs-stage { grid-template-columns: minmax(0,1fr); grid-template-rows: auto minmax(0,1fr); }
       .hs-copy { border-right: none; border-bottom: 2px solid var(--text-main); padding: calc(var(--nav-h) + 18px) 20px 22px; justify-content: flex-start; }
       .hs-stats { display: none; }
@@ -1005,7 +1146,9 @@
           <button class="btn-primary-lg" onclick="openDiscoveryModal('Launch Sprint')">
             <span>Book a Discovery Call</span> <span class="arw">↗</span>
           </button>
-          <a href="#offerings" class="link-underline"><span>See how we work</span> <span class="arw">→</span></a>
+          <a href="#offerings" class="btn-secondary-lg">
+            <span>See how we work</span> <span class="arw">→</span>
+          </a>
         </div>
 
         <div class="hs-stats" id="hsStats">
@@ -1018,7 +1161,7 @@
       <div class="hs-plate" id="hsPlate">
         <div class="hs-shots" id="hsShots">
           <div class="hs-shot s0"></div><div class="hs-shot s1"></div><div class="hs-shot s2"></div>
-          <div class="hs-shot s3"></div><div class="hs-shot s4"></div>
+          <div class="hs-shot s3"></div><div class="hs-shot s4"></div><div class="hs-shot s5"></div>
         </div>
         <canvas class="hs-canvas" id="hsCanvas"></canvas>
 
@@ -1739,21 +1882,13 @@
           <div class="footer-nav-col">
             <h5>Get in Touch</h5>
             <button onclick="openDiscoveryModal('General')">Book a Call</button>
-            <a href="mailto:hello@lal10.com">hello@lal10.com</a>
+            <a href="mailto:launchpad@lal10.com">launchpad@lal10.com</a>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
         <div>© 2026 Lal10 FashionOS. Part of Lal10.</div>
         <div>The playbook behind launching and scaling brands.</div>
-        <div style="flex-basis: 100%; font-size: 11px; color: rgba(255,255,255,0.34); line-height: 1.6;">
-          Hero sequence photography via <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer" style="color: rgba(255,255,255,0.5);">Wikimedia Commons</a> —
-          <a href="https://commons.wikimedia.org/wiki/File:Fashion_illustration_in_sketching.jpg" target="_blank" rel="noopener noreferrer" style="color: rgba(255,255,255,0.5);">Fashion illustration in sketching</a> (CC BY-SA 4.0),
-          <a href="https://commons.wikimedia.org/wiki/File:Runway_show_pexels.jpg" target="_blank" rel="noopener noreferrer" style="color: rgba(255,255,255,0.5);">Runway show</a> (CC0),
-          <a href="https://commons.wikimedia.org/wiki/File:Grafana_Dashboard_(2017).jpg" target="_blank" rel="noopener noreferrer" style="color: rgba(255,255,255,0.5);">Grafana Dashboard</a> (CC BY-SA 4.0),
-          <a href="https://commons.wikimedia.org/wiki/File:Women%27s_clothes_store_(Unsplash).jpg" target="_blank" rel="noopener noreferrer" style="color: rgba(255,255,255,0.5);">Women's clothes store</a> (CC0),
-          <a href="https://commons.wikimedia.org/wiki/File:Shopping_freak_(Unsplash).jpg" target="_blank" rel="noopener noreferrer" style="color: rgba(255,255,255,0.5);">Shopping freak</a> (CC0).
-        </div>
       </div>
     </div>
   </footer>
@@ -1800,33 +1935,71 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
             <div class="form-input-group">
               <label class="form-label">Category <span style="color: var(--brand-maroon);">*</span></label>
-              <div class="form-select-wrap">
-                <select class="form-input form-select" id="discCategory">
-                  <option value="Womenswear">Womenswear</option>
-                  <option value="Menswear">Menswear</option>
-                  <option value="Kidswear">Kidswear</option>
-                  <option value="Footwear &amp; Accessories">Footwear &amp; Accessories</option>
-                  <option value="General / Multi-Category">General / Multi-Category</option>
-                </select>
-                <div class="form-select-arrow">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="#6A7277" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="custom-dropdown-wrap" id="categoryDropdownWrap">
+                <button type="button" class="custom-dropdown-trigger" id="categoryDropdownBtn" onclick="toggleCustomDropdown('category')">
+                  <span class="custom-dropdown-label" id="categoryDropdownLabel">Womenswear</span>
+                  <svg class="custom-dropdown-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 4L6 8L10 4" stroke="#4C5459" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="custom-dropdown-menu" id="categoryDropdownMenu">
+                  <div class="custom-dropdown-item selected" data-value="Womenswear" onclick="selectCustomOption('category', 'Womenswear', 'Womenswear')">
+                    <span>Womenswear</span>
+                    <span class="check-icon">✓</span>
+                  </div>
+                  <div class="custom-dropdown-item" data-value="Menswear" onclick="selectCustomOption('category', 'Menswear', 'Menswear')">
+                    <span>Menswear</span>
+                    <span class="check-icon">✓</span>
+                  </div>
+                  <div class="custom-dropdown-item" data-value="Kidswear" onclick="selectCustomOption('category', 'Kidswear', 'Kidswear')">
+                    <span>Kidswear</span>
+                    <span class="check-icon">✓</span>
+                  </div>
+                  <div class="custom-dropdown-item" data-value="Footwear &amp; Accessories" onclick="selectCustomOption('category', 'Footwear &amp; Accessories', 'Footwear &amp; Accessories')">
+                    <span>Footwear &amp; Accessories</span>
+                    <span class="check-icon">✓</span>
+                  </div>
+                  <div class="custom-dropdown-item" data-value="General / Multi-Category" onclick="selectCustomOption('category', 'General / Multi-Category', 'General / Multi-Category')">
+                    <span>General / Multi-Category</span>
+                    <span class="check-icon">✓</span>
+                  </div>
                 </div>
+                <input type="hidden" id="discCategory" value="Womenswear" />
               </div>
             </div>
+
             <div class="form-input-group">
               <label class="form-label">Stage</label>
-              <div class="form-select-wrap">
-                <select class="form-input form-select" id="discStage">
-                  <option value="" selected disabled>Select a stage</option>
-                  <option value="Concept &amp; Early Moodboard">Concept &amp; Early Moodboard</option>
-                  <option value="Sampling &amp; Development">Sampling &amp; Development</option>
-                  <option value="Production Ready">Production Ready</option>
-                  <option value="Scaling an Existing Label">Scaling an Existing Label</option>
-                  <option value="Looking for Market Intelligence">Looking for Market Intelligence</option>
-                </select>
-                <div class="form-select-arrow">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="#6A7277" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="custom-dropdown-wrap" id="stageDropdownWrap">
+                <button type="button" class="custom-dropdown-trigger" id="stageDropdownBtn" onclick="toggleCustomDropdown('stage')">
+                  <span class="custom-dropdown-label placeholder" id="stageDropdownLabel">Select a stage</span>
+                  <svg class="custom-dropdown-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 4L6 8L10 4" stroke="#4C5459" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="custom-dropdown-menu" id="stageDropdownMenu">
+                  <div class="custom-dropdown-item" data-value="Concept &amp; Early Moodboard" onclick="selectCustomOption('stage', 'Concept &amp; Early Moodboard', 'Concept &amp; Early Moodboard')">
+                    <span>Concept &amp; Early Moodboard</span>
+                    <span class="check-icon">✓</span>
+                  </div>
+                  <div class="custom-dropdown-item" data-value="Sampling &amp; Development" onclick="selectCustomOption('stage', 'Sampling &amp; Development', 'Sampling &amp; Development')">
+                    <span>Sampling &amp; Development</span>
+                    <span class="check-icon">✓</span>
+                  </div>
+                  <div class="custom-dropdown-item" data-value="Production Ready" onclick="selectCustomOption('stage', 'Production Ready', 'Production Ready')">
+                    <span>Production Ready</span>
+                    <span class="check-icon">✓</span>
+                  </div>
+                  <div class="custom-dropdown-item" data-value="Scaling an Existing Label" onclick="selectCustomOption('stage', 'Scaling an Existing Label', 'Scaling an Existing Label')">
+                    <span>Scaling an Existing Label</span>
+                    <span class="check-icon">✓</span>
+                  </div>
+                  <div class="custom-dropdown-item" data-value="Looking for Market Intelligence" onclick="selectCustomOption('stage', 'Looking for Market Intelligence', 'Looking for Market Intelligence')">
+                    <span>Looking for Market Intelligence</span>
+                    <span class="check-icon">✓</span>
+                  </div>
                 </div>
+                <input type="hidden" id="discStage" value="" />
               </div>
             </div>
           </div>
@@ -1968,11 +2141,17 @@
     let lenis = null;
     function initSmoothScroll() {
       if (REDUCED || typeof window.Lenis === 'undefined') return;
-      lenis = new window.Lenis({ duration: 1.15, smoothWheel: true, wheelMultiplier: 0.95, touchMultiplier: 1.4 });
+      lenis = new window.Lenis({
+        duration: 0.9,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        wheelMultiplier: 1.0,
+        touchMultiplier: 1.0
+      });
       if (HAS_GSAP) {
         lenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((t) => lenis.raf(t * 1000));
-        gsap.ticker.lagSmoothing(0);
+        gsap.ticker.add((time) => lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(500, 33);
       } else {
         const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
         requestAnimationFrame(raf);
@@ -2273,7 +2452,6 @@
         const v = Math.abs(y - lastY) / dt * 16;
         scrollVelocity += (v - scrollVelocity) * 0.15;
         lastY = y; lastT = now;
-        document.documentElement.style.setProperty('--sv', Math.min(1, scrollVelocity / 60).toFixed(3));
         requestAnimationFrame(loop);
       })(performance.now());
     })();
@@ -2468,8 +2646,66 @@
     }
 
     /* ═══════════════════════════════════════════════════════════
-       9 · MODALS (behaviour preserved)
+       CUSTOM LUXURY DROPDOWNS
     ═══════════════════════════════════════════════════════════ */
+    function toggleCustomDropdown(name) {
+      const isCategory = name === 'category';
+      const trigger = document.getElementById(isCategory ? 'categoryDropdownBtn' : 'stageDropdownBtn');
+      const menu = document.getElementById(isCategory ? 'categoryDropdownMenu' : 'stageDropdownMenu');
+      const otherTrigger = document.getElementById(isCategory ? 'stageDropdownBtn' : 'categoryDropdownBtn');
+      const otherMenu = document.getElementById(isCategory ? 'stageDropdownMenu' : 'categoryDropdownMenu');
+
+      if (otherMenu) { otherMenu.classList.remove('open'); otherTrigger.classList.remove('open'); }
+
+      const isOpen = menu && menu.classList.contains('open');
+      if (isOpen) {
+        menu.classList.remove('open');
+        trigger.classList.remove('open');
+      } else if (menu && trigger) {
+        menu.classList.add('open');
+        trigger.classList.add('open');
+      }
+    }
+
+    function selectCustomOption(name, value, label) {
+      const isCategory = name === 'category';
+      const input = document.getElementById(isCategory ? 'discCategory' : 'discStage');
+      const labelEl = document.getElementById(isCategory ? 'categoryDropdownLabel' : 'stageDropdownLabel');
+      const menu = document.getElementById(isCategory ? 'categoryDropdownMenu' : 'stageDropdownMenu');
+      const trigger = document.getElementById(isCategory ? 'categoryDropdownBtn' : 'stageDropdownBtn');
+
+      if (input) input.value = value;
+      if (labelEl) {
+        labelEl.textContent = label;
+        labelEl.classList.remove('placeholder');
+      }
+
+      if (menu) {
+        menu.querySelectorAll('.custom-dropdown-item').forEach((el) => {
+          if (el.getAttribute('data-value') === value) {
+            el.classList.add('selected');
+          } else {
+            el.classList.remove('selected');
+          }
+        });
+        menu.classList.remove('open');
+      }
+      if (trigger) trigger.classList.remove('open');
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#categoryDropdownWrap') && !e.target.closest('#stageDropdownWrap')) {
+        const cMenu = document.getElementById('categoryDropdownMenu');
+        const cBtn = document.getElementById('categoryDropdownBtn');
+        const sMenu = document.getElementById('stageDropdownMenu');
+        const sBtn = document.getElementById('stageDropdownBtn');
+        if (cMenu) cMenu.classList.remove('open');
+        if (cBtn) cBtn.classList.remove('open');
+        if (sMenu) sMenu.classList.remove('open');
+        if (sBtn) sBtn.classList.remove('open');
+      }
+    });
+
     let currentTrack = 'Launch Sprint';
     function lockScroll(lock) {
       document.body.style.overflow = lock ? 'hidden' : '';
@@ -2489,6 +2725,14 @@
       document.getElementById('discoveryModal').classList.remove('open');
       lockScroll(false);
       document.getElementById('discoveryForm').reset();
+      const cMenu = document.getElementById('categoryDropdownMenu');
+      const cBtn = document.getElementById('categoryDropdownBtn');
+      const sMenu = document.getElementById('stageDropdownMenu');
+      const sBtn = document.getElementById('stageDropdownBtn');
+      if (cMenu) cMenu.classList.remove('open');
+      if (cBtn) cBtn.classList.remove('open');
+      if (sMenu) sMenu.classList.remove('open');
+      if (sBtn) sBtn.classList.remove('open');
     }
 
     async function handleDiscoverySubmit(e) {

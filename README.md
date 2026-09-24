@@ -41,8 +41,8 @@
 
 ## 🌐 Production Deployment
 
-- **Target Domain**: `brandlaunchpad.lal10.com`
-- **DNS Record**: `CNAME` pointing `brandlaunchpad` $\rightarrow$ `cname.vercel-dns.com`
+- **Target Domain**: `launchpad.lal10.com`
+- **DNS Record**: `CNAME` pointing `launchpad` $\rightarrow$ `cname.vercel-dns.com`
 - **Recommended Runtime Split**:
   - Vercel hosts this Next.js frontend
   - `api.erp.lal10.com` hosts the persistent backend + database on EC2

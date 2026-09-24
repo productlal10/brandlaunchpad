@@ -4,9 +4,8 @@ import { getInsightBySlug } from '@/lib/storage';
 
 export const dynamic = 'force-dynamic';
 
-export default async function InsightDetailPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
-  const insight = await getInsightBySlug(slug);
+export default async function RaymondBlogPage() {
+  const insight = await getInsightBySlug('sanchit-raymond-blog');
 
   if (!insight) {
     notFound();

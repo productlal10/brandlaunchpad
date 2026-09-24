@@ -2,7 +2,7 @@
 
 > **Document Version**: `1.0.0 (Production-Ready)`  
 > **Prepared For**: CTO, Founders & Future Engineering Maintainers  
-> **Project**: LAL10 BrandLaunchpad ([brandlaunchpad.lal10.com](https://brandlaunchpad.lal10.com))  
+> **Project**: LAL10 BrandLaunchpad ([launchpad.lal10.com](https://launchpad.lal10.com))  
 > **Primary Repository**: `https://github.com/productlal10/brandlaunchpad.git`
 
 ---
@@ -138,7 +138,7 @@ To configure production deployments (e.g. on Vercel), add the following environm
 | `SMTP_PASS` | Yes | Google App Password / SMTP API Token |
 | `SMTP_FROM` | Yes | `LAL10 BrandLaunchpad <notifications@lal10.com>` |
 | `ADMIN_NOTIFICATION_EMAIL` | Optional | `alan@lal10.com` (Default receiver for incoming leads) |
-| `NEXT_PUBLIC_APP_URL` | Optional | `https://brandlaunchpad.lal10.com` |
+| `NEXT_PUBLIC_APP_URL` | Optional | `https://launchpad.lal10.com` |
 
 ---
 
@@ -179,7 +179,7 @@ npm run build
    git commit -m "feat: your descriptive feature"
    git push origin main
    ```
-2. Vercel will automatically trigger a production build and deploy to [brandlaunchpad.lal10.com](https://brandlaunchpad.lal10.com).
+2. Vercel will automatically trigger a production build and deploy to [launchpad.lal10.com](https://launchpad.lal10.com).
 
 ---
 

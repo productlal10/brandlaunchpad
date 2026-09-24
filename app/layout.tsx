@@ -1,19 +1,18 @@
 import type { Metadata } from 'next';
-import { Cormorant_Garamond, Manrope } from 'next/font/google';
+import { Syne, Sora } from 'next/font/google';
 import './globals.css';
 
-const cormorant = Cormorant_Garamond({
+const syne = Syne({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-cormorant',
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-syne',
   display: 'swap',
 });
 
-const manrope = Manrope({
+const sora = Sora({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-manrope',
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-sora',
   display: 'swap',
 });
 
@@ -34,9 +33,13 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Lal10 FashionOS' }],
   icons: {
-    icon: 'https://www.lal10.com/logo.png',
-    apple: 'https://www.lal10.com/logo.png',
-    shortcut: 'https://www.lal10.com/logo.png',
+    icon: [
+      { url: '/logo.png', type: 'image/png' },
+      { url: '/favicon.ico' },
+      { url: 'https://www.lal10.com/logo.png', type: 'image/png' }
+    ],
+    apple: '/logo.png',
+    shortcut: '/favicon.ico',
   },
   openGraph: {
     title: 'LAL10 FashionOS · Your fashion brand, built on supply-chain intelligence.',
@@ -53,8 +56,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${manrope.variable}`}>
-      <body className="bg-[#FBFAF7] text-[#171615] antialiased selection:bg-[#5B1F28] selection:text-white">
+    <html lang="en" className={`${syne.variable} ${sora.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://unpkg.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+        <link rel="dns-prefetch" href="https://unpkg.com" />
+        <script src="https://unpkg.com/lucide@latest" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+        <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+      </head>
+      <body className="bg-white text-[#0A0C0D] antialiased selection:bg-[#0B3A53]/15 selection:text-[#0A0C0D]">
         {children}
       </body>
     </html>

@@ -20,13 +20,11 @@ function getStoragePaths() {
   // Primary local files
   const localLeadsFile = path.join(localDataDir, 'discovery_leads.json');
   const localPartnersFile = path.join(localDataDir, 'partner_inquiries.json');
-  const localUsersFile = path.join(localDataDir, 'admin_users.json');
   const localInsightsFile = path.join(localDataDir, 'insights.json');
 
   // Writable tmp files for serverless
   const tmpLeadsFile = path.join(tmpDataDir, 'discovery_leads.json');
   const tmpPartnersFile = path.join(tmpDataDir, 'partner_inquiries.json');
-  const tmpUsersFile = path.join(tmpDataDir, 'admin_users.json');
   const tmpInsightsFile = path.join(tmpDataDir, 'insights.json');
 
   return {
@@ -34,11 +32,9 @@ function getStoragePaths() {
     localDataDir,
     localLeadsFile,
     localPartnersFile,
-    localUsersFile,
     localInsightsFile,
     tmpLeadsFile,
     tmpPartnersFile,
-    tmpUsersFile,
     tmpInsightsFile,
   };
 }
@@ -82,145 +78,32 @@ async function fetchExternalInsights(includeDrafts = false): Promise<InsightArti
 
 // ─── USERS / AUTH STORAGE ───────────────────────────────────────────────────
 
-const SEEDED_DEFAULT_USERS: AdminUser[] = [
-  {
-    id: "usr-super-admin",
-    username: "buitlal10",
-    name: "Super Admin",
-    email: "admin@lal10.com",
-    password: "founder@lal10@2026",
-    role: "Super Administrator",
-    status: "Active",
-    avatarInitials: "SA",
-    avatarColor: "#5B1F28",
-    joinedOn: "Jan 01, 2024",
-    lastActive: "Active now"
-  },
-  {
-    id: "usr-maneet",
-    username: "maneet",
-    name: "Maneet Gohil",
-    email: "maneet@lal10.com",
-    password: "founder@lal10@2026",
-    role: "CEO",
-    status: "Active",
-    avatarInitials: "MG",
-    avatarColor: "#1E293B",
-    joinedOn: "Jan 15, 2024",
-    lastActive: "Active now"
-  },
-  {
-    id: "usr-sanchit",
-    username: "sanchit",
-    name: "Sanchit",
-    email: "sanchit@lal10.com",
-    password: "founder@lal10@2026",
-    role: "COO",
-    status: "Active",
-    avatarInitials: "SC",
-    avatarColor: "#0F766E",
-    joinedOn: "Jan 15, 2024",
-    lastActive: "10 mins ago"
-  },
-  {
-    id: "usr-albin",
-    username: "albin",
-    name: "Albin",
-    email: "albin@lal10.com",
-    password: "founder@lal10@2026",
-    role: "CPO",
-    status: "Active",
-    avatarInitials: "AL",
-    avatarColor: "#1D4ED8",
-    joinedOn: "Mar 01, 2024",
-    lastActive: "25 mins ago"
-  },
-  {
-    id: "usr-ghanshyam",
-    username: "ghanshyam",
-    name: "Ghanshyam",
-    email: "ghanshyam@lal10.com",
-    password: "founder@lal10@2026",
-    role: "EIR",
-    status: "Active",
-    avatarInitials: "GS",
-    avatarColor: "#7E22CE",
-    joinedOn: "Feb 10, 2024",
-    lastActive: "1 hour ago"
-  }
-];
+// ─── USERS / AUTH STORAGE ───────────────────────────────────────────────────
+// All user authentication and admin access is handled centrally by the ERP backend API.
+// Zero seeded users or hardcoded credentials exist in this frontend application.
 
 export async function getAdminUsers(): Promise<AdminUser[]> {
-  if (globalThis.__lal10_users_cache && globalThis.__lal10_users_cache.length > 0) {
+  if (globalThis.__lal10_users_cache) {
     return globalThis.__lal10_users_cache;
   }
-
-  const { localUsersFile, tmpUsersFile } = getStoragePaths();
-
-  // Try local bundled first
-  try {
-    if (fs.existsSync(localUsersFile)) {
-      const raw = fs.readFileSync(localUsersFile, 'utf-8');
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        globalThis.__lal10_users_cache = parsed;
-        return parsed;
-      }
-    }
-  } catch (e) {}
-
-  // Try tmp fallback (serverless updates)
-  try {
-    if (fs.existsSync(tmpUsersFile)) {
-      const raw = fs.readFileSync(tmpUsersFile, 'utf-8');
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        globalThis.__lal10_users_cache = parsed;
-        return parsed;
-      }
-    }
-  } catch (e) {}
-
-  // Fallback to seeded users
-  globalThis.__lal10_users_cache = SEEDED_DEFAULT_USERS;
-  return SEEDED_DEFAULT_USERS;
+  globalThis.__lal10_users_cache = [];
+  return [];
 }
 
 export async function findAdminUser(usernameOrEmail: string): Promise<AdminUser | null> {
   const users = await getAdminUsers();
   const query = usernameOrEmail.trim().toLowerCase();
-  const aliases: Record<string, string> = {
-    admin: 'admin@lal10.com',
-    builtlal10: 'admin@lal10.com',
-    buitlal10: 'admin@lal10.com',
-  };
-  const normalizedQuery = aliases[query] || query;
   const found = users.find(u => 
-    u.username.toLowerCase() === normalizedQuery || 
-    u.email.toLowerCase() === normalizedQuery
+    u.username.toLowerCase() === query || 
+    u.email.toLowerCase() === query
   );
   return found || null;
 }
 
 export async function verifyAdminCredentials(usernameOrEmail: string, password: string): Promise<AdminUser | null> {
   const user = await findAdminUser(usernameOrEmail);
-  if (!user) return null;
-
-  const query = usernameOrEmail.trim().toLowerCase();
-  const validPasswords = [
-    'founder@lal10@2026',
-    `${user.username.toLowerCase()}@lal10@2026`,
-    query === 'admin' || query === 'admin@lal10.com' || query === 'builtlal10' || query === 'buitlal10'
-      ? 'admin@lal10@2026'
-      : '',
-    user.password,
-  ].filter(Boolean);
-
-  if (validPasswords.includes(password.trim())) {
-    return user;
-  }
-
-  return null;
+  if (!user || !user.password) return null;
+  return user.password === password.trim() ? user : null;
 }
 
 export async function saveAdminUser(userData: {
@@ -238,7 +121,7 @@ export async function saveAdminUser(userData: {
     username: userData.username.toLowerCase(),
     name: userData.name,
     email: userData.email.toLowerCase(),
-    password: userData.password || 'founder@lal10@2026',
+    password: userData.password || '',
     role: userData.role,
     status: 'Active',
     avatarInitials: initials,
@@ -247,7 +130,6 @@ export async function saveAdminUser(userData: {
     lastActive: 'Active now'
   };
 
-  // Upsert if exists
   const existingIdx = users.findIndex(u => u.email.toLowerCase() === newUser.email || u.username.toLowerCase() === newUser.username);
   if (existingIdx !== -1) {
     users[existingIdx] = { ...users[existingIdx], ...newUser };
@@ -256,23 +138,9 @@ export async function saveAdminUser(userData: {
   }
 
   globalThis.__lal10_users_cache = users;
-
-  const { localDataDir, localUsersFile, tmpUsersFile } = getStoragePaths();
-  const serialized = JSON.stringify(users, null, 2);
-
-  try {
-    if (!fs.existsSync(localDataDir)) {
-      fs.mkdirSync(localDataDir, { recursive: true });
-    }
-    fs.writeFileSync(localUsersFile, serialized, 'utf-8');
-  } catch (e) {}
-
-  try {
-    fs.writeFileSync(tmpUsersFile, serialized, 'utf-8');
-  } catch (tmpErr) {}
-
   return newUser;
 }
+
 
 // ─── INSIGHTS STORAGE ────────────────────────────────────────────────────────
 

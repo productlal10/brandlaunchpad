@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, CheckCircle2, AlertCircle, Loader2, Lock, ArrowUpRight, Sparkles } from 'lucide-react';
 
 interface DiscoveryModalProps {
@@ -34,6 +34,11 @@ export const DiscoveryModal: React.FC<DiscoveryModalProps> = ({
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [stageOpen, setStageOpen] = useState(false);
+  const categoryRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+
   const [formData, setFormData] = useState({
     fullName: '',
     brandName: '',
@@ -44,6 +49,19 @@ export const DiscoveryModal: React.FC<DiscoveryModalProps> = ({
     notes: '',
     trackInterest: defaultTrack,
   });
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (categoryRef.current && !categoryRef.current.contains(e.target as Node)) {
+        setCategoryOpen(false);
+      }
+      if (stageRef.current && !stageRef.current.contains(e.target as Node)) {
+        setStageOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -143,6 +161,13 @@ export const DiscoveryModal: React.FC<DiscoveryModalProps> = ({
         }
         .lal10-modal-card {
           animation: lal10ModalIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        select option {
+          color-scheme: light !important;
+          background: #FFFFFF !important;
+          background-color: #FFFFFF !important;
+          color: #1A1A1A !important;
+          padding: 10px 14px;
         }
       `}</style>
 
@@ -299,44 +324,235 @@ export const DiscoveryModal: React.FC<DiscoveryModalProps> = ({
 
                 {/* Category & Stage Row */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                  {/* Category Custom Dropdown */}
                   <div>
                     <label style={labelStyle}>Category <span style={{ color: '#6B1F2A' }}>*</span></label>
-                    <div style={{ position: 'relative' }}>
-                      <select
-                        value={formData.category}
-                        onChange={e => handleChange('category', e.target.value)}
-                        onFocus={() => setFocusedField('category')}
-                        onBlur={() => setFocusedField(null)}
-                        style={{ ...inputStyle('category'), appearance: 'none', paddingRight: '40px', cursor: 'pointer', color: formData.category ? '#1A1A1A' : '#AAAAAA' }}
+                    <div style={{ position: 'relative' }} ref={categoryRef}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCategoryOpen(!categoryOpen);
+                          setStageOpen(false);
+                        }}
+                        style={{
+                          width: '100%',
+                          minHeight: '46px',
+                          padding: '12px 16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '10px',
+                          fontSize: '14px',
+                          fontWeight: 500,
+                          color: formData.category ? '#1A1A1A' : '#8A9296',
+                          backgroundColor: '#FFFFFF',
+                          border: `1px solid ${categoryOpen ? '#6B1F2A' : '#E4DDD4'}`,
+                          borderRadius: '6px',
+                          outline: 'none',
+                          boxShadow: categoryOpen ? '0 0 0 3px rgba(107,31,42,0.08)' : 'none',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          transition: 'border-color 0.2s, box-shadow 0.2s',
+                          boxSizing: 'border-box',
+                          fontFamily: 'inherit',
+                        }}
                       >
-                        {categoryOptions.map(c => <option key={c} value={c} style={{ color: '#1A1A1A' }}>{c}</option>)}
-                      </select>
-                      <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path d="M2 4L6 8L10 4" stroke="#8C7B6E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                          {formData.category || 'Select category'}
+                        </span>
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          style={{
+                            transform: categoryOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                            transition: 'transform 0.2s ease',
+                            flexShrink: 0,
+                          }}
+                        >
+                          <path d="M2 4L6 8L10 4" stroke="#6B1F2A" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
-                      </div>
+                      </button>
+
+                      {categoryOpen && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: 'calc(100% + 6px)',
+                            left: 0,
+                            right: 0,
+                            width: '100%',
+                            zIndex: 100,
+                            backgroundColor: '#FFFFFF',
+                            border: '1px solid #E2E6E9',
+                            borderRadius: '8px',
+                            boxShadow: '0 20px 48px -4px rgba(10, 12, 13, 0.16), 0 6px 16px rgba(10, 12, 13, 0.06)',
+                            padding: '6px',
+                            maxHeight: '260px',
+                            overflowY: 'auto',
+                            boxSizing: 'border-box',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '2px',
+                          }}
+                        >
+                          {categoryOptions.map(c => {
+                            const isSelected = formData.category === c;
+                            return (
+                              <div
+                                key={c}
+                                onClick={() => {
+                                  handleChange('category', c);
+                                  setCategoryOpen(false);
+                                }}
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  padding: '11px 14px',
+                                  fontSize: '13.5px',
+                                  fontWeight: isSelected ? 600 : 400,
+                                  color: isSelected ? '#6B1F2A' : '#1A1A1A',
+                                  backgroundColor: isSelected ? '#FDF5F6' : '#FFFFFF',
+                                  borderRadius: '6px',
+                                  cursor: 'pointer',
+                                  transition: 'background-color 0.15s ease, color 0.15s ease',
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (!isSelected) (e.currentTarget as HTMLElement).style.backgroundColor = '#F5F7F8';
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (!isSelected) (e.currentTarget as HTMLElement).style.backgroundColor = '#FFFFFF';
+                                }}
+                              >
+                                <span>{c}</span>
+                                {isSelected && (
+                                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                    <path d="M2.5 7.5L5.5 10.5L11.5 3.5" stroke="#6B1F2A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   </div>
 
+                  {/* Stage Custom Dropdown */}
                   <div>
                     <label style={labelStyle}>Stage</label>
-                    <div style={{ position: 'relative' }}>
-                      <select
-                        value={formData.stage}
-                        onChange={e => handleChange('stage', e.target.value)}
-                        onFocus={() => setFocusedField('stage')}
-                        onBlur={() => setFocusedField(null)}
-                        style={{ ...inputStyle('stage'), appearance: 'none', paddingRight: '40px', cursor: 'pointer', color: formData.stage ? '#1A1A1A' : '#AAAAAA' }}
+                    <div style={{ position: 'relative' }} ref={stageRef}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setStageOpen(!stageOpen);
+                          setCategoryOpen(false);
+                        }}
+                        style={{
+                          width: '100%',
+                          minHeight: '46px',
+                          padding: '12px 16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '10px',
+                          fontSize: '14px',
+                          fontWeight: 500,
+                          color: formData.stage ? '#1A1A1A' : '#8A9296',
+                          backgroundColor: '#FFFFFF',
+                          border: `1px solid ${stageOpen ? '#6B1F2A' : '#E4DDD4'}`,
+                          borderRadius: '6px',
+                          outline: 'none',
+                          boxShadow: stageOpen ? '0 0 0 3px rgba(107,31,42,0.08)' : 'none',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          transition: 'border-color 0.2s, box-shadow 0.2s',
+                          boxSizing: 'border-box',
+                          fontFamily: 'inherit',
+                        }}
                       >
-                        <option value="" disabled>Select a stage</option>
-                        {stageOptions.map(s => <option key={s} value={s} style={{ color: '#1A1A1A' }}>{s}</option>)}
-                      </select>
-                      <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path d="M2 4L6 8L10 4" stroke="#8C7B6E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                          {formData.stage || 'Select a stage'}
+                        </span>
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          style={{
+                            transform: stageOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                            transition: 'transform 0.2s ease',
+                            flexShrink: 0,
+                          }}
+                        >
+                          <path d="M2 4L6 8L10 4" stroke="#6B1F2A" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
-                      </div>
+                      </button>
+
+                      {stageOpen && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: 'calc(100% + 6px)',
+                            left: 0,
+                            right: 0,
+                            width: '100%',
+                            zIndex: 100,
+                            backgroundColor: '#FFFFFF',
+                            border: '1px solid #E2E6E9',
+                            borderRadius: '8px',
+                            boxShadow: '0 20px 48px -4px rgba(10, 12, 13, 0.16), 0 6px 16px rgba(10, 12, 13, 0.06)',
+                            padding: '6px',
+                            maxHeight: '260px',
+                            overflowY: 'auto',
+                            boxSizing: 'border-box',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '2px',
+                          }}
+                        >
+                          {stageOptions.map(s => {
+                            const isSelected = formData.stage === s;
+                            return (
+                              <div
+                                key={s}
+                                onClick={() => {
+                                  handleChange('stage', s);
+                                  setStageOpen(false);
+                                }}
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  padding: '11px 14px',
+                                  fontSize: '13.5px',
+                                  fontWeight: isSelected ? 600 : 400,
+                                  color: isSelected ? '#6B1F2A' : '#1A1A1A',
+                                  backgroundColor: isSelected ? '#FDF5F6' : '#FFFFFF',
+                                  borderRadius: '6px',
+                                  cursor: 'pointer',
+                                  transition: 'background-color 0.15s ease, color 0.15s ease',
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (!isSelected) (e.currentTarget as HTMLElement).style.backgroundColor = '#F5F7F8';
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (!isSelected) (e.currentTarget as HTMLElement).style.backgroundColor = '#FFFFFF';
+                                }}
+                              >
+                                <span>{s}</span>
+                                {isSelected && (
+                                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                    <path d="M2.5 7.5L5.5 10.5L11.5 3.5" stroke="#6B1F2A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
